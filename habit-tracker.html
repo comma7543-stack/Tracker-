@@ -412,6 +412,30 @@ input, textarea, [contenteditable]{
 /* Import/export row */
 .data-row{ display:flex; gap:10px; flex-wrap:wrap; }
 .data-row .btn{ flex:1; }
+
+/* ================================================================
+   IN-APP DIALOG (replaces alert/confirm/prompt, which some embedded
+   browsers block) — centered box reusing the overlay backdrop
+   ================================================================ */
+.overlay.center{ align-items:center; padding:24px; }
+.dialog{
+  width:100%; max-width:340px;
+  background:var(--card); border:1px solid var(--line-hi);
+  border-radius:20px; padding:22px;
+  box-shadow:0 0 44px rgba(255,255,255,.1);
+  animation:sheetUp .22s cubic-bezier(.3,.9,.3,1);
+}
+.dialog p{ margin-bottom:16px; line-height:1.5; }
+.dialog input{
+  width:100%; margin-bottom:16px;
+  background:var(--card2); color:var(--txt);
+  border:1px solid var(--line); border-radius:14px;
+  padding:12px 15px; font-size:16px;   /* 16px = no iOS zoom */
+  outline:none;
+}
+.dialog input:focus{ border-color:var(--line-hi); box-shadow:var(--glow-hi); }
+.dlg-btns{ display:flex; gap:10px; }
+.dlg-btns .btn{ flex:1; }
 </style>
 </head>
 <body>
@@ -603,6 +627,18 @@ input, textarea, [contenteditable]{
   </div>
 </div>
 
+<!-- ================== CONFIRM / PROMPT DIALOG ================== -->
+<div class="overlay center" id="dlgOverlay">
+  <div class="dialog">
+    <p id="dlgMsg"></p>
+    <input type="text" id="dlgInput" maxlength="80" autocomplete="off" style="display:none">
+    <div class="dlg-btns">
+      <button class="btn ghost" id="dlgCancel">Cancel</button>
+      <button class="btn" id="dlgOk">OK</button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ================================================================
    BIBLE VERSES — 66 verses (KJV). The verse shown rotates daily:
@@ -724,7 +760,7 @@ function save(){
   try{
     localStorage.setItem(STORE_KEY, JSON.stringify(state));
   }catch(e){
-    alert("Saving failed (storage may be full): " + e.message);
+    console.error("Saving failed (storage may be full):", e);
   }
 }
 
@@ -743,6 +779,48 @@ function esc(s){
     "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
   }[c]));
 }
+
+/* ================================================================
+   IN-APP DIALOGS
+   window.alert/confirm/prompt are blocked in some embedded browsers
+   (sandboxed iframes, previews), so the app uses its own dialog box.
+   Each helper returns a Promise:
+     appAlert(msg)          -> resolves true when dismissed
+     appConfirm(msg)        -> resolves true (OK) / false (Cancel)
+     appPrompt(msg, value)  -> resolves the string, or null on Cancel
+   ================================================================ */
+let dlgResolve = null;
+
+function showDialog(message, { input = null, cancel = true, okText = "OK" } = {}){
+  return new Promise(resolve => {
+    dlgResolve = resolve;
+    $("dlgMsg").textContent = message;
+    const inp = $("dlgInput");
+    if(input === null){
+      inp.style.display = "none";
+    } else {
+      inp.style.display = "block";
+      inp.value = input;
+    }
+    $("dlgCancel").style.display = cancel ? "" : "none";
+    $("dlgOk").textContent = okText;
+    $("dlgOverlay").classList.add("on");
+    if(input !== null) setTimeout(() => { inp.focus(); inp.select(); }, 60);
+  });
+}
+
+function closeDialog(ok){
+  $("dlgOverlay").classList.remove("on");
+  if(!dlgResolve) return;
+  const hadInput = $("dlgInput").style.display !== "none";
+  dlgResolve(ok ? (hadInput ? $("dlgInput").value : true)
+               : (hadInput ? null : false));
+  dlgResolve = null;
+}
+
+const appAlert   = msg => showDialog(msg, { cancel:false });
+const appConfirm = msg => showDialog(msg);
+const appPrompt  = (msg, value = "") => showDialog(msg, { input: value });
 
 /* ================================================================
    DAY STATS
@@ -839,17 +917,19 @@ function renderHabits(){
         <button class="ibtn" data-act="ren"  title="Rename">✎</button>
         <button class="ibtn" data-act="del"  title="Delete">✕</button>`;
       li.querySelectorAll(".ibtn").forEach(btn => {
-        btn.addEventListener("click", e => {
+        btn.addEventListener("click", async e => {
           e.stopPropagation();
           const act = btn.dataset.act;
           if(act === "up")   { [state.habits[i-1], state.habits[i]] = [state.habits[i], state.habits[i-1]]; }
           if(act === "down") { [state.habits[i+1], state.habits[i]] = [state.habits[i], state.habits[i+1]]; }
           if(act === "ren")  {
-            const name = prompt("Rename habit:", h.name);
-            if(name && name.trim()) h.name = name.trim().slice(0, 60);
+            const name = await appPrompt("Rename habit:", h.name);
+            if(!name || !name.trim()) return;
+            h.name = name.trim().slice(0, 60);
           }
           if(act === "del")  {
-            if(!confirm(`Delete habit "${h.name}"? Its history is kept.`)) return;
+            const ok = await appConfirm(`Delete habit "${h.name}"? Its history is kept.`);
+            if(!ok) return;
             state.archived[h.id] = h.name;              // remember name for history view
             state.habits = state.habits.filter(x => x.id !== h.id);
           }
@@ -1209,20 +1289,21 @@ function exportData(){
 
 function importData(file){
   const reader = new FileReader();
-  reader.onload = () => {
+  reader.onload = async () => {
     try{
       const data = JSON.parse(reader.result);
       // minimal sanity check that this is one of our backups
       if(!data || typeof data !== "object" || !Array.isArray(data.habits)){
         throw new Error("Not a valid habit-tracker backup file.");
       }
-      if(!confirm("Importing replaces ALL current data with the backup. Continue?")) return;
+      const ok = await appConfirm("Importing replaces ALL current data with the backup. Continue?");
+      if(!ok) return;
       state = Object.assign(defaultState(), data);
       save();
       renderAll();
-      alert("Backup imported ✓");
+      appAlert("Backup imported ✓");
     }catch(e){
-      alert("Import failed: " + e.message);
+      appAlert("Import failed: " + e.message);
     }
   };
   reader.readAsText(file);
@@ -1323,6 +1404,14 @@ document.querySelectorAll(".tab").forEach(t =>
 $("dayClose").addEventListener("click", () => $("dayOverlay").classList.remove("on"));
 $("dayOverlay").addEventListener("click", e => {
   if(e.target === $("dayOverlay")) $("dayOverlay").classList.remove("on");
+});
+
+// In-app dialog buttons
+$("dlgOk").addEventListener("click", () => closeDialog(true));
+$("dlgCancel").addEventListener("click", () => closeDialog(false));
+$("dlgInput").addEventListener("keydown", e => { if(e.key === "Enter") closeDialog(true); });
+$("dlgOverlay").addEventListener("click", e => {
+  if(e.target === $("dlgOverlay")) closeDialog(false);   // tap backdrop = cancel
 });
 
 // Backup
