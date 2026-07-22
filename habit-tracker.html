@@ -436,6 +436,10 @@ input, textarea, [contenteditable]{
 .dialog input:focus{ border-color:var(--line-hi); box-shadow:var(--glow-hi); }
 .dlg-btns{ display:flex; gap:10px; }
 .dlg-btns .btn{ flex:1; }
+
+/* storage-blocked warning banner */
+.storage-warn{ border-color:var(--line-hi); color:var(--muted); }
+.storage-warn strong{ color:var(--txt); }
 </style>
 </head>
 <body>
@@ -444,6 +448,15 @@ input, textarea, [contenteditable]{
 <div class="bg-light"></div>
 
 <div class="wrap">
+
+  <!-- Warning shown ONLY when the current browser blocks saving
+       (e.g. sandboxed preview frames). Hidden in normal browsers. -->
+  <div class="card storage-warn" id="storageWarn" style="display:none">
+    <p class="small"><strong>This viewer can't save between visits.</strong>
+    Your entries work now but will be gone next time. Use “Export backup”
+    before closing, or open the app in Safari at its own web address for
+    automatic permanent saving.</p>
+  </div>
 
   <!-- ==================== VERSE OF THE DAY ==================== -->
   <div class="card verse-card">
@@ -763,6 +776,15 @@ function save(){
     console.error("Saving failed (storage may be full):", e);
   }
 }
+
+/* Detect whether this browser actually allows localStorage. Some
+   embedded viewers (sandboxed frames) block it entirely — the app
+   still runs, but nothing would survive a reload, so we warn. */
+let storageOK = true;
+try{
+  localStorage.setItem("__bw_probe__", "1");
+  localStorage.removeItem("__bw_probe__");
+}catch(e){ storageOK = false; }
 
 let state = loadState();
 let currentDay = todayKey();      // watched for midnight rollover
@@ -1276,11 +1298,27 @@ function openDay(dayKey){
 /* ================================================================
    EXPORT / IMPORT — JSON backup of everything
    ================================================================ */
-function exportData(){
-  const blob = new Blob([JSON.stringify(state, null, 2)], { type:"application/json" });
+async function exportData(){
+  const json = JSON.stringify(state, null, 2);
+  const name = "habit-tracker-backup-" + todayKey() + ".json";
+
+  // When hosted as a claude.ai artifact, plain downloads are blocked but
+  // the viewer provides its own save dialog — use it if present.
+  if(window.claude && window.claude.downloads){
+    try{
+      await window.claude.downloads.save({ filename: name, data: json });
+    }catch(e){
+      // "declined" just means the viewer said no — not an error worth showing
+      if(!e || e.code !== "declined") appAlert("Export failed: " + ((e && e.message) || e));
+    }
+    return;
+  }
+
+  // Normal browsers: standard file download
+  const blob = new Blob([json], { type:"application/json" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = "habit-tracker-backup-" + todayKey() + ".json";
+  a.download = name;
   document.body.appendChild(a);
   a.click();
   a.remove();
@@ -1431,6 +1469,7 @@ window.addEventListener("pagehide", () => saveJournal(true));   // flush on clos
 /* ================================================================
    INIT
    ================================================================ */
+if(!storageOK) $("storageWarn").style.display = "block";
 commitToday();     // snapshot today immediately so history is never blank
 renderAll();
 </script>
