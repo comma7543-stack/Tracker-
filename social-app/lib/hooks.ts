@@ -141,3 +141,31 @@ export function useUsernameCheck(u: string, unchangedFrom?: string) {
   if (!available) return { note: t('username.taken', { name: u }), color: c.danger, ok: false };
   return { note: t('username.available', { name: u }), color: c.fg, ok: true };
 }
+
+/**
+ * Times how long each list item stays on screen and reports it once it leaves,
+ * for ranking. Pass the result straight to a FlatList.
+ */
+export function useViewTracking(report: (id: string, ms: number) => void) {
+  const shown = useRef(new Map<string, number>());
+  const reportRef = useRef(report);
+  reportRef.current = report;
+  const onViewableItemsChanged = useRef(({ viewableItems }: { viewableItems: { key: string; isViewable: boolean }[] }) => {
+    const now = Date.now();
+    const visible = new Set(viewableItems.filter((v) => v.isViewable).map((v) => v.key));
+    for (const key of visible) if (!shown.current.has(key)) shown.current.set(key, now);
+    for (const [key, at] of shown.current) {
+      if (!visible.has(key)) {
+        shown.current.delete(key);
+        if (now - at >= 800) reportRef.current(key, now - at);
+      }
+    }
+  }).current;
+  // Whatever is on screen when the list goes away counts too.
+  useEffect(() => () => {
+    const now = Date.now();
+    for (const [key, at] of shown.current) if (now - at >= 800) reportRef.current(key, now - at);
+    shown.current.clear();
+  }, []);
+  return { onViewableItemsChanged, viewabilityConfig: { itemVisiblePercentThreshold: 60 } };
+}

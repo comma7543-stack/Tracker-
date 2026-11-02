@@ -3,7 +3,8 @@ import { router } from 'expo-router';
 import { Award, Lock, Menu, MoreHorizontal, Snowflake, Target } from 'lucide-react-native';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Pressable, ScrollView, Share, View } from 'react-native';
+import { Alert, Pressable, ScrollView, View } from 'react-native';
+import { shareProfile } from '../lib/share';
 import { block, certificatesOf, follow, followStatus, getProfile, getStreak, profileGoal, profileStats, savedPosts, startConversation, unfollow, userPosts } from '../lib/api';
 import { useStartCompose } from '../lib/hooks';
 import { myId, toast, useSettings, useUI } from '../lib/store';
@@ -150,7 +151,7 @@ export function ProfileView({ userId }: { userId: string }) {
           {isMe ? (
             <>
               <Button kind="secondary" label={t('profile.edit')} onPress={() => router.push('/edit-profile')} style={{ flex: 1 }} />
-              <Button kind="secondary" label={t('profile.share')} onPress={() => Share.share({ message: `appname://user/${userId}` })} style={{ paddingHorizontal: 18 }} />
+              <Button kind="secondary" label={t('profile.share')} onPress={() => shareProfile(userId, profile?.username ?? '')} style={{ paddingHorizontal: 18 }} />
             </>
           ) : (
             <>

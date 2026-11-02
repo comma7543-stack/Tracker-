@@ -96,6 +96,24 @@ Each person gets 5 posts and scrolls combined per day, resetting at their midnig
 Stories have no limit and no AI check. They only go through the word filter and a file type check, so they cost nothing. Read "Before launch" in `PROGRESS.md` first.
 - `MODERATION_PROVIDER` picks a provider added in `supabase/functions/_shared/providers.ts`.
 
+## 5b. Push notifications, admins and the video worker
+
+**Push notifications.** Make up another long random password, then:
+
+```bash
+npx supabase secrets set PUSH_SECRET=YOUR-OTHER-RANDOM-PASSWORD
+```
+
+```bash
+npx supabase functions deploy send-push
+```
+
+Open `supabase/sql/setup_services.sql`, fill in your values, and run parts 1 and 2 in the SQL editor. Phones need an EAS project for push: run `eas init` once **(parent)**. Android can't receive push in Expo Go, only in a real build (step 7). iPhones in Expo Go can.
+
+**Admins.** Whoever reviews reports should be an admin. Run part 4 of `setup_services.sql` with their username. They then get a push for every report, review request and safety case, and a "Review queue" in Settings > Account. A reported story says so first, because stories go live without a check.
+
+**The video worker.** Optional at first, required before launch: it strips GPS location from videos and stops a modified app from sending clean frames with a bad video. See `worker/README.md`. Until it runs and is switched on, videos work the old way.
+
 ## 6. Run it
 
 ```bash
@@ -212,9 +230,34 @@ select id, author_id, media_path, moderation from posts where status = 'checking
 select * from safety_escalations where handled_at is null;
 ```
 
+**Reading the numbers.** The app records its own usage in your database, not with a third party. No content, names or locations, only what happened and when. In the SQL editor:
+
+```sql
+select * from admin_daily_active;
+```
+
+```sql
+select * from admin_retention;
+```
+
+```sql
+select * from admin_funnel;
+```
+
+```sql
+select * from admin_top_errors;
+```
+
+`admin_retention` is the one that matters most: of the people who signed up each week, how many came back after 1, 7 and 30 days. `admin_funnel` shows where new people stop: supporting someone, posting once, posting on a second day, reaching a 7-day streak. `admin_top_errors` lists crashes, with the screen they happened on.
+
+**Rate limits.** Comments, messages, likes, supports, saves, blocks and reports are limited per person per minute and per day, and sign-in and password resets per username and per address every 15 minutes. Over a limit, the action fails and the app shows its usual error. The limits are set well above normal use. To change a number, edit `private.limits_for` in a new migration.
+
 ## Changing things
 
 - **App name:** `APP_NAME` in `lib/config.ts`, and `name` in `app.json`.
 - **Terms and privacy links, support email:** `lib/config.ts`.
 - **New table:** Supabase grants every role full access to new tables by default. Every new migration needs `enable row level security` and an explicit `revoke` plus `grant`, as in `20260101000003_rls.sql`.
 - **Profanity filter:** `lib/profanity.ts` and `supabase/functions/_shared/profanity.ts` must stay identical. A test checks this.
+- **Share links:** until `SHARE_URL_BASE` in `lib/config.ts` is a real website, shared links use `appname://`, which only opens for people who already have the app. Once there's a domain, it also needs universal links (iOS `associatedDomains`, Android intent filters in `app.json`) and a small page at that address that sends people without the app to the store. `STORE_URL` goes in invites once the app is published.
+- **Ranking:** the score is in `private.rank_score` (likes, comments counted double, watch time, all divided by age) and `private.rank_boost` (2x for picked topics, 0.2x for already seen). Teens get no ranking: see `PROGRESS.md`.
+

@@ -1,5 +1,6 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Check, Snowflake } from 'lucide-react-native';
+import { router } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, View } from 'react-native';
@@ -177,6 +178,7 @@ export function StreakSheet({ onClose }: { onClose: () => void }) {
           <T s={14} w="600" c={FIRE.frozen.outer}>{t('streak.freezes', { count: left })}</T>
         </View>
         {!doneToday ? <Button label={t('streak.postToday')} onPress={() => compose('post')} /> : null}
+        {count > 0 ? <Button kind="secondary" label={t('growth.shareStreak')} onPress={() => { onClose(); router.push('/share-streak'); }} /> : null}
         {options.length > 0 ? <ReasonDay options={options} today={today} /> : null}
       </ScrollView>
     </SheetFrame>

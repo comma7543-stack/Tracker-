@@ -55,3 +55,25 @@ export type ReportTarget = { type: 'user' | 'post' | 'comment' | 'message' | 'pr
 export type PostingLimits = { posts_used: number; posts_limit: number };
 
 export type ModerationOutcome = { status: PostStatus; strikes?: number | null; suspended?: boolean; goal_finished?: boolean; certificate_id?: string | null; goal_reason?: string | null };
+
+export type SuggestedPerson = {
+  id: string; username: string; full_name: string; avatar_url: string | null; streak: number | null; top_topic: string | null; mutuals: number;
+};
+
+export type TrendingTag = { tag: string; posts: number };
+
+export type AdminReport = {
+  report_id: string; created_at: string; reason: string; target_type: ReportTarget['type']; target_id: string | null;
+  reporter: string; subject_id: string | null; subject: string | null; subject_is_minor: boolean | null;
+  post_id: string | null; kind: PostKind | null; media_path: string | null; media_type: MediaType | null; caption: string | null;
+  body: string | null; photo_path: string | null; open_on_target: number;
+};
+
+export type AdminAppeal = {
+  appeal_id: string; created_at: string; post_id: string; username: string; kind: PostKind; media_path: string; media_type: MediaType;
+  caption: string; subtag: string; status: PostStatus; verdict: { on_topic: boolean | null; violation: string | null; reason: string | null };
+};
+
+export type AdminCounts = { open_reports: number; open_appeals: number; open_safety: number; stuck_posts: number };
+
+export type AdminMetrics = { active_today: number; active_7d: number; signups_7d: number; posts_7d: number; errors_24h: number };

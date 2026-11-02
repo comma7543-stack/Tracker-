@@ -13,6 +13,7 @@ import { boxGlow, flamePalette, useTheme } from '../lib/theme';
 import { StreakFlame } from './StreakFlame';
 import type { PostCard as Post } from '../lib/types';
 import { MediaThumb, VideoPlayerView } from './Media';
+import { RichText } from './RichText';
 import { Avatar, Card, IconButton, T } from './ui';
 
 /** Liked state and count, updated right away and rolled back if the save fails. */
@@ -122,7 +123,7 @@ export function PostCard({ post, playVideo = false }: { post: Post; playVideo?: 
         <IconButton label={saved ? t('post.removeSaved') : t('post.save')} onPress={toggleSave}><Bookmark size={22} color={c.fg} fill={saved ? c.fg : 'none'} strokeWidth={1.8} /></IconButton>
       </View>
 
-      {post.caption ? <T s={15} style={{ marginHorizontal: 16, lineHeight: 21 }}>{post.caption}</T> : null}
+      {post.caption ? <RichText text={post.caption} style={{ marginHorizontal: 16, lineHeight: 21 }} /> : null}
     </Card>
   );
 }

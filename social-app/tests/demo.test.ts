@@ -2,7 +2,9 @@
 // how it answers shows up here rather than as an empty screen on a phone.
 import { createClient } from '@supabase/supabase-js';
 import { describe, expect, it } from 'vitest';
-import { demoFetch, demoMediaUrl } from '../lib/demo';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { demoFetch, demoMediaUrl, demoRpcNames } from '../lib/demo';
 
 const sb = createClient('https://demo.invalid', 'x', {
   auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
@@ -164,5 +166,29 @@ describe('demo backend', () => {
     expect(demoMediaUrl('p3.mp4.frames/0.jpg')).toContain('picsum.photos');
     expect(demoMediaUrl('file:///a.jpg')).toBe('file:///a.jpg');
     expect(demoMediaUrl('file:///a.mov.frames/0.jpg')).toContain('picsum.photos');
+  });
+
+  it('answers every RPC the app calls', () => {
+    const api = readFileSync(join(__dirname, '..', 'lib', 'api.ts'), 'utf8');
+    const called = [...api.matchAll(/rpc\('(\w+)'/g)].map((m) => m[1]);
+    const missing = called.filter((name) => !demoRpcNames().includes(name));
+    expect(missing).toEqual([]);
+  });
+
+  it('serves For you, suggestions and tags', async () => {
+    const forYou = (await sb.rpc('for_you_feed', { p_offset: 0, p_limit: 20 })).data as { username: string }[];
+    expect(forYou.map((p) => p.username)).toContain('kai.codes');
+    const people = (await sb.rpc('suggested_people', { p_limit: 20 })).data as { username: string }[];
+    expect(people.map((p) => p.username)).toEqual(expect.arrayContaining(['kai.codes', 'ari.writes']));
+    const tags = (await sb.rpc('trending_tags', { p_limit: 12 })).data as { tag: string }[];
+    expect(tags[0].tag).toBe('buildinpublic');
+    expect((await sb.rpc('tag_posts', { p_tag: 'buildinpublic', p_offset: 0, p_limit: 40 })).data).toHaveLength(2);
+  });
+
+  it('lets the demo account work the review queue', async () => {
+    const queue = (await sb.rpc('admin_reports')).data as { report_id: string }[];
+    expect(queue.length).toBeGreaterThan(0);
+    await sb.rpc('admin_resolve_report', { p_report: queue[0].report_id, p_action: 'dismiss' });
+    expect(((await sb.rpc('admin_reports')).data as unknown[]).length).toBe(queue.length - 1);
   });
 });

@@ -31,8 +31,8 @@ export default function Login() {
       } else {
         await logInWithUsername(value, pw);
       }
-    } catch {
-      setError(t('auth.loginFailed'));
+    } catch (e) {
+      setError(e instanceof Error && e.message === 'too_many_tries' ? t('auth.tooManyTries') : t('auth.loginFailed'));
       setBusy(false);
     }
   };

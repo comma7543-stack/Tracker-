@@ -5,7 +5,9 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Animated, Pressable, ScrollView, TextInput, View } from 'react-native';
 import { Avatar, BackHeader, Button, ErrorText, FAST_SCROLL, Input, Screen, Switch, T } from '../../components/ui';
-import { accountStatus, blockedList, deleteAccount, unblock } from '../../lib/api';
+import { accountStatus, amIAdmin, blockedList, deleteAccount, unblock } from '../../lib/api';
+import { forgetPushToken, pushPermission, registerForPush } from '../../lib/push';
+import { shareInvite } from '../../lib/share';
 import { APP_VERSION, APP_NAME, PRIVACY_URL, SUPPORT_EMAIL, TERMS_URL } from '../../lib/config';
 import { useMyStreak, usePasswordForm, useReduceMotion, useUpdateSettings } from '../../lib/hooks';
 import { applyLanguage, LANGUAGES } from '../../lib/i18n';
@@ -158,7 +160,15 @@ export default function Settings() {
   const freezes = streak?.freezes_available ?? 0;
   const strikes = status?.strikes ?? 0;
 
+  const { data: isAdmin = false } = useQuery({ queryKey: ['am-admin'], queryFn: amIAdmin });
+  const { data: push, refetch: recheckPush } = useQuery({ queryKey: ['push-permission'], queryFn: pushPermission });
+  const enablePush = async () => {
+    if (!(await registerForPush(true))) toast(t('push.blocked'));
+    recheckPush();
+  };
+
   const logOut = async () => {
+    await forgetPushToken();
     await supabase.auth.signOut();
     qc.clear();
   };
@@ -193,6 +203,7 @@ export default function Settings() {
         toggle('nLikes', t('settings.likesComments')),
         toggle('nFollows', t('settings.newFollowers')),
         toggle('nDms', t('settings.messages')),
+        ...(push && push !== 'granted' ? [{ kind: 'action' as const, label: t('push.enable'), sub: t('push.enableSub'), act: enablePush }] : []),
       ] },
       { title: t('settings.privacy'), items: [
         toggle('isPrivate', t('settings.private'), t('settings.privateSub')),
@@ -213,6 +224,8 @@ export default function Settings() {
         { kind: 'link', label: t('settings.status'), to: 'status', value: status?.suspended ? t('settings.suspended') : strikes ? t('settings.strikesOf', { n: strikes }) : t('settings.goodStanding') },
         { kind: 'action', label: t('profile.edit'), act: () => router.push('/edit-profile') },
         { kind: 'link', label: t('settings.changePassword'), to: 'password' },
+        { kind: 'action', label: t('growth.invite'), sub: t('growth.inviteSub'), act: shareInvite },
+        ...(isAdmin ? [{ kind: 'action' as const, label: t('admin.title'), sub: t('admin.entrySub'), act: () => router.push('/admin') }] : []),
         { kind: 'link', label: t('settings.help'), to: 'help' },
         { kind: 'action', label: t('settings.logOut'), act: logOut },
         { kind: 'link', label: t('settings.delete'), to: 'delete' },

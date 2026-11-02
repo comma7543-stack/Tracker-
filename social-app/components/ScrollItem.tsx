@@ -7,6 +7,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { follow, followStatus, unfollow } from '../lib/api';
 import { myId, toast, useUI } from '../lib/store';
 import { DARK, textGlow, useTheme } from '../lib/theme';
+import { RichText } from './RichText';
 import type { PostCard } from '../lib/types';
 import { VideoPlayerView } from './Media';
 import { useLike } from './PostCard';
@@ -83,7 +84,7 @@ export function ScrollItem({ post, height, active, muted, autoplay, onToggleMute
             </Pressable>
           ) : null}
         </View>
-        {post.caption ? <T s={14} c={DARK.fg} style={{ lineHeight: 20 }}>{post.caption}</T> : null}
+        {post.caption ? <RichText text={post.caption} s={14} c={DARK.fg} style={{ lineHeight: 20 }} /> : null}
         <View style={{ alignSelf: 'flex-start', paddingVertical: 3, paddingHorizontal: 10, borderRadius: 999, backgroundColor: DARK.chip }}>
           <T s={12} w="600" c={DARK.fg}>{t(`subtag.${post.subtag}`)}</T>
         </View>

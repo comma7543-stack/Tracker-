@@ -18,6 +18,7 @@
     "6 PM": "오후 6시", "9 PM": "오후 9시", "11 PM": "오후 11시", "15 min": "15분", "30 min": "30분", "1 hour": "1시간", "2 hours": "2시간"
   },
   "auth": {
+    "tooManyTries": "시도 횟수가 너무 많아요. 15분 뒤에 다시 시도하세요.",
     "tagline": "해낸 일을 올리세요.", "getStarted": "시작하기", "apple": "Apple로 계속하기", "google": "Google로 계속하기",
     "haveAccount": "이미 계정이 있나요?", "logIn": "로그인", "haveAccountLogIn": "계정이 있나요? 로그인", "newHere": "처음이신가요? 계정 만들기",
     "socialFailed": "로그인하지 못했어요. 다시 시도해 주세요.",
@@ -206,6 +207,7 @@
     "recommended": "추천", "resultsFor": "\"{{q}}\" 검색 결과", "empty": "일치하는 결과가 없어요. 다른 단어를 써 보세요."
   },
   "notifications": {
+    "mentionedInPost": "님이 인증 게시물에서 나를 언급했어요.",
     "title": "알림", "empty": "아직 알림이 없어요.", "today": "오늘", "week": "이번 주", "earlier": "이전", "liked": "님이 내 인증을 좋아해요.", "commented": "님의 댓글: {{text}}", "mentioned": "님이 댓글에서 나를 언급했어요: {{text}}",
     "followed": "님이 나를 서포트하기 시작했어요.", "requested": "님이 서포트를 요청했어요.", "followBack": "맞서포트", "accept": "수락", "decline": "거절"
   },
@@ -240,5 +242,11 @@
     "canPost": "올릴 수 있는 것", "canPostNote": "모든 게시물과 스크롤에는 이 주제 중 하나가 필요하고, 실제로 그 내용을 보여줘야 해요. 스토리는 미리 검사하지 않지만 아래 규칙은 똑같이 적용되고 누구나 신고할 수 있어요.", "fitness": "헬스, 러닝, 스포츠, 요가", "learning": "독서, 공부, 외국어, 글쓰기", "work": "코딩, Claude 같은 AI 활용, 디자인, 무언가 만들기", "money": "트레이딩, 투자, 요리, 건강한 식사",
     "never": "절대 안 되는 것", "sexual": "노출이나 성적인 콘텐츠", "sexualSub": "선정적이거나 성적인 포즈, 옷차림, 설명 포함", "illegal": "불법적인 모든 것", "illegalSub": "마약, 무기, 절도, 범죄 장면", "violence": "폭력이나 자해", "violenceSub": "싸움, 부상, 자해를 부추기는 모든 것", "hate": "혐오와 괴롭힘", "hateSub": "누군가의 정체성을 공격하거나 사람을 괴롭히는 행위", "scams": "사기와 가짜 인증", "scamsSub": "수익 보장 트레이딩, 유료 홍보, 조작된 결과", "alcohol": "술, 전자담배, 도박",
     "happens": "어떻게 되나요", "motivation": "동기부여 명언, 꾸준히 하기", "offTopic": "주제에 맞지 않는 게시물", "offTopicSub": "밈과 뜬금없는 농담도 포함돼요. 삭제돼요. 경고는 없어요.", "breaks": "규칙 위반", "breaksSub": "경고 1회. 90일 안에 경고 3회면 7일 동안 게시가 중단돼요.", "zero": "무관용", "zeroSub": "미성년자와 관련된 성적인 콘텐츠나 심각한 불법 콘텐츠는 계정이 바로 삭제되고 당국에 신고돼요.", "reviewNote": "실수로 삭제됐다고 생각하나요? 검토를 요청하면 24시간 안에 담당자가 확인해요."
-  }
+  },
+  "discover": {"following": "응원 중", "forYou": "추천", "suggested": "응원할 만한 사람", "seeAll": "모두 보기", "mutuals_other": "내가 응원하는 {{count}}명이 응원해요", "active": "이번 주에 인증 중", "supportName": "{{name}}님 응원하기", "noneYet": "아직 추천할 사람이 없어요. 사람들이 더 올리면 나타나요.", "title": "둘러보기", "yourTopics": "내 주제", "yourTopicsBody": "추천과 스크롤에 이 주제가 더 많이 나와요. 아무것도 고르지 않으면 전부 보여요.", "interestsTitle": "어떤 일을 하나요?", "interestsBody": "먼저 보고 싶은 주제를 고르세요. 둘러보기에서 언제든 바꿀 수 있어요.", "skip": "나중에 하기", "peopleTitle": "응원할 사람", "peopleBody": "누군가를 응원하면 그 사람의 인증이 내 피드에 나와요.", "forYouEmpty": "아직 아무것도 없어요. 사람들이 더 올리면 다시 확인하세요.", "findPeople": "응원할 사람 찾기"},
+  "push": {"promptTitle": "누가 응원하는지 바로 알기", "promptBody": "좋아요, 댓글, 새 서포터, 메시지 알림을 받아요. 어떤 알림을 받을지는 설정에서 고를 수 있어요.", "turnOn": "켜기", "notNow": "나중에", "enable": "푸시 알림 켜기", "enableSub": "이 폰에서 이 앱의 알림이 꺼져 있어요", "blocked": "알림이 차단되어 있어요. 폰 설정에서 이 앱의 알림을 켜 주세요."},
+  "growth": {"invite": "친구 초대", "inviteSub": "앱 링크 공유하기", "inviteMessage": "{{app}}에서 매일 내 노력을 인증하고 있어요. 같이 해요: {{link}}", "postMessage": "{{app}}의 노력 인증: {{link}}", "profileMessage": "{{app}}에서 {{name}}님을 응원해 주세요: {{link}}", "shareOut": "다른 앱으로 공유", "shareStreak": "내 스트릭 공유", "shareCard": "이미지 공유", "shareUnavailable": "이 기기에서는 공유할 수 없어요.", "cardNote": "다른 앱의 스토리에 올려 보세요.", "cardLabel": "{{name}}님의 {{count}}일 스트릭", "best_other": "최고 기록: {{count}}일"},
+  "tags": {"trending": "이번 주 인기", "count_other": "게시물 {{count}}개", "empty": "아직 이 태그의 게시물이 없어요.", "noUser": "{{name}}(이)라는 사람이 없어요."},
+  "errors": {"crashTitle": "문제가 생겼어요", "crashBody": "이 화면에 문제가 생겼어요. 고칠 수 있도록 자동으로 보고됐어요.", "retry": "다시 시도"},
+  "admin": {"title": "검토 대기열", "entrySub": "신고와 검토 요청", "notAllowed": "관리자만 볼 수 있어요.", "reports": "신고", "appeals": "검토 요청", "stuck": "멈춘 게시물", "activeToday": "오늘 활동", "active7d": "7일 활동", "signups7d": "7일 가입", "errors24h": "24시간 오류", "refresh": "새로고침", "empty": "대기 중인 항목이 없어요.", "safetyTitle_other": "오늘 어른이 처리해야 할 안전 사례 {{count}}건", "safetyBody": "안전 사례는 앱에 절대 표시되지 않아요. Supabase SQL 편집기에서 처리하세요. README의 Safety cases를 보세요.", "target_post": "게시물", "target_story": "스토리", "target_comment": "댓글", "target_message": "메시지", "target_user": "계정", "target_problem": "문제 신고", "reportsCount_other": "신고 {{count}}건", "reportedBy": "신고자: {{name}}", "about": "대상: {{name}}", "minor": "18세 미만", "dismiss": "무시", "remove": "삭제", "suspend": "7일 정지", "markRead": "완료", "removeTitle": "삭제할까요?", "removeBody": "모두에게서 사라져요. {{name}}님은 누가 신고했는지 알 수 없어요.", "suspendTitle": "삭제하고 게시를 정지할까요?", "suspendBody": "신고된 내용이 삭제되고 {{name}}님은 7일 동안 게시할 수 없어요.", "verdict": "검사 결과: {{result}}.", "brokeRule": "규칙 위반 ({{rule}})", "offTopic": "주제와 무관", "uphold": "삭제 유지", "overturn": "다시 올리기"}
 }

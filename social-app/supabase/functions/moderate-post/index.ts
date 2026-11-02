@@ -14,7 +14,7 @@ const dailyChecks = () => {
   const n = Number(Deno.env.get('MODERATION_DAILY_CHECKS'));
   return Deno.env.has('MODERATION_DAILY_CHECKS') && Number.isInteger(n) && n >= 0 ? n : DEFAULT_DAILY_CHECKS;
 };
-const POST_COLS = 'id, author_id, kind, media_path, media_type, caption, topic, subtag, status, moderation, goal_proof, proof_goal';
+const POST_COLS = 'id, author_id, kind, media_path, media_type, caption, topic, subtag, status, moderation, goal_proof, proof_goal, media_ready';
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
@@ -67,6 +67,8 @@ async function escalate(post: { id: string; author_id: string; media_path: strin
 
 // deno-lint-ignore no-explicit-any
 async function check(post: any) {
+  // The video worker hasn't re-encoded this yet. It calls back here when it has.
+  if (post.media_ready === false) return { status: 'checking', waiting: 'processing' };
   try {
     const claim = async () => {
       const { data, error } = await admin.rpc('claim_moderation_check', { p_post: post.id, p_daily_limit: dailyChecks() });
@@ -94,6 +96,16 @@ async function check(post: any) {
 
 Deno.serve(async (req) => {
   const body = await req.json().catch(() => ({}));
+
+  // The video worker, right after it finishes a video. Same secret as the sweep.
+  if (body.worker) {
+    const secret = Deno.env.get('MODERATION_SWEEP_SECRET');
+    if (!secret || req.headers.get('x-sweep-secret') !== secret) return json({ error: 'forbidden' }, 403);
+    const { data: post } = await admin.from('posts').select(POST_COLS).eq('id', body.post_id).maybeSingle();
+    if (!post) return json({ error: 'not_found' }, 404);
+    if (post.status !== 'checking') return json({ status: post.status });
+    return json(await check(post));
+  }
 
   if (body.sweep) {
     const secret = Deno.env.get('MODERATION_SWEEP_SECRET');

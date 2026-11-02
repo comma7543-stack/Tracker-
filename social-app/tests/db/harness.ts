@@ -2,6 +2,7 @@
 // triggers are tested without Docker. Only auth and storage are stubbed.
 import { PGlite } from '@electric-sql/pglite';
 import { citext } from '@electric-sql/pglite/contrib/citext';
+import { pg_trgm } from '@electric-sql/pglite/contrib/pg_trgm';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -47,7 +48,7 @@ const SUPABASE_STUB = `
 export type Db = PGlite;
 
 export async function freshDb(): Promise<Db> {
-  const db = await PGlite.create({ extensions: { citext } });
+  const db = await PGlite.create({ extensions: { citext, pg_trgm } });
   await db.exec(SUPABASE_STUB);
   const dir = join(ROOT, 'migrations');
   for (const file of readdirSync(dir).filter((f) => f.endsWith('.sql')).sort()) {

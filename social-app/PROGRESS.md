@@ -138,6 +138,51 @@ Things the brief left open, or where it conflicted with itself or the prototype.
 - Only `en` and `ko` are translated; the Korean is mine and should be read by a native speaker. Arabic switches the layout to RTL after a restart, untested.
 - No app icon, logo or real legal text (known gaps in the brief).
 
+## Systems added (November 2026)
+
+Built after the first version, to cover what most social apps have and this one lacked. Everything below is in code and tested, with the same limits as above: **never run on a phone, against a real Supabase project, or with real Expo push.**
+
+| System | What it does | Tested by |
+|---|---|---|
+| For you feed | Ranked posts from people you don't support yet. Home has a Supporting / For you switch, and starts on For you when you support nobody | `tests/db/discovery.test.ts` |
+| Ranking | Likes, comments (double) and watch time, divided by age. 2x for picked topics, 0.2x for already seen. Also used by Scrolls and Explore | same |
+| Suggested people | Shared supporters first, then active people in your topics. On Home, Search, Discover and during sign-up | same |
+| Topics at sign-up | Two new steps after Terms: pick topics, then support a few people. Both can be skipped | demo only |
+| Push notifications | Likes, comments, mentions, supporters and messages, in English or Korean, following each person's settings. Tapping one opens the right screen | `tests/db/systems.test.ts`, `tests/push.test.ts` |
+| Admin queue and alerts | Settings > Account > Review queue for admins: reports with their content, review requests, counts. Admins get a push for each report, review and safety case | `tests/db/systems.test.ts` |
+| Analytics and crash reports | Stored in your own database. Daily actives, retention, sign-up funnel, top crashes, as SQL views. A crashed screen shows a retry screen and is reported | same |
+| Sharing | Share posts and profiles to other apps, invite friends, a streak card image for other apps' stories | not testable here |
+| Hashtags and mentions | `#tags` and `@names` in captions and comments are tappable. Trending tags in Search, a page per tag. Mentions in captions notify once the post is live | `tests/db/systems.test.ts`, `tests/richtext.test.ts` |
+| Faster search | Trigram indexes; `%` and `_` in a search are plain characters | same |
+| Rate limits | Comments, messages, likes, supports, saves, blocks, reports, comment edits, sign-in, password reset | same |
+| Video worker | Re-encodes videos on a server with all metadata dropped, takes its own frames, then lets moderation run. Deletes expired story files | `tests/worker.test.ts` runs it on a real clip with GPS tags, which are gone afterwards |
+
+**Known gaps, updated.** Of the five "close before launch" items above:
+
+1. Video moderation can be fooled: **closed once the worker runs and `video_worker` is on.** Until then it's still open.
+2. Video location data: **same: closed once the worker is on.**
+3. Profanity checked in the app only: **still open.**
+4. No rate limits: **closed**, including sign-in by username.
+5. One person with many accounts can use up the daily checks: **still open.** Rate limits slow a single account, not many.
+
+Also closed: push notifications (the Messages toggle now works), expired story files (the worker deletes them), the admin view (an in-app queue, plus the SQL editor for safety cases).
+
+**New assumptions**
+
+- Teens get no engagement ranking anywhere: For you, Scrolls and Explore are newest first for 13-17 year olds, narrowed only by the topics they picked. California's SB 976 and similar laws restrict feeds ranked from data about minors without parental consent. This is my reading, not legal advice: ask the lawyer.
+- Trending tags count only public adult accounts, so a tag can't lead adults to a teen.
+- Suggested people for teens can include adults; teens are never suggested to adults they don't support. A parent may want teens shown only other teens.
+- For you leaves out people you already support, and posts older than 30 days.
+- Watch time is recorded for a post on screen for at least 0.8 seconds, keeping the longest view per person. It's used for ranking only.
+- Analytics never stores content, names, IPs or device ids, and is first-party. It still has to be in the privacy policy.
+- Push text is built in the database in English or Korean; other languages get English. A message push shows the first 100 characters on the lock screen.
+- Admin "Pause 7 days" sets `suspended_until`, separate from strikes. Removing a reported message replaces its text with "[removed]".
+- Streak reminders already asked for notification permission at launch, so the in-context prompt on Home only shows if they didn't.
+- Shared links use `appname://` until there's a website. People without the app can't open them.
+- `@` inside an email address in a caption (`me@gmail.com`) becomes a mention link to a profile that doesn't exist. Harmless, and left as is.
+
+**Still not built:** carousels (several photos per post), a web version of shared posts, account verification, blocking sign-ups from one person with many accounts, and server-side word checks for names, bios, comments and messages.
+
 ## Before launch: for a parent and a lawyer
 
 This isn't legal advice. These are the questions to take to someone qualified.

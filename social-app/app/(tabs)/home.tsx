@@ -1,15 +1,17 @@
 import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import { Bell, Check, MessageCircle, Play, Plus, Snowflake } from 'lucide-react-native';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Pressable, ScrollView, View } from 'react-native';
 import { MediaThumb } from '../../components/Media';
 import { PostCard } from '../../components/PostCard';
+import { SuggestedPeopleRow } from '../../components/SuggestedPeople';
 import { Avatar, Empty, FAST_SCROLL, IconButton, Screen, T } from '../../components/ui';
-import { homeFeed, inbox, scrollsFeed, storyRoll, unreadNotificationCount } from '../../lib/api';
+import { forYouFeed, homeFeed, inbox, recordView, scrollsRanked, storyRoll, unreadNotificationCount } from '../../lib/api';
 import { APP_NAME } from '../../lib/config';
-import { useMyStreak, useNow, useStartCompose } from '../../lib/hooks';
+import { useMyStreak, useNow, useStartCompose, useViewTracking } from '../../lib/hooks';
+import { pushPermission, registerForPush } from '../../lib/push';
 import { myId, toast, useSettings, useUI } from '../../lib/store';
 import { effectiveStreak, freezesLeft, isFrozen, localDate, timeLeftToday } from '../../lib/streak';
 import { supabase } from '../../lib/supabase';
@@ -136,7 +138,7 @@ function StoryRoll() {
 function ScrollsRow() {
   const c = useTheme();
   const { t } = useTranslation();
-  const { data = [] } = useQuery({ queryKey: ['scrolls-row'], queryFn: () => scrollsFeed() });
+  const { data = [] } = useQuery({ queryKey: ['scrolls-row'], queryFn: () => scrollsRanked() });
   if (data.length === 0) return null;
   return (
     <View style={{ borderTopWidth: 1, borderBottomWidth: 1, borderColor: c.line, paddingTop: 14, paddingBottom: 18, marginBottom: 14 }}>
@@ -160,6 +162,51 @@ function ScrollsRow() {
   );
 }
 
+/** Asks once, in context, instead of a cold permission prompt at launch. */
+function PushPrompt() {
+  const c = useTheme();
+  const { t } = useTranslation();
+  const { data: status, refetch } = useQuery({ queryKey: ['push-permission'], queryFn: pushPermission });
+  const [hidden, setHidden] = useState(false);
+  if (hidden || status !== 'undetermined') return null;
+  return (
+    <View style={{ marginHorizontal: 16, marginBottom: 12, padding: 14, borderRadius: 12, gap: 10, backgroundColor: c.surface, borderWidth: c.cardBorderWidth, borderColor: c.cardBorderColor }}>
+      <T s={14} w="600">{t('push.promptTitle')}</T>
+      <T s={13} c={c.muted} style={{ lineHeight: 18 }}>{t('push.promptBody')}</T>
+      <View style={{ flexDirection: 'row', gap: 8 }}>
+        <Pressable accessibilityRole="button" onPress={async () => { await registerForPush(true); refetch(); }} style={{ height: 36, paddingHorizontal: 16, borderRadius: 999, backgroundColor: c.accent, justifyContent: 'center' }}>
+          <T s={14} w="600" c={c.onAccent}>{t('push.turnOn')}</T>
+        </Pressable>
+        <Pressable accessibilityRole="button" onPress={() => setHidden(true)} style={{ height: 36, paddingHorizontal: 12, justifyContent: 'center' }}>
+          <T s={14} w="600" c={c.muted}>{t('push.notNow')}</T>
+        </Pressable>
+      </View>
+    </View>
+  );
+}
+
+type Tab = 'following' | 'forYou';
+
+function FeedToggle({ tab, onChange }: { tab: Tab; onChange: (t: Tab) => void }) {
+  const c = useTheme();
+  const { t } = useTranslation();
+  return (
+    <View accessibilityRole="tablist" style={{ flexDirection: 'row', marginHorizontal: 16, marginBottom: 12, padding: 3, borderRadius: 999, backgroundColor: c.surface2 }}>
+      {(['following', 'forYou'] as const).map((key) => (
+        <Pressable
+          key={key}
+          accessibilityRole="tab"
+          accessibilityState={{ selected: tab === key }}
+          onPress={() => onChange(key)}
+          style={{ flex: 1, height: 36, borderRadius: 999, alignItems: 'center', justifyContent: 'center', backgroundColor: tab === key ? c.bg : 'transparent' }}
+        >
+          <T s={14} w={tab === key ? '700' : '500'} c={tab === key ? c.fg : c.muted}>{t(`discover.${key}`)}</T>
+        </Pressable>
+      ))}
+    </View>
+  );
+}
+
 export default function Home() {
   const c = useTheme();
   const { t } = useTranslation();
@@ -173,7 +220,23 @@ export default function Home() {
     queryFn: ({ pageParam }) => homeFeed(pageParam),
     getNextPageParam: (last: Post[]) => (last.length === 20 ? last[last.length - 1].created_at : undefined),
   });
-  const posts = feed.data?.pages.flat() ?? [];
+  const following = feed.data?.pages.flat() ?? [];
+  const [tab, setTab] = useState<Tab>('following');
+  const [autoSwitched, setAutoSwitched] = useState(false);
+  const forYou = useInfiniteQuery({
+    queryKey: ['for-you'],
+    enabled: tab === 'forYou',
+    initialPageParam: 0,
+    queryFn: ({ pageParam }) => forYouFeed(pageParam),
+    getNextPageParam: (last: Post[], all: Post[][]) => (last.length === 20 ? all.flat().length : undefined),
+  });
+  // Someone new supports nobody yet: start them on For you instead of an empty screen.
+  useEffect(() => {
+    if (!autoSwitched && feed.isSuccess && following.length === 0) { setAutoSwitched(true); setTab('forYou'); }
+  }, [autoSwitched, feed.isSuccess, following.length]);
+  const active = tab === 'following' ? feed : forYou;
+  const posts = tab === 'following' ? following : Array.from(new Map((forYou.data?.pages.flat() ?? []).map((p) => [p.id, p])).values());
+  const views = useViewTracking(recordView);
   const { data: unreadNotifs = 0 } = useQuery({ queryKey: ['unread-notifications'], queryFn: unreadNotificationCount });
   const { data: threads = [] } = useQuery({ queryKey: ['inbox'], queryFn: inbox });
   const unreadDms = threads.filter((x) => x.unread > 0).length;
@@ -201,25 +264,29 @@ export default function Home() {
         {...FAST_SCROLL}
         data={posts}
         keyExtractor={(p) => p.id}
-        refreshing={feed.isRefetching}
+        {...views}
+        refreshing={active.isRefetching}
         onRefresh={() => qc.invalidateQueries()}
         onEndReachedThreshold={0.5}
-        onEndReached={() => { if (feed.hasNextPage && !feed.isFetchingNextPage) feed.fetchNextPage(); }}
-        ListHeaderComponent={<><StreakBand /><StoryRoll /></>}
-        ListEmptyComponent={feed.isLoading ? undefined : (
+        onEndReached={() => { if (active.hasNextPage && !active.isFetchingNextPage) active.fetchNextPage(); }}
+        ListHeaderComponent={<><StreakBand /><StoryRoll /><PushPrompt /><FeedToggle tab={tab} onChange={setTab} /></>}
+        ListEmptyComponent={active.isLoading ? undefined : (
           <>
-            <Empty text={t('home.emptyFeed')}>
+            <Empty text={tab === 'following' ? t('home.emptyFeed') : t('discover.forYouEmpty')}>
               <Pressable accessibilityRole="button" onPress={() => compose('post')} style={{ height: 44, paddingHorizontal: 20, borderRadius: 999, backgroundColor: c.accent, justifyContent: 'center' }}>
                 <T s={15} w="600" c={c.onAccent}>{t('streak.postToday')}</T>
               </Pressable>
             </Empty>
+            <SuggestedPeopleRow />
             <ScrollsRow />
           </>
         )}
         renderItem={({ item, index }) => (
           <>
+            {tab === 'forYou' && index === 0 ? <SuggestedPeopleRow /> : null}
             <PostCard post={item} />
             {index === Math.min(2, posts.length - 1) ? <ScrollsRow /> : null}
+            {tab === 'following' && index === Math.min(5, posts.length - 1) ? <SuggestedPeopleRow /> : null}
           </>
         )}
       />

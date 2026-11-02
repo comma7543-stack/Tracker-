@@ -14,3 +14,7 @@ verify_jwt = false
 # Also called by the retry job with a shared secret; it checks the caller itself.
 [functions.moderate-post]
 verify_jwt = false
+
+# Called by the database and the sweep job with a shared secret; it checks the caller itself.
+[functions.send-push]
+verify_jwt = false

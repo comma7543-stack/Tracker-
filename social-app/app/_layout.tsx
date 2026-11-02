@@ -1,16 +1,18 @@
 import '../lib/i18n';
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
 import * as Linking from 'expo-linking';
-import { router, Stack, useSegments } from 'expo-router';
+import { ErrorBoundaryProps, router, Stack, usePathname, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
-import { View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GlobalSheets, Toast } from '../components/Sheets';
 import { getSettings, syncTimezone } from '../lib/api';
 import { DEMO } from '../lib/config';
 import { useDailyLimit, useMe, useMyStreak } from '../lib/hooks';
-import { applyLanguage, deviceLanguage } from '../lib/i18n';
+import i18n, { applyLanguage, deviceLanguage } from '../lib/i18n';
+import { reportError, screenView, startAnalytics } from '../lib/analytics';
+import { registerForPush, usePushTaps } from '../lib/push';
 import { scheduleStreakReminders } from '../lib/reminders';
 import { DEFAULT_CHOICES, DEFAULT_PREFS, useAuth, useCommitment, useSettings, useSignup } from '../lib/store';
 import { sessionFromUrl, supabase } from '../lib/supabase';
@@ -18,7 +20,9 @@ import { useTheme } from '../lib/theme';
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { staleTime: 30_000, retry: 1 } } });
 
-const ONBOARDING = ['name-password', 'birthday', 'username', 'terms', 'done'];
+const ONBOARDING = ['name-password', 'birthday', 'username', 'terms', 'interests', 'people', 'done'];
+// Screens shown once the profile exists, which must not bounce to Home.
+const AFTER_SIGNUP = ['terms', 'interests', 'people', 'done'];
 
 function useAuthRouting() {
   const session = useAuth((s) => s.session);
@@ -48,7 +52,7 @@ function useAuthRouting() {
       // Signed in but not finished signing up. Apple and Google skip name and password.
       const provider = session.user.app_metadata?.provider;
       if (!ONBOARDING.includes(screen)) router.replace(provider === 'apple' || provider === 'google' ? '/(auth)/birthday' : '/(auth)/name-password');
-    } else if ((inAuth && screen !== 'done' && screen !== 'terms') || segments.length === 0) {
+    } else if ((inAuth && !AFTER_SIGNUP.includes(screen)) || segments.length === 0) {
       router.replace('/(tabs)/home');
     }
   }, [ready, resetting, session, me.isFetching, me.isError, me.data, segments, committed]);
@@ -121,13 +125,26 @@ function useSettingsSync() {
   }, [lang]);
 
   useEffect(() => {
-    if (me) scheduleStreakReminders(streak).catch(() => {});
+    // Reminders may have just asked for permission; if it was given, register for push too.
+    if (me) scheduleStreakReminders(streak).catch(() => {}).finally(() => registerForPush(false).catch(() => undefined));
   }, [me?.id, streak?.last_post_date, remind]); // eslint-disable-line react-hooks/exhaustive-deps
+}
+
+/** Screen views for analytics, and push: register this phone once signed in, open tapped pushes. */
+function useTracking() {
+  const path = usePathname();
+  const me = useMe().data;
+  useEffect(() => { startAnalytics(); }, []);
+  useEffect(() => { screenView(path); }, [path]);
+  // Silent: only registers if permission was already given. Home asks in context.
+  useEffect(() => { if (me) registerForPush(false).catch(() => undefined); }, [me?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  usePushTaps(!!me);
 }
 
 function Root() {
   const c = useTheme();
   useSession();
+  useTracking();
   useResetLinks();
   useAuthRouting();
   useSettingsSync();
@@ -138,9 +155,25 @@ function Root() {
       <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: c.bg } }}>
         <Stack.Screen name="compose" options={{ presentation: 'fullScreenModal' }} />
         <Stack.Screen name="story/[userId]" options={{ presentation: 'fullScreenModal', animation: 'fade' }} />
+        <Stack.Screen name="share-streak" options={{ presentation: 'modal' }} />
       </Stack>
       <GlobalSheets />
       <Toast />
+    </View>
+  );
+}
+
+// Shown instead of a white screen when a screen crashes, and reported so it can be fixed.
+export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
+  const c = useTheme();
+  useEffect(() => { reportError(error, true); }, [error]);
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 16, padding: 32, backgroundColor: c.bg }}>
+      <Text style={{ fontSize: 17, fontWeight: '700', color: c.fg, textAlign: 'center' }}>{i18n.t('errors.crashTitle')}</Text>
+      <Text style={{ fontSize: 14, color: c.muted, textAlign: 'center', lineHeight: 20 }}>{i18n.t('errors.crashBody')}</Text>
+      <Pressable accessibilityRole="button" onPress={retry} style={{ height: 44, paddingHorizontal: 24, borderRadius: 999, backgroundColor: c.accent, justifyContent: 'center' }}>
+        <Text style={{ fontSize: 15, fontWeight: '600', color: c.onAccent }}>{i18n.t('errors.retry')}</Text>
+      </Pressable>
     </View>
   );
 }

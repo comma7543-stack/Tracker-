@@ -28,9 +28,9 @@ export default function Notifications() {
   const guard = (work: Promise<unknown>) => work.then(refresh).catch(() => toast(t('common.tryAgain')));
 
   const openRow = (n: NotificationCard) => {
-    if (n.type === 'comment' || n.type === 'mention') {
+    if (n.type === 'comment' || (n.type === 'mention' && n.comment_id)) {
       if (n.post_id) { router.push(`/post/${n.post_id}`); open({ type: 'comments', postId: n.post_id }); }
-    } else if (n.type === 'like') {
+    } else if (n.type === 'like' || n.type === 'mention') {
       if (n.post_id) router.push(`/post/${n.post_id}`);
     } else {
       router.push(`/user/${n.actor_id}`);
@@ -41,7 +41,8 @@ export default function Notifications() {
     switch (n.type) {
       case 'like': return t('notifications.liked');
       case 'comment': return t('notifications.commented', { text: n.comment_body ?? '' });
-      case 'mention': return t('notifications.mentioned', { text: n.comment_body ?? '' });
+      // A mention with no comment came from a post's caption.
+      case 'mention': return n.comment_id ? t('notifications.mentioned', { text: n.comment_body ?? '' }) : t('notifications.mentionedInPost');
       case 'follow': return t('notifications.followed');
       case 'follow_request': return t('notifications.requested');
     }

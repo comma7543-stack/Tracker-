@@ -13,6 +13,8 @@ const JESS = '00000000-0000-4000-8000-000000000003';
 const DAN = '00000000-0000-4000-8000-000000000004';
 const SORA = '00000000-0000-4000-8000-000000000005';
 const YUNA = '00000000-0000-4000-8000-000000000006';
+const KAI = '00000000-0000-4000-8000-000000000007';
+const ARI = '00000000-0000-4000-8000-000000000008';
 
 const HOUR = 3600e3;
 const ago = (hours: number) => new Date(Date.now() - hours * HOUR).toISOString();
@@ -21,7 +23,7 @@ const dayKey = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d
 const daysAgo = (n: number) => dayKey(new Date(Date.now() - n * 24 * HOUR));
 
 const topicFor: Record<string, string> = {
-  Gym: 'Fitness', Running: 'Fitness', Reading: 'Learning', Studying: 'Learning', Coding: 'Work and tech', Building: 'Work and tech', Cooking: 'Money and health', Quotes: 'Motivation',
+  Gym: 'Fitness', Running: 'Fitness', Reading: 'Learning', Studying: 'Learning', Writing: 'Learning', Coding: 'Work and tech', Building: 'Work and tech', Cooking: 'Money and health', Quotes: 'Motivation',
 };
 
 let nextId = 1;
@@ -56,6 +58,9 @@ const initialState = () => ({
     person(DAN, 'dan.reads', 'Dan Cho', '20 pages a day.', 'Read 50 books this year'),
     person(SORA, 'sora.runs', 'Sora Han', 'Training for my first half marathon.', 'Run a half marathon'),
     person(YUNA, 'yuna.studies', 'Yuna Choi', 'Private study log.', 'Get into med school', true),
+    // Nobody in the demo supports these two yet, so they fill For you and the suggestions.
+    person(KAI, 'kai.codes', 'Kai Lim', 'Shipping one small thing a day.', 'Launch my first app'),
+    person(ARI, 'ari.writes', 'Ari Song', '1,000 words before school.', 'Finish my novel draft'),
   ] as Row[],
   settings: [{
     user_id: ME,
@@ -71,6 +76,8 @@ const initialState = () => ({
     // A missed day with a freeze left, so the demo shows the blue flame.
     { user_id: SORA, current: 12, best: 12, last_post_date: daysAgo(2), freezes_available: 2 },
     { user_id: YUNA, current: 2, best: 8, last_post_date: daysAgo(1), freezes_available: 0 },
+    { user_id: KAI, current: 21, best: 21, last_post_date: daysAgo(0), freezes_available: 2 },
+    { user_id: ARI, current: 4, best: 11, last_post_date: daysAgo(0), freezes_available: 0 },
   ] as Row[],
   posts: [
     post('p1', MINJUN, 'post', 'photo', 'Leg day. Squats 5x5 at 100kg, then walking lunges.', 'Gym', 23, 2),
@@ -78,6 +85,9 @@ const initialState = () => ({
     post('p3', DAN, 'post', 'video', 'Day 30 of reading 20 pages before bed.', 'Reading', 58, 6),
     post('p4', SORA, 'post', 'photo', 'Long run done. 14km in the rain.', 'Running', 17, 9),
     post('p5', YUNA, 'post', 'photo', 'Small steps every day beat big plans you never start.', 'Quotes', 9, 12),
+    post('p6', KAI, 'post', 'photo', 'Shipped a tiny CLI tool tonight. #buildinpublic #coding', 'Coding', 36, 3),
+    post('p7', ARI, 'post', 'photo', 'Chapter 4 drafted before school. Thanks for the push @dan.reads. #writing', 'Writing', 19, 7),
+    post('p8', KAI, 'post', 'photo', 'Day 21 of one commit a day. #buildinpublic', 'Coding', 27, 26),
     post('s1', SORA, 'scroll', 'video', '5km tempo run. Negative splits.', 'Running', 12, 1),
     post('s2', JESS, 'scroll', 'video', 'High-protein pancakes in five minutes.', 'Cooking', 30, 3),
     post('s3', MINJUN, 'scroll', 'video', 'Bench form check. 80kg for 8.', 'Gym', 44, 5),
@@ -110,7 +120,11 @@ const initialState = () => ({
     { follower_id: YUNA, followee_id: ME, status: 'pending' },
   ] as Row[],
   blocks: [] as Row[],
-  reports: [] as Row[],
+  reports: [
+    { id: 'r1', reporter_id: SORA, target_type: 'post', target_id: 'p5', reason: 'Spam', status: 'open', created_at: ago(2) },
+    { id: 'r2', reporter_id: DAN, target_type: 'comment', target_id: 'c2', reason: 'Hate or bullying', status: 'open', created_at: ago(1) },
+  ] as Row[],
+  interests: [] as string[],
   notifications: [
     { id: 'n1', user_id: ME, type: 'follow', actor_id: SORA, post_id: null, comment_id: null, read_at: null, created_at: ago(1) },
     { id: 'n2', user_id: ME, type: 'like', actor_id: JESS, post_id: 'mine0', comment_id: null, read_at: null, created_at: ago(3) },
@@ -310,6 +324,79 @@ const RPC: Record<string, (a: Row) => unknown> = {
     return null;
   },
   set_timezone: () => null,
+
+  // Discovery. No ranking here: engagement first, then newest, is enough to show the screens.
+  for_you_feed: (a) => {
+    const seen = db.follows.filter((f) => f.follower_id === ME).map((f) => f.followee_id).concat(ME);
+    return postCards()
+      .filter((p) => isVisible(p) && p.kind !== 'story' && !seen.includes(p.author_id) && !profile(p.author_id)?.is_private
+        && (db.interests.length === 0 || db.interests.includes(p.topic)))
+      .sort((x, y) => y.like_count - x.like_count || newestFirst(x, y))
+      .slice(a.p_offset ?? 0, (a.p_offset ?? 0) + a.p_limit);
+  },
+  scrolls_ranked: (a) => postCards().filter((p) => isVisible(p) && (p.kind === 'scroll' || p.also_scroll))
+    .sort((x, y) => y.like_count - x.like_count).slice(a.p_offset ?? 0, (a.p_offset ?? 0) + a.p_limit),
+  record_view: () => null,
+  suggested_people: () => db.profiles
+    .filter((p) => p.id !== ME && !p.is_private && !blockedIds().includes(p.id) && !db.follows.some((f) => f.follower_id === ME && f.followee_id === p.id))
+    .map((p) => {
+      const mine = db.posts.filter((x) => x.author_id === p.id && x.kind !== 'story');
+      return {
+        id: p.id, username: p.username, full_name: p.full_name, avatar_url: p.avatar_url, streak: streakOf(p.id)?.current ?? null,
+        top_topic: mine[0]?.topic ?? null,
+        mutuals: db.follows.filter((f) => f.followee_id === p.id && db.follows.some((g) => g.follower_id === ME && g.followee_id === f.follower_id)).length,
+      };
+    }),
+  set_interests: (a) => { db.interests = [...new Set(a.p_topics as string[])]; return null; },
+  my_interests: () => db.interests,
+  trending_tags: () => {
+    const counts = new Map<string, Set<string>>();
+    for (const p of db.posts.filter(isVisible)) {
+      for (const [, tag] of String(p.caption).matchAll(/#([A-Za-z0-9_가-힣]{1,30})/g)) {
+        const key = tag.toLowerCase();
+        counts.set(key, (counts.get(key) ?? new Set()).add(p.author_id));
+      }
+    }
+    return [...counts].map(([tag, people]) => ({ tag, posts: people.size })).sort((x, y) => y.posts - x.posts);
+  },
+  tag_posts: (a) => {
+    const tag = String(a.p_tag).replace(/^#/, '').toLowerCase();
+    const tagsOf = (caption: string) => [...caption.matchAll(/#([A-Za-z0-9_가-힣]{1,30})/g)].map((m) => m[1].toLowerCase());
+    return postCards().filter((p) => isVisible(p) && p.kind !== 'story' && tagsOf(String(p.caption)).includes(tag)).sort(newestFirst);
+  },
+
+  // Push and analytics do nothing in the demo.
+  register_push_token: () => null,
+  unregister_push_token: () => null,
+  log_events: () => null,
+  log_error: () => null,
+
+  // The demo account is an admin, so the review screen can be seen.
+  am_i_admin: () => true,
+  admin_counts: () => [{ open_reports: db.reports.filter((r) => r.status === 'open').length, open_appeals: db.status.reviews_requested, open_safety: 0, stuck_posts: 0 }],
+  admin_metrics: () => [{ active_today: 6, active_7d: 8, signups_7d: 2, posts_7d: db.posts.length, errors_24h: 0 }],
+  admin_reports: () => db.reports.filter((r) => r.status === 'open').map((r) => {
+    const p = r.target_type === 'post' ? db.posts.find((x) => x.id === r.target_id) : null;
+    const c = r.target_type === 'comment' ? db.comments.find((x) => x.id === r.target_id) : null;
+    const subject = profile(p?.author_id ?? c?.author_id ?? (r.target_type === 'user' ? r.target_id : ''));
+    return {
+      report_id: r.id, created_at: r.created_at, reason: r.reason, target_type: r.target_type, target_id: r.target_id,
+      reporter: profile(r.reporter_id)?.username ?? '', subject_id: subject?.id ?? null, subject: subject?.username ?? null, subject_is_minor: false,
+      post_id: p?.id ?? c?.post_id ?? null, kind: p?.kind ?? null, media_path: p?.media_path ?? null, media_type: p?.media_type ?? null,
+      caption: p?.caption ?? null, body: c?.body ?? null, photo_path: null,
+      open_on_target: db.reports.filter((x) => x.status === 'open' && x.target_id === r.target_id).length,
+    };
+  }),
+  admin_appeals: () => [],
+  admin_resolve_report: (a) => {
+    const r = db.reports.find((x) => x.id === a.p_report);
+    if (!r) throw new Error('report_not_open');
+    if (a.p_action !== 'dismiss' && r.target_type === 'post') { const p = db.posts.find((x) => x.id === r.target_id); if (p) p.status = 'removed'; }
+    if (a.p_action !== 'dismiss' && r.target_type === 'comment') db.comments = db.comments.filter((x) => x.id !== r.target_id);
+    db.reports.filter((x) => x.target_id === r.target_id).forEach((x) => { x.status = a.p_action === 'dismiss' ? 'dismissed' : 'reviewed'; });
+    return null;
+  },
+  admin_decide_appeal: () => null,
 };
 
 // ---------------------------------------------------------------- moderation
@@ -522,3 +609,6 @@ export function demoMediaUrl(path: string) {
   if (/\.(mp4|mov)$/.test(path)) return VIDEO_URL;
   return `https://picsum.photos/seed/${path.replace(/\W/g, '')}/900/1200`;
 }
+
+/** For tests/demo.test.ts: every RPC the app calls must have an answer here. */
+export const demoRpcNames = () => Object.keys(RPC);

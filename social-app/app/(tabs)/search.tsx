@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { FlatList, Pressable, ScrollView, TextInput, View } from 'react-native';
 import { MediaThumb } from '../../components/Media';
 import { Avatar, Chip, Empty, FAST_SCROLL, Screen, T } from '../../components/ui';
-import { explore, searchUsers } from '../../lib/api';
+import { explore, searchUsers, trendingTags } from '../../lib/api';
 import { TOPICS } from '../../lib/topics';
 import { useTheme } from '../../lib/theme';
 
@@ -25,6 +25,16 @@ export default function Search() {
 
   const { data: posts = [], isLoading } = useQuery({ queryKey: ['explore', q, topic], enabled: active, queryFn: () => explore(q, topic) });
   const { data: users = [] } = useQuery({ queryKey: ['search-users', q], enabled: active && q.length > 0, queryFn: () => searchUsers(q) });
+
+  const { data: trending = [] } = useQuery({ queryKey: ['trending-tags'], queryFn: trendingTags, staleTime: 10 * 60_000 });
+  const trendRow = trending.length > 0 ? (
+    <View style={{ gap: 8 }}>
+      <T s={15} w="700" style={{ paddingHorizontal: 16 }}>{t('tags.trending')}</T>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={{ gap: 8, paddingHorizontal: 16 }}>
+        {trending.map((x) => <Chip key={x.tag} label={`#${x.tag}`} onPress={() => router.push(`/tag/${encodeURIComponent(x.tag)}`)} />)}
+      </ScrollView>
+    </View>
+  ) : null;
 
   const cancel = () => { setActive(false); setText(''); setTopic(null); };
 
@@ -50,10 +60,16 @@ export default function Search() {
       </View>
 
       {!active ? (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 8, paddingHorizontal: 32, paddingBottom: 80 }}>
-          <SearchIcon size={40} color={c.faint} strokeWidth={1.6} />
-          <T s={16} w="700">{t('search.idleTitle')}</T>
-          <T s={14} c={c.muted} style={{ textAlign: 'center', lineHeight: 20 }}>{t('search.idleBody')}</T>
+        <View style={{ flex: 1 }}>
+          {trendRow}
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 8, paddingHorizontal: 32, paddingBottom: 80 }}>
+            <SearchIcon size={40} color={c.faint} strokeWidth={1.6} />
+            <T s={16} w="700">{t('search.idleTitle')}</T>
+            <T s={14} c={c.muted} style={{ textAlign: 'center', lineHeight: 20 }}>{t('search.idleBody')}</T>
+            <Pressable accessibilityRole="button" onPress={() => router.push('/discover')} style={{ marginTop: 8, height: 40, paddingHorizontal: 18, borderRadius: 999, borderWidth: 1, borderColor: c.line, justifyContent: 'center' }}>
+              <T s={14} w="600">{t('discover.findPeople')}</T>
+            </Pressable>
+          </View>
         </View>
       ) : (
         <FlatList
@@ -70,6 +86,7 @@ export default function Search() {
                 <Chip label={t('search.all')} on={!topic} onPress={() => setTopic(null)} />
                 {TOPICS.map(([name]) => <Chip key={name} label={t(`topic.${name}`)} on={topic === name} onPress={() => setTopic(name)} />)}
               </ScrollView>
+              {!q ? trendRow : null}
               {users.length > 0 ? (
                 <View>
                   {users.map((u) => (

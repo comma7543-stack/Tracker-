@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, View } from 'react-native';
 import { followingList, sendMessage, startConversation } from '../../lib/api';
+import { linkFor, sharePost } from '../../lib/share';
 import { toast } from '../../lib/store';
 import { useTheme } from '../../lib/theme';
 import { Avatar, Button, Empty, SheetFrame, T } from '../ui';
@@ -14,7 +15,7 @@ export function ShareSheet({ postId, ownerId, onClose }: { postId: string; owner
   const { data = [] } = useQuery({ queryKey: ['following-list'], queryFn: followingList });
   const [sent, setSent] = useState<Record<string, boolean>>({});
   const [copied, setCopied] = useState(false);
-  const link = `appname://post/${postId}`;
+  const link = linkFor(`post/${postId}`);
 
   const send = async (id: string) => {
     setSent((s) => ({ ...s, [id]: true }));
@@ -41,7 +42,8 @@ export function ShareSheet({ postId, ownerId, onClose }: { postId: string; owner
         ))}
         {data.length === 0 ? <Empty text={t('share.noFriends')} /> : null}
       </ScrollView>
-      <View style={{ padding: 16, paddingBottom: 4 }}>
+      <View style={{ padding: 16, paddingBottom: 4, gap: 8 }}>
+        <Button label={t('growth.shareOut')} onPress={() => sharePost(postId)} />
         <Button kind="secondary" label={copied ? t('share.copied') : t('share.copy')} onPress={async () => { await Clipboard.setStringAsync(link); setCopied(true); }} />
       </View>
     </SheetFrame>

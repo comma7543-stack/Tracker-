@@ -12,6 +12,13 @@ export const SUPPORT_EMAIL = '[Support email]';
 export const HELP_LINE = '[Crisis helpline]';
 
 export const APP_VERSION = '1.0.0';
+
+// Where shared links point, once a website exists, e.g. 'https://example.com'. Until then
+// links use the app's own scheme, which only opens for people who have the app.
+// A real domain also needs universal links set up: see README "Share links".
+export const SHARE_URL_BASE = '[Share link domain]';
+// The store pages, shown in invites. Placeholders until the app is published.
+export const STORE_URL = '[App Store or Play Store link]';
 export const AUTH_REDIRECT = 'appname://auth-callback';
 
 // Fake data instead of Supabase. See lib/demo.ts; only `npm run demo` sets this.

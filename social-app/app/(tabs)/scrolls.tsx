@@ -1,12 +1,12 @@
 import { useNetInfo } from '@react-native-community/netinfo';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useFocusEffect } from 'expo-router';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, View } from 'react-native';
 import { ScrollItem } from '../../components/ScrollItem';
 import { Screen, Spinner, T } from '../../components/ui';
-import { scrollsFeed } from '../../lib/api';
+import { recordView, scrollsRanked } from '../../lib/api';
 import { useSettings } from '../../lib/store';
 import { DARK } from '../../lib/theme';
 import type { PostCard } from '../../lib/types';
@@ -27,14 +27,28 @@ export default function Scrolls() {
     return () => setFocused(false);
   }, []));
 
+  // Ranked, so pages are by position. A score can shift between pages; repeats are dropped.
   const feed = useInfiniteQuery({
     queryKey: ['scrolls'],
-    initialPageParam: undefined as string | undefined,
-    queryFn: ({ pageParam }) => scrollsFeed(pageParam),
-    getNextPageParam: (last: PostCard[]) => (last.length === 10 ? last[last.length - 1].created_at : undefined),
+    initialPageParam: 0,
+    queryFn: ({ pageParam }) => scrollsRanked(pageParam),
+    getNextPageParam: (last: PostCard[], all: PostCard[][]) => (last.length === 10 ? all.flat().length : undefined),
   });
-  const items = feed.data?.pages.flat() ?? [];
+  const items = Array.from(new Map((feed.data?.pages.flat() ?? []).map((p) => [p.id, p])).values());
   const current = activeId ?? items[0]?.id;
+
+  // Watch time per scroll, for ranking: reported when the next one takes over.
+  const watching = useRef<{ id: string; since: number } | null>(null);
+  const finishWatch = () => {
+    const w = watching.current;
+    if (w && Date.now() - w.since >= 800) recordView(w.id, Date.now() - w.since);
+    watching.current = null;
+  };
+  useEffect(() => {
+    if (!focused || !current) { finishWatch(); return; }
+    if (watching.current?.id !== current) { finishWatch(); watching.current = { id: current, since: Date.now() }; }
+  }, [focused, current]);
+  useEffect(() => finishWatch, []);
 
   const onViewable = useRef(({ viewableItems }: { viewableItems: { item: PostCard }[] }) => {
     if (viewableItems[0]) setActiveId(viewableItems[0].item.id);

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { AuthScreen, Button, ErrorText, H1, Sub, T } from '../../components/ui';
+import { track } from '../../lib/analytics';
 import { completeSignup, getMyProfile, saveChoice } from '../../lib/api';
 import { PRIVACY_URL, TERMS_URL } from '../../lib/config';
 import { errorText } from '../../lib/format';
@@ -31,7 +32,8 @@ export default function Terms() {
       await saveChoice('lang', deviceLanguage()).catch(() => undefined);
       // Waits for the profile, so tapping Continue on Done can't beat it and restart sign-up.
       qc.setQueryData(['me', session?.user.id], await getMyProfile());
-      router.replace('/(auth)/done');
+      track('signup_complete', { provider: String(session?.user.app_metadata?.provider ?? 'unknown') });
+      router.replace('/(auth)/interests');
     } catch (e) {
       const message = errorText(e);
       setError(message.includes('username_taken') ? t('auth.usernameTaken') : message.includes('under_13') ? t('auth.tooYoung') : t('common.tryAgain'));

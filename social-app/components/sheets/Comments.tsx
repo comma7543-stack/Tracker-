@@ -11,6 +11,7 @@ import { isBad } from '../../lib/profanity';
 import { myId, toast, useSettings, useUI } from '../../lib/store';
 import { useTheme } from '../../lib/theme';
 import type { CommentCard } from '../../lib/types';
+import { RichText } from '../RichText';
 import { Avatar, Empty, ErrorText, FAST_SCROLL, IconButton, SheetFrame, T } from '../ui';
 
 function CommentRow({ c, small, onReply, onLongPress, onProfile }: { c: CommentCard; small?: boolean; onReply: () => void; onLongPress: () => void; onProfile: () => void }) {
@@ -36,7 +37,7 @@ function CommentRow({ c, small, onReply, onLongPress, onProfile }: { c: CommentC
           </Pressable>
           <T s={13} c={theme.muted}>{timeAgo(c.created_at, t)}{c.edited_at ? ` · ${t('comments.edited')}` : ''}</T>
         </View>
-        <T s={14} style={{ lineHeight: 20 }}>{c.body}</T>
+        <RichText text={c.body} s={14} style={{ lineHeight: 20 }} />
         <Pressable accessibilityRole="button" onPress={onReply} style={{ paddingVertical: 6, alignSelf: 'flex-start' }}><T s={12} w="600" c={theme.muted}>{t('comments.reply')}</T></Pressable>
       </View>
       <Pressable

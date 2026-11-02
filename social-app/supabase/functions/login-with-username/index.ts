@@ -10,11 +10,22 @@ const json = (body: unknown, status = 200) =>
 
 const invalid = () => json({ error: 'invalid_login' }, 401);
 
-// ponytail: Supabase's auth rate limit sees this function's IP, not the caller's.
-// Add a per-username attempt counter before launch.
+// Supabase's auth rate limit sees this function's IP, not the caller's, so tries are
+// counted here: 10 per username and 30 per caller address every 15 minutes.
+const allowed = async (key: string, max: number) => {
+  const { data, error } = await admin.rpc('note_login_attempt', { p_key: key, p_max: max });
+  return !error && data === true;
+};
+
+const callerIp = (req: Request) =>
+  (req.headers.get('x-forwarded-for') ?? '').split(',')[0].trim() || req.headers.get('cf-connecting-ip') || 'unknown';
+
 Deno.serve(async (req) => {
   const { username, password } = await req.json().catch(() => ({}));
   if (typeof username !== 'string' || typeof password !== 'string') return invalid();
+  // Both are counted on every try, so a blocked address can't keep guessing by switching names.
+  const [byName, byIp] = await Promise.all([allowed(`u:${username.toLowerCase()}`, 10), allowed(`ip:${callerIp(req)}`, 30)]);
+  if (!byName || !byIp) return json({ error: 'too_many_tries' }, 429);
 
   const { data: profile } = await admin.from('profiles').select('id').eq('username', username.toLowerCase()).maybeSingle();
   if (!profile) return invalid();
