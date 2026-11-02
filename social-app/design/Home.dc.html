@@ -1,0 +1,1816 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Home feed</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:var(--fg)}a:hover{color:var(--muted)}
+.ib{width:44px;height:44px;display:flex;align-items:center;justify-content:center;border:0;background:transparent;color:var(--fg);cursor:pointer;padding:0;position:relative}
+.btn{display:flex;align-items:center;justify-content:center;height:44px;border-radius:999px;background:var(--accent);color:var(--onAccent);font-size:15px;font-weight:600;border:0;font-family:inherit;cursor:pointer;width:100%}
+.btn:hover{background:var(--accentHover)}
+.resp{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--bg);font-family:inherit;font-size:13px;font-weight:600;color:var(--fg);cursor:pointer}
+.resp.on{background:var(--accent);color:var(--onAccent);border-color:var(--fg)}
+.act{display:inline-flex;align-items:center;gap:4px;height:44px;padding:0 8px;border:0;background:transparent;font-family:inherit;font-size:13px;font-weight:600;color:var(--fg);cursor:pointer}
+.more{display:block;border:0;background:transparent;padding:6px 16px 0;font-family:inherit;font-size:14px;color:var(--muted);cursor:pointer;text-align:left}
+.chip{height:32px;padding:0 16px;border-radius:999px;border:0;background:var(--accent);color:var(--onAccent);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.chip.sent{background:var(--surface2);color:var(--fg)}
+.wide{height:44px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--fg);font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;width:100%}
+.cinp{flex:1;min-width:0;height:40px;border:1px solid var(--line);border-radius:999px;background:var(--surface);padding:0 14px;font-size:15px;font-family:inherit;color:var(--fg);box-sizing:border-box}
+.cinp:focus{outline:none;border-color:var(--fg)}
+.send{border:0;background:transparent;font-family:inherit;font-size:15px;font-weight:700;color:var(--fg);cursor:pointer;padding:0 8px;height:44px}
+.send:disabled{color:var(--faint);cursor:default}
+.runA{animation:stA 5s linear forwards}
+.runB{animation:stB 5s linear forwards}
+.paused{animation-play-state:paused}
+@keyframes stA{from{width:0}to{width:100%}}
+@keyframes stB{from{width:0}to{width:100%}}
+.sinp{flex:1;min-width:0;height:44px;border:1px solid rgba(255,255,255,0.45);border-radius:999px;background:transparent;color:#fff;padding:0 16px;font-size:15px;font-family:inherit;box-sizing:border-box}
+.sinp::placeholder{color:rgba(255,255,255,0.6)}
+.sinp:focus{outline:none;border-color:#fff}
+.rc{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 12px 0 6px;border-radius:10px;border:1.5px solid var(--fg);background:var(--bg);color:var(--fg);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;flex-shrink:0;white-space:nowrap}
+.rc .mk{width:22px;height:22px;border-radius:6px;background:var(--accent);color:var(--onAccent);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.rc.seen{border-color:var(--faint)}
+.rc.seen .mk{background:var(--faint);color:var(--fg)}
+.rc.wait{border:1.5px dashed var(--faint);color:var(--muted)}
+.rc.wait .mk{background:transparent;color:var(--muted)}
+.nb{width:54px;height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:0;background:transparent;color:rgba(255,255,255,0.55);font-family:inherit;font-size:10px;font-weight:600;cursor:pointer;padding:0;border-radius:14px;flex-shrink:0}
+.nb.on{color:#fff}
+.logb{height:44px;padding:0 12px;border-radius:14px;border:0;background:#fff;color:#000;font-family:inherit;font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+nav button:focus-visible{outline-color:#fff}
+.fchip{height:34px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--bg);font-family:inherit;font-size:13px;font-weight:600;color:var(--fg);cursor:pointer;flex-shrink:0}
+.fchip.on{background:var(--accent);color:var(--onAccent);border-color:var(--fg)}
+.tx2{border:0;background:transparent;font-family:inherit;font-size:15px;font-weight:600;color:var(--fg);cursor:pointer;height:44px;padding:0 4px;flex-shrink:0}
+.av{width:32px;height:32px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0}
+.lk{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:2px;width:44px;min-height:44px;padding:2px 0 0;border:0;background:transparent;color:var(--fg);font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;flex-shrink:0;font-variant-numeric:tabular-nums}
+.tx{align-self:flex-start;border:0;background:transparent;padding:6px 0;font-family:inherit;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;text-align:left}
+.scroll{overflow-y:auto;overflow-x:hidden;scrollbar-width:none}
+.scroll::-webkit-scrollbar{display:none}
+.hs{overflow-x:auto;scrollbar-width:none}
+.hs::-webkit-scrollbar{display:none}
+.search{height:38px;border:0;border-radius:10px;background:var(--surface2);padding:0 12px 0 36px;font-size:15px;font-family:inherit;color:var(--fg);width:100%;box-sizing:border-box}
+.search:focus{outline:2px solid var(--fg);outline-offset:0}
+.snap{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scroll-snap-type:y mandatory;scrollbar-width:none}
+.snap::-webkit-scrollbar{display:none}
+.clip{height:100%;scroll-snap-align:start;scroll-snap-stop:always;position:relative;background:#111;color:#fff;overflow:hidden}
+.ra{display:flex;flex-direction:column;align-items:center;gap:4px;width:52px;min-height:52px;border:0;background:transparent;color:#fff;font-family:inherit;font-size:11px;font-weight:600;letter-spacing:.02em;cursor:pointer;padding:0;font-variant-numeric:tabular-nums}
+.rail svg{filter:drop-shadow(0 1px 3px rgba(0,0,0,.45))}
+.gl{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,rgba(255,255,255,.30),rgba(255,255,255,.08));border:1px solid rgba(255,255,255,.38);backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 -8px 16px rgba(255,255,255,.05),0 8px 20px rgba(0,0,0,.4);transition:transform .15s,background .2s}
+.ra:active .gl{transform:scale(.92)}
+.ra[aria-pressed="true"] .gl{background:linear-gradient(145deg,rgba(255,255,255,.6),rgba(255,255,255,.28));border-color:rgba(255,255,255,.7)}
+svg[fill="currentColor"] .ck{stroke:var(--bg)}
+svg[fill="#ffffff"] .ck{stroke:#111}
+.rail .ra span{font-size:12px;font-weight:600;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.fol{height:30px;padding:0 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.8);background:transparent;color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.fol.on{background:#fff;color:#000;border-color:#fff}
+.row{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;border:0;background:transparent;padding:0 16px;font-family:inherit;font-size:15px;color:var(--fg);cursor:pointer;text-align:left;box-sizing:border-box}
+.row:hover{background:var(--surface)}
+.row.danger{color:#B3261E}
+.seg{flex:1;height:36px;border:0;border-radius:999px;background:transparent;font-family:inherit;font-size:14px;font-weight:600;color:var(--muted);cursor:pointer}
+.seg.on{color:var(--onAccent);background:var(--accent)}
+.tog{flex:1;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--bg);font-family:inherit;font-size:14px;font-weight:600;color:var(--fg);cursor:pointer}
+.tog.on{background:var(--accent);color:var(--onAccent);border-color:var(--fg)}
+.fin{width:100%;height:44px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:15px;font-family:inherit;color:var(--fg);box-sizing:border-box;background:var(--bg)}
+.fin:focus{outline:none;border-color:var(--fg)}
+.flbl{font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted)}
+.sw{width:50px;height:30px;border-radius:999px;border:0;background:var(--faint);position:relative;cursor:pointer;flex-shrink:0;padding:0}
+.sw.on{background:var(--accent)}
+.sw span{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:var(--bg);transition:left .15s}
+.sw.on span{left:23px}
+.pbtn{flex:1;height:34px;padding:0 16px;border-radius:8px;border:0;background:var(--surface2);font-family:inherit;font-size:14px;font-weight:600;color:var(--fg);cursor:pointer}
+.cell{aspect-ratio:4/5;background:var(--media);border:1px solid rgba(var(--ln), .12);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted);text-align:center;padding:6px;box-sizing:border-box}
+.ico{width:40px;height:40px;border-radius:10px;background:var(--surface2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes sheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes pageUp{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}
+@keyframes zoomIn{from{opacity:0;transform:scale(0.94)}to{opacity:1;transform:scale(1)}}
+@keyframes tabIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,12px) scale(0.96)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.3)}100%{transform:scale(1)}}
+@keyframes pauseIn{from{opacity:0;transform:translate(-50%,-50%) scale(0.6)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+.bd{animation:fadeIn .2s ease-out}
+.sh{animation:sheetUp .32s cubic-bezier(.2,.8,.2,1)}
+.pg{animation:pageUp .3s cubic-bezier(.2,.8,.2,1)}
+.zm{animation:zoomIn .25s cubic-bezier(.2,.8,.2,1)}
+.tst{animation:toastIn .25s cubic-bezier(.2,.8,.2,1)}
+.pz{animation:pauseIn .18s ease-out}
+button[aria-pressed="true"] svg{animation:pop .32s ease}
+.resp,.chip,.fchip,.tog,.seg,.fol,.wide,.pbtn,.btn,.sw,.rc{transition:background-color .2s,color .2s,border-color .2s,transform .12s}
+.resp:active,.chip:active,.fchip:active,.tog:active,.fol:active,.wide:active,.pbtn:active,.btn:active,.ra:active,.lk:active{transform:scale(0.95)}
+.ra,.lk,.act{transition:transform .12s}
+@media (prefers-reduced-motion: reduce){*:not(.runA):not(.runB){animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+.neon{color:var(--brand);text-shadow:0 0 4px rgba(var(--g),calc(.9*var(--ga))),0 0 12px rgba(var(--g),calc(.55*var(--ga))),0 0 28px rgba(var(--g),calc(.3*var(--ga)));animation:flicker 7s infinite}
+.neon-s{color:var(--fg);text-shadow:0 0 3px rgba(var(--g), calc(.8 * var(--ga))),0 0 10px rgba(var(--g), calc(.35 * var(--ga)))}
+@keyframes flicker{0%,92%,100%{opacity:1}93%{opacity:.55}94%{opacity:1}96%{opacity:.7}97%{opacity:1}}
+.card{border:var(--cardBorder);border-radius:18px;overflow:hidden;background:var(--cardBg);box-shadow:0 0 24px rgba(var(--g),calc(.07*var(--ga)))}
+.btn{box-shadow:0 0 6px rgba(var(--g), calc(.7 * var(--ga))),0 0 20px rgba(var(--g), calc(.3 * var(--ga)))}
+.resp.on,.fchip.on,.tog.on,.chip{box-shadow:0 0 6px rgba(var(--g),calc(.65*var(--ga))),0 0 16px rgba(var(--g),calc(.28*var(--ga)))}
+.fol.on{box-shadow:0 0 6px rgba(255,255,255,.65),0 0 16px rgba(255,255,255,.28)}
+.seg.on{box-shadow:0 0 8px rgba(var(--g), calc(.45 * var(--ga)))}
+button[aria-pressed="true"] svg{filter:drop-shadow(0 0 3px rgba(var(--g), calc(.9 * var(--ga)))) drop-shadow(0 0 8px rgba(var(--g), calc(.5 * var(--ga))))}
+nav button[aria-current="page"] svg,nav button[aria-current="page"]>span{filter:drop-shadow(0 0 3px rgba(var(--g), calc(.95 * var(--ga)))) drop-shadow(0 0 10px rgba(var(--g), calc(.5 * var(--ga))))}
+nav{background:var(--navBg)!important;border-top:var(--navBorder)!important;box-shadow:0 -1px 14px rgba(var(--g),calc(.08*var(--ga)))}
+.sh{background:var(--sheetBg)!important;border-top:1px solid var(--line);box-shadow:0 -6px 30px rgba(var(--g),calc(.10*var(--ga))),0 -4px 20px rgba(0,0,0,calc(.08*(1 - var(--ga))))}
+.pg{background:var(--pageBg)!important}
+.tst{box-shadow:0 0 8px rgba(var(--g), calc(.7 * var(--ga))),0 0 24px rgba(var(--g), calc(.3 * var(--ga)))}
+.bd{background:rgba(0,0,0,.65)!important;backdrop-filter:blur(3px)}
+.row.danger{color:var(--danger)}
+.sw span{background:var(--accent)}
+.sw.on span{background:var(--onAccent)}
+.sw.on{box-shadow:0 0 8px rgba(var(--g), calc(.6 * var(--ga)))}
+@keyframes ringPulse{0%{box-shadow:0 0 0 0 rgba(var(--ln),.45)}70%{box-shadow:0 0 0 9px rgba(var(--ln),0)}100%{box-shadow:0 0 0 0 rgba(var(--ln),0)}}
+@keyframes flameIn{0%{transform:scale(.4) rotate(-10deg);opacity:0}60%{transform:scale(1.2) rotate(3deg);opacity:1}100%{transform:scale(1) rotate(0)}}
+@keyframes flick{0%,100%{transform:scale(1) rotate(0)}30%{transform:scale(1.05) rotate(-2deg)}60%{transform:scale(.98) rotate(1.5deg)}}
+@keyframes dayPop{0%{transform:scale(.5)}60%{transform:scale(1.18)}100%{transform:scale(1)}}
+.day-wait{animation:ringPulse 1.8s ease-out infinite}
+.day-pop{animation:dayPop .45s cubic-bezier(.2,.8,.2,1)}
+.flame-on{animation:flameIn .6s cubic-bezier(.2,.8,.2,1),flick 2.6s ease-in-out .6s infinite}
+.srow+.srow{border-top:1px solid rgba(var(--ln), .08)}
+.srow:hover{background:rgba(var(--ln), .04)}
+.rm *:not(.runA):not(.runB){animation:none!important;transition:none!important}
+.th-neon{--bg:#000;--surface:#121212;--surface2:#1F1F1F;--line:#2E2E2E;--ln:255,255,255;--fg:#F5F5F5;--muted:#A3A3A3;--faint:#4A4A4A;--accent:#FFFFFF;--onAccent:#000000;--accentHover:#E0E0E0;--g:255,255,255;--ga:1;--danger:#FF7070;--brand:#FFFFFF;--ring:#FFFFFF;--rootBg:radial-gradient(130% 55% at 50% -8%,#3a3a3a 0%,#121212 45%,#000 100%);--media:linear-gradient(160deg,#2a2a2a,#0d0d0d);--mediaFg:#A3A3A3;--cardBg:linear-gradient(180deg,#181818 0%,#0a0a0a 100%);--cardBorder:1px solid rgba(255,255,255,.16);--sheetBg:linear-gradient(180deg,#1a1a1a 0%,#070707 100%);--pageBg:radial-gradient(130% 50% at 50% -10%,#2e2e2e 0%,#0d0d0d 50%,#000 100%);--navBg:linear-gradient(180deg,#0d0d0d,#000);--navBorder:1px solid rgba(255,255,255,.22)}
+.th-white{--bg:#FFFFFF;--surface:#FAFAFA;--surface2:#EFEFEF;--line:#DBDBDB;--ln:0,0,0;--fg:#000000;--muted:#737373;--faint:#C7C7C7;--accent:#000000;--onAccent:#FFFFFF;--accentHover:#262626;--g:255,255,255;--ga:0;--danger:#B3261E;--brand:#000000;--ring:#000000;--rootBg:#FFFFFF;--media:#EFEFEF;--mediaFg:#737373;--cardBg:#FFFFFF;--cardBorder:1px solid #DBDBDB;--sheetBg:#FFFFFF;--pageBg:#FFFFFF;--navBg:#FFFFFF;--navBorder:1px solid #DBDBDB}
+.th-color{--bg:#F4F1FF;--surface:#FFFFFF;--surface2:#E9E4FF;--line:#D3CCF2;--ln:20,17,43;--fg:#14112B;--muted:#5A5670;--faint:#A9A3C9;--accent:#FF2E88;--onAccent:#14112B;--accentHover:#FF5AA0;--g:255,255,255;--ga:0;--danger:#C4142B;--brand:#2952FF;--ring:#2952FF;--rootBg:#F4F1FF;--media:#2952FF;--mediaFg:#FFFFFF;--cardBg:#FFFFFF;--cardBorder:2px solid #14112B;--sheetBg:#FFFFFF;--pageBg:#F4F1FF;--navBg:#FFFFFF;--navBorder:2px solid #14112B}
+.th-white .neon,.th-color .neon{animation:none}
+.th-color nav button[aria-current="page"]{color:#2952FF}
+.th-color .seg.on,.th-color .fchip.on,.th-color .tog.on{background:#2952FF;color:#FFFFFF;border-color:#2952FF}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{width:44px;height:44px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--fg);animation:spin .8s linear infinite;box-sizing:border-box}
+a:focus-visible,button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+</style>
+</helmet>
+<div class="{{ rootCls }}" style="width: 390px; height: 844px; box-sizing: border-box; background: var(--rootBg); color: var(--fg); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; display: flex; flex-direction: column; overflow: hidden; position: relative">
+
+<div style="{{ homeStyle }}">
+<div style="height: 52px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 8px 0 16px">
+<div class="neon" style="font-size: 24px; font-weight: 700; letter-spacing: -0.01em">[App Name]</div>
+<div style="display: flex; align-items: center">
+<button class="ib" type="button" aria-label="{{ notifAria }}" onClick="{{ openNotifs }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg><sc-if value="{{ notifUnread }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="position: absolute; top: 9px; right: 10px; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 6px rgba(var(--g), calc(0.9 * var(--ga))), 0 0 12px rgba(var(--g), calc(0.5 * var(--ga)))"></span></sc-if></button>
+<button class="ib" type="button" aria-label="{{ dmAria }}" onClick="{{ openInbox }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9.3 9.3 0 0 1-3.6-.7L3 21l1.6-4.6A8 8 0 0 1 3 11.5 8.6 8.6 0 0 1 12 3a8.6 8.6 0 0 1 9 8.5z"></path></svg><sc-if value="{{ dmHasUnread }}" hint-placeholder-val="{{ true }}"><span style="position: absolute; top: 6px; right: 4px; min-width: 18px; height: 18px; border-radius: 9px; background: var(--accent); color: var(--onAccent); font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 4px; box-sizing: border-box; border: 2px solid var(--bg); box-shadow: 0 0 8px rgba(var(--g), calc(0.7 * var(--ga)))">{{ dmUnread }}</span></sc-if></button>
+</div>
+</div>
+
+
+<div class="scroll" style="flex: 1; min-height: 0">
+
+<div class="hs" style="display: flex; gap: 14px; padding: 4px 16px 12px">
+<button type="button" aria-label="{{ myStoryAria }}" onClick="{{ myStoryTap }}" style="display: flex; flex-direction: column; align-items: center; gap: 6px; border: 0; background: transparent; padding: 0; cursor: pointer; font-family: inherit; flex-shrink: 0; width: 82px">
+<span style="position: relative; width: 82px; height: 82px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: {{ myRing }}; box-shadow: {{ myGlow }}; box-sizing: border-box">
+<span style="width: 70px; height: 70px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; color: var(--muted)">You</span>
+<span style="position: absolute; right: -2px; bottom: -2px; width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: var(--onAccent); border: 2px solid var(--bg); display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; line-height: 1">+</span>
+</span>
+<span style="font-size: 12px; color: var(--fg)">Your proof</span>
+</button>
+<sc-for list="{{ stories }}" as="s" hint-placeholder-count="5">
+<button type="button" aria-label="{{ s.aria }}" onClick="{{ s.open }}" style="display: flex; flex-direction: column; align-items: center; gap: 6px; flex-shrink: 0; width: 82px; border: 0; background: transparent; padding: 0; cursor: pointer; font-family: inherit">
+<span style="width: 82px; height: 82px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: {{ s.ring }}; box-shadow: {{ s.glow }}; box-sizing: border-box">
+<span style="width: 70px; height: 70px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 20px; color: var(--fg)">{{ s.initial }}</span>
+</span>
+<span style="font-size: 12px; color: {{ s.labelColor }}; max-width: 82px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ s.name }}</span>
+</button>
+</sc-for>
+</div>
+
+<div style="display: flex; align-items: center; justify-content: space-between; margin: 0 16px 12px; padding: 10px 14px; border-radius: 12px; background: var(--cardBg); border: 1px solid rgba(var(--ln), 0.28); box-shadow: 0 0 22px rgba(var(--g), calc(0.10 * var(--ga)))">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 14px; font-weight: 600">{{ statusTitle }}</span>
+<span style="font-size: 12px; color: var(--muted)">{{ statusSub }}</span>
+</div>
+<div style="text-align: right">
+<div style="font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1">{{ myStreak }}</div>
+<div style="font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-top: 2px">day streak</div>
+</div>
+</div>
+
+<div style="position: relative">
+<div style="{{ feedStyle }}">
+<sc-for list="{{ posts }}" as="p" hint-placeholder-count="3">
+<article class="card" style="margin: 0 12px 14px; padding-bottom: 14px">
+<div style="display: flex; align-items: center; gap: 10px; padding: 10px 16px">
+<span style="width: 36px; height: 36px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px">{{ p.initial }}</span>
+<div style="display: flex; flex-direction: column; flex: 1; min-width: 0">
+<span style="font-size: 14px; font-weight: 600">{{ p.name }}</span>
+<span style="font-size: 12px; color: var(--muted)">{{ p.meta }}</span>
+</div>
+<span style="font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); white-space: nowrap">{{ p.streak }}-day streak</span>
+</div>
+<p style="margin: 0 16px 10px; font-size: 15px; line-height: 1.45">{{ p.caption }}</p>
+<div style="width: calc(100% - 24px); margin: 0 12px; border-radius: 12px; aspect-ratio: 4 / 3; background: var(--media); display: flex; align-items: center; justify-content: center; color: var(--mediaFg); font-size: 13px; overflow: hidden"><sc-if value="{{ p.hasImg }}" hint-placeholder-val="{{ true }}"><img src="{{ p.img }}" alt="{{ p.alt }}" style="width: 100%; height: 100%; object-fit: cover; display: block"></sc-if><sc-if value="{{ p.noImg }}" hint-placeholder-val="{{ false }}"><span>{{ p.photo }}</span></sc-if></div>
+<div style="display: flex; align-items: center; gap: 6px; padding: 10px 12px 6px">
+<button class="{{ p.respClass }}" type="button" onClick="{{ p.toggle }}" aria-pressed="{{ p.pressed }}" aria-label="{{ p.likeAria }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.3s-7.8-4.6-9.2-9.7A4.9 4.9 0 0 1 12 6.6a4.9 4.9 0 0 1 9.2 4c-1.4 5.1-9.2 9.7-9.2 9.7z"></path></svg>{{ p.count }}</button>
+<button class="act" type="button" aria-label="Comments" onClick="{{ p.openComments }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 15.5a2 2 0 0 1-2 2H9l-5 3.5V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"></path></svg><span>{{ p.commentCount }}</span></button>
+<button class="ib" type="button" aria-label="Share" onClick="{{ p.openShare }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4.5 20.5 11 14 17.5"></path><path d="M20.5 11H11a7 7 0 0 0-7 7v1.5"></path></svg></button>
+<button class="ib" type="button" aria-label="{{ p.saveLabel }}" aria-pressed="{{ p.savePressed }}" onClick="{{ p.toggleSave }}" style="margin-left: auto"><svg width="22" height="22" viewBox="0 0 24 24" fill="{{ p.saveFill }}" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"></path></svg></button>
+</div>
+<button class="more" type="button" onClick="{{ p.openComments }}">{{ p.commentsLink }}</button>
+</article>
+</sc-for>
+
+<div style="border-top: 1px solid var(--line); padding: 14px 0 18px">
+<div style="display: flex; align-items: baseline; justify-content: space-between; padding: 0 16px 10px">
+<span class="neon-s" style="font-size: 15px; font-weight: 700">Scrolls</span>
+<span style="font-size: 13px; color: var(--muted)">Short clips of real work</span>
+</div>
+<div class="hs" style="display: flex; gap: 8px; padding: 0 16px">
+<sc-for list="{{ scrollRow }}" as="r" hint-placeholder-count="3">
+<div style="flex-shrink: 0; width: 128px; height: 210px; border-radius: 10px; background: var(--surface2); position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end">
+<button type="button" aria-label="{{ r.aria }}" onClick="{{ r.open }}" style="position: absolute; inset: 0; border: 0; background: transparent; cursor: pointer; z-index: 1; padding: 0"></button>
+<sc-if value="{{ r.hasImg }}" hint-placeholder-val="{{ true }}"><img src="{{ r.img }}" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover"></sc-if>
+<svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -60%); opacity: 0.55"><path d="M8 5v14l11-7z"></path></svg>
+<div style="position: relative; padding: 8px; background: var(--surface); border-top: 1px solid var(--line)">
+<div style="font-size: 12px; font-weight: 600; line-height: 1.3">{{ r.title }}</div>
+<div style="font-size: 11px; color: var(--muted)">{{ r.who }}</div>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+</div>
+<div style="height: 16px"></div>
+</div>
+</div>
+
+<div style="{{ searchStyle }}">
+<div style="flex-shrink: 0; display: flex; align-items: center; gap: 8px; padding: 10px 16px 12px">
+<div style="position: relative; flex: 1; min-width: 0">
+<label for="search-input" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search</label>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A3A3A3" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="position: absolute; left: 12px; top: 10px"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+<input class="search" id="search-input" type="search" autocomplete="off" placeholder="Search people, workouts, recipes" value="{{ q }}" onChange="{{ setQ }}" onFocus="{{ openSearch }}" onClick="{{ openSearch }}">
+</div>
+<sc-if value="{{ searchActive }}" hint-placeholder-val="{{ false }}">
+<button class="tx2" type="button" onClick="{{ cancelSearch }}">Cancel</button>
+</sc-if>
+</div>
+
+<div style="{{ idleStyle }}">
+<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#4A4A4A" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+<div style="font-size: 16px; font-weight: 700">Find people and proof</div>
+<p style="margin: 0; font-size: 14px; line-height: 1.45; color: var(--muted)">Tap the search bar to see clips picked for you.</p>
+</div>
+
+<div class="scroll" style="{{ resultsStyle }}">
+<div class="hs" style="display: flex; gap: 8px; padding: 0 16px 14px">
+<sc-for list="{{ chips }}" as="k" hint-placeholder-count="4">
+<button class="{{ k.cls }}" type="button" onClick="{{ k.pick }}">{{ k.label }}</button>
+</sc-for>
+</div>
+<div style="padding: 0 16px 10px; font-size: 15px; font-weight: 700">{{ resultsTitle }}</div>
+<div style="position: relative">
+<div style="{{ gridStyle }}">
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 8px; padding: 0 16px 20px">
+<sc-for list="{{ vids }}" as="vd" hint-placeholder-count="4">
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<div style="position: relative; height: 220px; border-radius: 10px; background: var(--surface2); overflow: hidden">
+<svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.5"><path d="M8 5v14l11-7z"></path></svg>
+<span style="position: absolute; left: 8px; top: 8px; background: var(--bg); color: var(--fg); font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px">{{ vd.cat }}</span>
+<span style="position: absolute; right: 8px; bottom: 8px; background: rgba(0, 0, 0, 0.65); color: var(--onAccent); font-size: 11px; font-weight: 600; padding: 2px 6px; border-radius: 4px; font-variant-numeric: tabular-nums">{{ vd.len }}</span>
+</div>
+<span style="font-size: 13px; font-weight: 600; line-height: 1.3">{{ vd.title }}</span>
+<span style="font-size: 12px; color: var(--muted)">{{ vd.who }}</span>
+</div>
+</sc-for>
+</div>
+<sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
+<p style="margin: 24px 16px; text-align: center; font-size: 14px; color: var(--muted)">No clips match that. Try a different word.</p>
+</sc-if>
+</div>
+</div>
+</div>
+</div>
+
+<div style="{{ scrollsStyle }}">
+<div style="position: relative; flex: 1; min-height: 0; background: #111111">
+<div class="snap">
+<sc-for list="{{ clips }}" as="c" hint-placeholder-count="2">
+<div class="clip">
+<button type="button" aria-label="{{ c.pauseLabel }}" onClick="{{ c.togglePause }}" style="position: absolute; inset: 0; border: 0; background: #1E1E1E; cursor: pointer; display: flex; align-items: center; justify-content: center; color: rgba(255, 255, 255, 0.55); font-family: inherit; font-size: 13px; padding: 0; overflow: hidden"><sc-if value="{{ c.hasImg }}" hint-placeholder-val="{{ true }}"><img src="{{ c.img }}" alt="" style="width: 100%; height: 100%; object-fit: cover; display: block"></sc-if><sc-if value="{{ c.noImg }}" hint-placeholder-val="{{ false }}"><span>{{ c.photo }}</span></sc-if></button>
+<div aria-hidden="true" style="position: absolute; left: 0; right: 0; top: 0; height: 18%; background: linear-gradient(rgba(0, 0, 0, 0.45), transparent); pointer-events: none"></div>
+<div aria-hidden="true" style="position: absolute; left: 0; right: 0; bottom: 0; height: 45%; background: linear-gradient(transparent, rgba(0, 0, 0, 0.7)); pointer-events: none"></div>
+<sc-if value="{{ c.paused }}" hint-placeholder-val="{{ false }}">
+<span class="pz" aria-hidden="true" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 64px; height: 64px; border-radius: 50%; background: rgba(0, 0, 0, 0.55); display: flex; align-items: center; justify-content: center; pointer-events: none"><svg width="30" height="30" viewBox="0 0 24 24" fill="#ffffff" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span>
+</sc-if>
+<div style="position: absolute; top: 0; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between; padding: 6px 4px 0 16px; pointer-events: none">
+<span class="neon" style="font-size: 20px; font-weight: 700">Scrolls</span>
+<button class="ib" type="button" aria-label="{{ muteLabel }}" aria-pressed="{{ mutePressed }}" onClick="{{ toggleMute }}" style="color: #ffffff; pointer-events: auto">
+<sc-if value="{{ muted }}" hint-placeholder-val="{{ false }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"></path><path d="m22 9-6 6M16 9l6 6"></path></svg></sc-if>
+<sc-if value="{{ unmuted }}" hint-placeholder-val="{{ true }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M19 5a10 10 0 0 1 0 14"></path></svg></sc-if>
+</button>
+</div>
+<div class="rail" style="position: absolute; right: 6px; bottom: 132px; display: flex; flex-direction: column; gap: 18px; align-items: center">
+<button class="ra" type="button" aria-label="{{ c.respLabel }}" aria-pressed="{{ c.respPressed }}" onClick="{{ c.toggleResp }}"><svg width="30" height="30" viewBox="0 0 24 24" fill="{{ c.respFill }}" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.3s-7.8-4.6-9.2-9.7A4.9 4.9 0 0 1 12 6.6a4.9 4.9 0 0 1 9.2 4c-1.4 5.1-9.2 9.7-9.2 9.7z"></path></svg><span>{{ c.respCount }}</span></button>
+<button class="ra" type="button" aria-label="Comments" onClick="{{ c.openComments }}"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.6 15.6A8.9 8.9 0 1 0 17 19.4L21 20.5z"></path></svg><span>{{ c.commentCount }}</span></button>
+<button class="ra" type="button" aria-label="More options" onClick="{{ c.openShare }}"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.7"></circle><circle cx="12" cy="12" r="1.7"></circle><circle cx="19" cy="12" r="1.7"></circle></svg></button>
+</div>
+<div style="position: absolute; left: 14px; right: 70px; bottom: 20px; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; align-items: center; gap: 10px">
+<span class="av" style="background: #444444; color: #ffffff">{{ c.initial }}</span>
+<span style="font-size: 14px; font-weight: 600">{{ c.who }}</span>
+<sc-if value="{{ c.canFollow }}" hint-placeholder-val="{{ true }}">
+<button class="{{ c.folCls }}" type="button" aria-pressed="{{ c.folPressed }}" onClick="{{ c.toggleFollow }}">{{ c.folLabel }}</button>
+</sc-if>
+</div>
+<p style="margin: 0; font-size: 14px; line-height: 1.4">{{ c.caption }}</p>
+<span style="align-self: flex-start; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.15)">{{ c.tag }}</span>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div style="{{ profileStyle }}">
+<div style="height: 52px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 4px 0 16px">
+<span style="display: flex; align-items: center; gap: 6px"><sc-if value="{{ isPrivate }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Private account"><rect x="4" y="11" width="16" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg></sc-if><span class="neon" style="font-size: 20px; font-weight: 700">{{ pUser }}</span></span>
+<button class="ib" type="button" aria-label="Settings" onClick="{{ openSettings }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+</div>
+<div class="scroll" style="flex: 1; min-height: 0">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 8px 16px 4px; text-align: center">
+<button type="button" aria-label="{{ myStoryAria }}" onClick="{{ myStoryTap }}" style="width: 104px; height: 104px; border-radius: 50%; border: {{ pRing }}; box-shadow: {{ myGlow }}; box-sizing: border-box; background: transparent; padding: 0; display: flex; align-items: center; justify-content: center; cursor: pointer">
+<span style="width: 90px; height: 90px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; color: var(--fg)">{{ pInitial }}</span>
+</button>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 20px; font-weight: 700">{{ pName }}</span>
+<span style="font-size: 14px; color: var(--muted)">@{{ pUser }}</span>
+</div>
+<sc-if value="{{ hasBio }}" hint-placeholder-val="{{ false }}">
+<p style="margin: 0; max-width: 300px; font-size: 14px; line-height: 1.45; white-space: pre-wrap">{{ pBio }}</p>
+</sc-if>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding: 14px 16px 12px">
+<div style="border: 1px solid rgba(var(--ln), 0.14); border-radius: 14px; padding: 10px 4px; text-align: center"><div style="font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums">{{ statPosts }}</div><div style="font-size: 12px; color: var(--muted)">Proofs</div></div>
+<div style="border: 1px solid rgba(var(--ln), 0.14); border-radius: 14px; padding: 10px 4px; text-align: center"><div style="font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums">{{ statFollowers }}</div><div style="font-size: 12px; color: var(--muted)">Followers</div></div>
+<div style="border: 1px solid rgba(var(--ln), 0.14); border-radius: 14px; padding: 10px 4px; text-align: center"><div style="font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums">{{ statFollowing }}</div><div style="font-size: 12px; color: var(--muted)">Following</div></div>
+</div>
+<div style="display: flex; gap: 8px; padding: 0 16px 16px">
+<button class="pbtn" type="button" onClick="{{ openEdit }}">Edit profile</button>
+<button class="pbtn" type="button" onClick="{{ shareProfile }}" style="flex: 0 0 auto; padding: 0 18px">Share</button>
+</div>
+<section class="card" aria-label="Your streak" style="margin: 0 16px 16px; padding: 16px; display: flex; flex-direction: column; gap: 18px">
+<div style="display: flex; align-items: center; gap: 14px">
+<span class="{{ flameCls }}" style="width: 60px; height: 60px; border-radius: 18px; background: radial-gradient(circle at 50% 60%, {{ flameHalo }}, transparent 70%); border: 1px solid {{ flameBorder }}; display: flex; align-items: center; justify-content: center; flex-shrink: 0">
+<svg width="34" height="34" viewBox="0 0 24 24" fill="{{ flameFill }}" stroke="{{ flameStroke }}" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true" style="filter: {{ flameGlow }}"><path d="M12 2.5c.8 3.2 4.8 5.6 4.8 10.3A4.8 4.8 0 0 1 12 17.6a4.8 4.8 0 0 1-4.8-4.8c0-2.4 1.2-3.8 2.4-5 0 2 1 3.4 2.4 3.6-.2-3.4-.8-6 0-8.9z"></path><path d="M12 21.5c-2.6 0-4.2-1.4-4.2-3.2" fill="none"></path><path d="M16.2 18.3c0 1.8-1.6 3.2-4.2 3.2" fill="none"></path></svg>
+</span>
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px">
+<div style="display: flex; align-items: baseline; gap: 6px">
+<span class="{{ streakNumCls }}" style="font-size: 40px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums">{{ myStreak }}</span>
+<span style="font-size: 15px; font-weight: 600">day streak</span>
+</div>
+<span style="font-size: 13px; line-height: 1.35; color: var(--muted)">{{ streakMsg }}</span>
+</div>
+<div style="text-align: right; flex-shrink: 0">
+<div style="font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted)">Best</div>
+<div style="font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums">{{ bestStreak }}</div>
+</div>
+</div>
+<div style="display: flex; justify-content: space-between; gap: 4px">
+<sc-for list="{{ weekDays }}" as="d" hint-placeholder-count="7">
+<div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px">
+<span aria-hidden="true" style="font-size: 11px; font-weight: 600; color: {{ d.letterColor }}">{{ d.letter }}</span>
+<span class="{{ d.cls }}" role="img" aria-label="{{ d.aria }}" style="width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; box-sizing: border-box; font-variant-numeric: tabular-nums; {{ d.style }}">
+<sc-if value="{{ d.done }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="color: var(--onAccent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></sc-if>
+<sc-if value="{{ d.notDone }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true">{{ d.date }}</span></sc-if>
+</span>
+</div>
+</sc-for>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px">
+<span style="font-size: 13px; font-weight: 600">{{ nextLabel }}</span>
+<span style="font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums">{{ progressText }}</span>
+</div>
+<div role="progressbar" aria-label="{{ nextLabel }}" aria-valuemin="0" aria-valuemax="{{ nextGoal }}" aria-valuenow="{{ myStreak }}" style="height: 8px; border-radius: 999px; background: var(--surface2); overflow: hidden">
+<span style="display: block; height: 100%; width: {{ progressPct }}; min-width: 8px; border-radius: 999px; background: var(--accent); box-shadow: 0 0 10px rgba(var(--g), calc(0.85 * var(--ga))); transition: width 0.6s cubic-bezier(.2, .8, .2, 1)"></span>
+</div>
+</div>
+<div style="display: flex; justify-content: space-between">
+<sc-for list="{{ streakBadges }}" as="b" hint-placeholder-count="4">
+<div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px">
+<span role="img" aria-label="{{ b.aria }}" style="width: 48px; height: 48px; border-radius: 14px; transform: rotate(45deg); display: flex; align-items: center; justify-content: center; box-sizing: border-box; {{ b.style }}"><span style="transform: rotate(-45deg); font-size: 15px; font-weight: 800; font-variant-numeric: tabular-nums">{{ b.n }}</span></span>
+<span style="font-size: 11px; font-weight: 600; margin-top: 4px; color: {{ b.labelColor }}">{{ b.label }}</span>
+</div>
+</sc-for>
+</div>
+<sc-if value="{{ needsPostToday }}" hint-placeholder-val="{{ true }}">
+<button class="btn" type="button" onClick="{{ createPost }}">Post today's proof</button>
+</sc-if>
+</section>
+<div style="display: flex; gap: 4px; margin: 0 16px; padding: 4px; border-radius: 999px; background: var(--surface); border: 1px solid rgba(var(--ln), 0.10)">
+<sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="3">
+<button class="{{ t.cls }}" type="button" aria-pressed="{{ t.pressed }}" onClick="{{ t.pick }}">{{ t.label }}</button>
+</sc-for>
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 12px 16px 0">
+<sc-for list="{{ gridItems }}" as="gi" hint-placeholder-count="3">
+<div class="cell">{{ gi.label }}</div>
+</sc-for>
+</div>
+<sc-if value="{{ gridEmpty }}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 40px 32px; text-align: center">
+<p style="margin: 0; font-size: 14px; line-height: 1.45; color: var(--muted)">{{ gridEmptyText }}</p>
+<sc-if value="{{ gridEmptyCta }}" hint-placeholder-val="{{ true }}">
+<button class="btn" type="button" onClick="{{ gridCta }}" style="width: auto; padding: 0 20px">{{ gridCtaLabel }}</button>
+</sc-if>
+</div>
+</sc-if>
+<div style="height: 16px"></div>
+</div>
+</div>
+
+<nav style="height: 56px; flex-shrink: 0; border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: space-around; background: var(--bg)" aria-label="Main">
+<button class="ib" type="button" aria-label="Home" aria-current="{{ homeCurrent }}" onClick="{{ goHome }}"><svg width="26" height="26" viewBox="0 0 24 24" fill="{{ homeFill }}" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"></path></svg></button>
+<button class="ib" type="button" aria-label="Search" aria-current="{{ searchCurrent }}" onClick="{{ goSearch }}"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="{{ searchStroke }}" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg></button>
+<button class="ib" type="button" aria-label="Create" onClick="{{ openCreate }}"><span style="width: 40px; height: 32px; border-radius: 999px; background: var(--accent); color: var(--onAccent); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 8px rgba(var(--g), calc(0.6 * var(--ga)))"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></span></button>
+<button class="ib" type="button" aria-label="Scrolls" aria-current="{{ scrollsCurrent }}" onClick="{{ goScrolls }}"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="{{ scrollsStroke }}" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M10 8.5v7l6-3.5z" fill="currentColor"></path></svg></button>
+<button class="ib" type="button" aria-label="Profile" aria-current="{{ profileCurrent }}" onClick="{{ goProfile }}"><span style="width: 30px; height: 30px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; border: {{ profileRing }}; box-sizing: border-box">You</span></button>
+</nav>
+
+<sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+<div class="tst" role="status" style="position: absolute; left: 50%; bottom: 72px; transform: translateX(-50%); background: var(--accent); color: var(--onAccent); font-size: 14px; font-weight: 600; padding: 10px 16px; border-radius: 999px; white-space: nowrap; z-index: 8">{{ toast }}</div>
+</sc-if>
+
+<sc-if value="{{ commentsOpen }}" hint-placeholder-val="{{ false }}">
+<div class="bd" style="position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column; background: rgba(0, 0, 0, 0.4)">
+<button type="button" aria-label="Close comments" onClick="{{ closeSheet }}" style="flex: 1; border: 0; background: transparent; cursor: pointer"></button>
+<div class="sh" role="dialog" aria-label="Comments" style="height: 600px; flex-shrink: 0; background: var(--bg); border-radius: 16px 16px 0 0; display: flex; flex-direction: column">
+<div style="height: 52px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; position: relative; border-bottom: 1px solid var(--line)">
+<span aria-hidden="true" style="position: absolute; top: 6px; left: 50%; transform: translateX(-50%); width: 36px; height: 4px; border-radius: 2px; background: var(--line)"></span>
+<span style="font-size: 16px; font-weight: 700">Comments</span>
+<button class="ib" type="button" aria-label="Close" onClick="{{ closeSheet }}" style="position: absolute; right: 4px; top: 4px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+</div>
+<div class="scroll" style="flex: 1; min-height: 0; padding: 14px 16px; display: flex; flex-direction: column; gap: 18px">
+<sc-if value="{{ noComments }}" hint-placeholder-val="{{ false }}">
+<p style="margin: 40px 0 0; text-align: center; color: var(--muted); font-size: 14px">No comments yet. Start the conversation.</p>
+</sc-if>
+<sc-for list="{{ sheetComments }}" as="c" hint-placeholder-count="2">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; gap: 10px; align-items: flex-start">
+<span class="av">{{ c.initial }}</span>
+<div style="display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1">
+<span style="font-size: 13px"><b style="font-weight: 600">{{ c.name }}</b> <span style="color: var(--muted)">{{ c.when }}</span></span>
+<span style="font-size: 14px; line-height: 1.4; overflow-wrap: anywhere">{{ c.text }}</span>
+<button class="tx" type="button" onClick="{{ c.reply }}">Reply</button>
+</div>
+<button class="lk" type="button" aria-label="{{ c.likeLabel }}" aria-pressed="{{ c.likePressed }}" onClick="{{ c.toggleLike }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="{{ c.likeFill }}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.3s-7.8-4.6-9.2-9.7A4.9 4.9 0 0 1 12 6.6a4.9 4.9 0 0 1 9.2 4c-1.4 5.1-9.2 9.7-9.2 9.7z"></path></svg><span>{{ c.likeCount }}</span></button>
+</div>
+<sc-if value="{{ c.hasReplies }}" hint-placeholder-val="{{ false }}">
+<button class="tx" type="button" onClick="{{ c.toggleReplies }}" style="margin-left: 42px; display: flex; align-items: center; gap: 8px"><span aria-hidden="true" style="width: 24px; height: 1px; background: var(--faint)"></span>{{ c.repliesLabel }}</button>
+</sc-if>
+<sc-if value="{{ c.showReplies }}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 12px; padding-left: 42px">
+<sc-for list="{{ c.replies }}" as="r" hint-placeholder-count="1">
+<div style="display: flex; gap: 10px; align-items: flex-start">
+<span class="av" style="width: 26px; height: 26px; font-size: 11px">{{ r.initial }}</span>
+<div style="display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1">
+<span style="font-size: 13px"><b style="font-weight: 600">{{ r.name }}</b> <span style="color: var(--muted)">{{ r.when }}</span></span>
+<span style="font-size: 14px; line-height: 1.4; overflow-wrap: anywhere">{{ r.text }}</span>
+<button class="tx" type="button" onClick="{{ r.reply }}">Reply</button>
+</div>
+<button class="lk" type="button" aria-label="{{ r.likeLabel }}" aria-pressed="{{ r.likePressed }}" onClick="{{ r.toggleLike }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="{{ r.likeFill }}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.3s-7.8-4.6-9.2-9.7A4.9 4.9 0 0 1 12 6.6a4.9 4.9 0 0 1 9.2 4c-1.4 5.1-9.2 9.7-9.2 9.7z"></path></svg><span>{{ r.likeCount }}</span></button>
+</div>
+</sc-for>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+<sc-if value="{{ replying }}" hint-placeholder-val="{{ false }}">
+<div style="flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; height: 40px; padding: 0 4px 0 16px; background: var(--surface); border-top: 1px solid var(--line); font-size: 13px; color: var(--muted)">
+<span>Replying to <b style="font-weight: 600; color: var(--fg)">{{ replyingTo }}</b></span>
+<button class="ib" type="button" aria-label="Cancel reply" onClick="{{ cancelReply }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+</div>
+</sc-if>
+<sc-if value="{{ draftBad }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin: 0; padding: 8px 16px 0; font-size: 13px; line-height: 1.4; color: var(--danger)">Remove the offensive word to post this comment.</p></sc-if>
+<div style="flex-shrink: 0; display: flex; align-items: center; gap: 8px; padding: 10px 10px 16px 16px; border-top: 1px solid var(--line)">
+<span class="av" style="font-size: 10px">You</span>
+<label for="comment-input" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Write a comment</label>
+<input class="cinp" id="comment-input" type="text" maxlength="300" placeholder="{{ inputPlaceholder }}" value="{{ draft }}" onChange="{{ setDraft }}" onKeyDown="{{ draftKey }}">
+<button class="send" type="button" onClick="{{ submit }}" disabled="{{ cannotSend }}">Post</button>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ shareOpen }}" hint-placeholder-val="{{ false }}">
+<div class="bd" style="position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column; background: rgba(0, 0, 0, 0.4)">
+<button type="button" aria-label="Close share" onClick="{{ closeSheet }}" style="flex: 1; border: 0; background: transparent; cursor: pointer"></button>
+<div class="sh" role="dialog" aria-label="Share" style="flex-shrink: 0; background: var(--bg); border-radius: 16px 16px 0 0; display: flex; flex-direction: column; padding-bottom: 20px">
+<div style="height: 52px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; position: relative; border-bottom: 1px solid var(--line)">
+<span aria-hidden="true" style="position: absolute; top: 6px; left: 50%; transform: translateX(-50%); width: 36px; height: 4px; border-radius: 2px; background: var(--line)"></span>
+<span style="font-size: 16px; font-weight: 700">Share</span>
+<button class="ib" type="button" aria-label="Close" onClick="{{ closeSheet }}" style="position: absolute; right: 4px; top: 4px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+</div>
+<div style="padding: 12px 16px 4px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted)">Send to a friend</div>
+<div style="display: flex; flex-direction: column; padding: 0 16px">
+<sc-for list="{{ shareFriends }}" as="f" hint-placeholder-count="4">
+<div style="display: flex; align-items: center; gap: 12px; height: 52px">
+<span class="av">{{ f.initial }}</span>
+<span style="flex: 1; min-width: 0; font-size: 14px; font-weight: 600">{{ f.name }}</span>
+<button class="{{ f.cls }}" type="button" onClick="{{ f.send }}">{{ f.label }}</button>
+</div>
+</sc-for>
+</div>
+<div style="padding: 12px 16px 0">
+<button class="wide" type="button" onClick="{{ copyLink }}">{{ copyLabel }}</button>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ notifOpen }}" hint-placeholder-val="{{ false }}">
+<div class="pg" role="dialog" aria-label="Notifications" style="position: absolute; inset: 0; z-index: 6; display: flex; flex-direction: column">
+<div style="height: 52px; flex-shrink: 0; display: flex; align-items: center; gap: 4px; padding: 0 8px 0 4px; border-bottom: 1px solid rgba(var(--ln), 0.14)">
+<button class="ib" type="button" aria-label="Back" onClick="{{ closeNotifs }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+<span class="neon-s" style="font-size: 18px; font-weight: 700">Notifications</span>
+</div>
+<div class="scroll" style="flex: 1; min-height: 0; padding-bottom: 20px">
+<sc-for list="{{ notifGroups }}" as="g" hint-placeholder-count="2">
+<div style="display: flex; flex-direction: column">
+<div style="padding: 16px 16px 6px; font-size: 15px; font-weight: 700">{{ g.title }}</div>
+<sc-for list="{{ g.items }}" as="n" hint-placeholder-count="3">
+<div style="display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 6px 16px; background: {{ n.bg }}">
+<span class="av" style="width: 44px; height: 44px; font-size: 16px; box-shadow: {{ n.ring }}">{{ n.initial }}</span>
+<button type="button" onClick="{{ n.open }}" style="flex: 1; min-width: 0; border: 0; background: transparent; padding: 0; text-align: left; font-family: inherit; font-size: 14px; line-height: 1.4; color: var(--fg); cursor: pointer"><b style="font-weight: 600">{{ n.who }}</b> {{ n.text }} <span style="color: var(--muted)">{{ n.when }}</span></button>
+<sc-if value="{{ n.hasFollow }}" hint-placeholder-val="{{ false }}">
+<button class="{{ n.folCls }}" type="button" aria-pressed="{{ n.folPressed }}" onClick="{{ n.toggleFollow }}">{{ n.folLabel }}</button>
+</sc-if>
+<sc-if value="{{ n.hasThumb }}" hint-placeholder-val="{{ true }}">
+<span aria-hidden="true" style="width: 44px; height: 44px; border-radius: 8px; background: var(--media); border: 1px solid rgba(var(--ln), 0.16); flex-shrink: 0"></span>
+</sc-if>
+</div>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ inboxOpen }}" hint-placeholder-val="{{ false }}">
+<div class="pg" role="dialog" aria-label="Messages" style="position: absolute; inset: 0; z-index: 6; display: flex; flex-direction: column">
+<div style="height: 52px; flex-shrink: 0; display: flex; align-items: center; gap: 4px; padding: 0 8px 0 4px">
+<button class="ib" type="button" aria-label="Back" onClick="{{ closeDm }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+<span class="neon-s" style="font-size: 18px; font-weight: 700">{{ pUser }}</span>
+</div>
+<div style="padding: 0 16px 10px; position: relative">
+<label for="dm-search" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search messages</label>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A3A3A3" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="position: absolute; left: 28px; top: 10px"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+<input class="search" id="dm-search" type="search" autocomplete="off" placeholder="Search" value="{{ dmQ }}" onChange="{{ setDmQ }}">
+</div>
+<div style="padding: 6px 16px 6px; font-size: 15px; font-weight: 700">Messages</div>
+<div class="scroll" style="flex: 1; min-height: 0; padding-bottom: 20px">
+<sc-for list="{{ threads }}" as="th" hint-placeholder-count="4">
+<button class="row" type="button" aria-label="{{ th.aria }}" onClick="{{ th.open }}" style="min-height: 68px; color: var(--fg)">
+<span class="av" style="width: 52px; height: 52px; font-size: 18px; box-shadow: {{ th.ring }}">{{ th.initial }}</span>
+<span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 14px; font-weight: {{ th.weight }}">{{ th.name }}</span>
+<span style="font-size: 13px; color: {{ th.previewColor }}; font-weight: {{ th.weight }}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ th.preview }} · {{ th.when }}</span>
+</span>
+<sc-if value="{{ th.unread }}" hint-placeholder-val="{{ true }}">
+<span aria-hidden="true" style="width: 9px; height: 9px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 6px rgba(var(--g), calc(0.9 * var(--ga))); flex-shrink: 0"></span>
+</sc-if>
+</button>
+</sc-for>
+<sc-if value="{{ noThreads }}" hint-placeholder-val="{{ false }}">
+<p style="margin: 32px 16px; text-align: center; font-size: 14px; color: var(--muted)">No one matches that name.</p>
+</sc-if>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ threadOpen }}" hint-placeholder-val="{{ false }}">
+<div class="pg" role="dialog" aria-label="{{ threadAria }}" style="position: absolute; inset: 0; z-index: 6; display: flex; flex-direction: column">
+<div style="height: 56px; flex-shrink: 0; display: flex; align-items: center; gap: 8px; padding: 0 8px 0 4px; border-bottom: 1px solid rgba(var(--ln), 0.14)">
+<button class="ib" type="button" aria-label="Back to messages" onClick="{{ backToInbox }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+<span class="av" style="width: 34px; height: 34px">{{ threadInitial }}</span>
+<span style="display: flex; flex-direction: column">
+<span style="font-size: 15px; font-weight: 700">{{ threadName }}</span>
+<span style="font-size: 12px; color: var(--muted)">{{ threadStreak }}</span>
+</span>
+</div>
+<div class="scroll" style="flex: 1; min-height: 0; padding: 16px 12px; display: flex; flex-direction: column; gap: 8px">
+<sc-for list="{{ threadMsgs }}" as="m" hint-placeholder-count="3">
+<div style="display: flex; flex-direction: column; align-items: {{ m.align }}; gap: 2px">
+<span style="max-width: 75%; padding: 9px 14px; border-radius: 20px; font-size: 14px; line-height: 1.4; overflow-wrap: anywhere; {{ m.bubble }}">{{ m.text }}</span>
+<span style="font-size: 11px; color: var(--muted); padding: 0 6px">{{ m.when }}</span>
+</div>
+</sc-for>
+</div>
+<sc-if value="{{ dmBad }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin: 0; padding: 8px 16px 0; font-size: 13px; line-height: 1.4; color: var(--danger)">Remove the offensive word to send this.</p></sc-if>
+<div style="flex-shrink: 0; display: flex; align-items: center; gap: 8px; padding: 10px 10px 16px 16px; border-top: 1px solid rgba(var(--ln), 0.14)">
+<label for="dm-input" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Message</label>
+<input class="cinp" id="dm-input" type="text" maxlength="500" placeholder="Message..." value="{{ dmDraft }}" onChange="{{ setDmDraft }}" onKeyDown="{{ dmKey }}">
+<button class="send" type="button" onClick="{{ sendDm }}" disabled="{{ cannotSendDm }}">Send</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ suspendedOpen }}" hint-placeholder-val="{{ false }}">
+<div class="bd" style="position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column; background: rgba(0, 0, 0, 0.4)">
+<button type="button" aria-label="Close" onClick="{{ closeSheet }}" style="flex: 1; border: 0; background: transparent; cursor: pointer"></button>
+<div class="sh" role="dialog" aria-label="Posting suspended" style="flex-shrink: 0; background: var(--bg); border-radius: 16px 16px 0 0; display: flex; flex-direction: column; gap: 12px; padding: 24px 20px 28px">
+<span style="font-size: 20px; font-weight: 700">Posting is suspended for 7 days</span>
+<p style="margin: 0; font-size: 15px; line-height: 1.5; color: var(--muted)">Your account has 3 strikes for posts that broke the guidelines. You can still watch, like and message. If you think a strike was a mistake, request a review from Account status.</p>
+<button class="btn" type="button" onClick="{{ openStatus }}">Account status</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ createOpen }}" hint-placeholder-val="{{ false }}">
+<div class="bd" style="position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column; background: rgba(0, 0, 0, 0.4)">
+<button type="button" aria-label="Close create" onClick="{{ closeSheet }}" style="flex: 1; border: 0; background: transparent; cursor: pointer"></button>
+<div class="sh" role="dialog" aria-label="Create" style="flex-shrink: 0; background: var(--bg); border-radius: 16px 16px 0 0; display: flex; flex-direction: column; padding-bottom: 20px">
+<div style="height: 52px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; position: relative; border-bottom: 1px solid var(--line)">
+<span aria-hidden="true" style="position: absolute; top: 6px; left: 50%; transform: translateX(-50%); width: 36px; height: 4px; border-radius: 2px; background: var(--line)"></span>
+<span style="font-size: 16px; font-weight: 700">Create</span>
+<button class="ib" type="button" aria-label="Close" onClick="{{ closeSheet }}" style="position: absolute; right: 4px; top: 4px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+</div>
+<button class="row" type="button" onClick="{{ createPost }}"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"></rect><circle cx="9" cy="9" r="2"></circle><path d="m21 16-5-5-9 9"></path></svg></span><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-weight: 600">Post</span><span style="font-size: 13px; color: var(--muted)">Photo or video to your feed</span></span></button>
+<button class="row" type="button" onClick="{{ createStory }}"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke-dasharray="3 3"></circle><path d="M12 8v8M8 12h8"></path></svg></span><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-weight: 600">Story</span><span style="font-size: 13px; color: var(--muted)">Photo or video with text, shows for 24 hours</span></span></button>
+<button class="row" type="button" onClick="{{ createScroll }}"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M10 8.5v7l6-3.5z" fill="currentColor"></path></svg></span><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-weight: 600">Scroll</span><span style="font-size: 13px; color: var(--muted)">Short vertical video for the Scrolls feed</span></span></button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ composeOpen }}" hint-placeholder-val="{{ false }}">
+<div class="pg" role="dialog" aria-label="{{ composeTitle }}" style="position: absolute; inset: 0; z-index: 6; background: var(--bg); display: flex; flex-direction: column">
+<div style="height: 52px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 8px; border-bottom: 1px solid var(--line)">
+<button class="tx2" type="button" onClick="{{ cancelCompose }}" style="font-weight: 400">Cancel</button>
+<span style="font-size: 16px; font-weight: 700">{{ composeTitle }}</span>
+<button class="send" type="button" onClick="{{ shareCompose }}" disabled="{{ composeCannot }}">{{ shareLabel }}</button>
+</div>
+<div class="scroll" style="flex: 1; min-height: 0; padding: 16px; display: flex; flex-direction: column; gap: 18px">
+<sc-if value="{{ composeShowType }}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; gap: 8px">
+<button class="{{ typePhotoCls }}" type="button" aria-pressed="{{ typePhotoPressed }}" onClick="{{ pickPhoto }}">Photo</button>
+<button class="{{ typeVideoCls }}" type="button" aria-pressed="{{ typeVideoPressed }}" onClick="{{ pickVideo }}">Video</button>
+</div>
+</sc-if>
+<div style="{{ composeMediaStyle }}">
+<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#A3A3A3" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"></rect><circle cx="9" cy="9" r="2"></circle><path d="m21 16-5-5-9 9"></path></svg>
+<span>{{ composeMedia }}</span>
+<sc-if value="{{ hasOverlay }}" hint-placeholder-val="{{ false }}">
+<span style="font-size: 18px; font-weight: 700; color: var(--fg); line-height: 1.3; overflow-wrap: anywhere">{{ composeText }}</span>
+</sc-if>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label class="flbl" for="compose-text">{{ textLabel }}</label>
+<input class="fin" id="compose-text" type="text" maxlength="200" placeholder="{{ textPh }}" value="{{ composeText }}" onChange="{{ setComposeText }}">
+<sc-if value="{{ composeBad }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin: 0; padding: 2px 0 0; font-size: 13px; line-height: 1.4; color: var(--danger)">Remove the offensive word to share this.</p></sc-if>
+</div>
+<sc-if value="{{ composeShowCat }}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span class="flbl">Topic</span>
+<div style="display: flex; gap: 8px; flex-wrap: wrap">
+<sc-for list="{{ groupChips }}" as="g" hint-placeholder-count="4">
+<button class="{{ g.cls }}" type="button" aria-pressed="{{ g.pressed }}" onClick="{{ g.pick }}">{{ g.label }}</button>
+</sc-for>
+</div>
+<sc-if value="{{ hasGroup }}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; gap: 8px; flex-wrap: wrap; padding-top: 2px">
+<sc-for list="{{ catChips }}" as="k" hint-placeholder-count="4">
+<button class="{{ k.cls }}" type="button" aria-pressed="{{ k.pressed }}" onClick="{{ k.pick }}">{{ k.label }}</button>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ needTopic }}" hint-placeholder-val="{{ false }}">
+<span style="font-size: 13px; color: var(--muted)">Pick a topic to share. Every post is checked to make sure it fits.</span>
+</sc-if>
+</div>
+</sc-if>
+<sc-if value="{{ composeShowScrollToggle }}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; align-items: center; gap: 12px">
+<div style="flex: 1; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 15px; font-weight: 600">Also share to Scrolls</span>
+<span style="font-size: 13px; color: var(--muted)">Makes this a video post that also plays in Scrolls.</span>
+</div>
+<button class="{{ scrollSwCls }}" type="button" aria-label="Also share to Scrolls" aria-pressed="{{ scrollSwPressed }}" onClick="{{ toggleToScroll }}"><span></span></button>
+</div>
+</sc-if>
+<div style="margin-top: 6px; padding: 12px; border-radius: 12px; border: 1px dashed var(--faint); display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 12px; font-weight: 600; color: var(--muted)">Prototype only: pick what the AI check returns</span>
+<div style="display: flex; gap: 6px">
+<sc-for list="{{ demoChips }}" as="d" hint-placeholder-count="3">
+<button class="{{ d.cls }}" type="button" aria-pressed="{{ d.pressed }}" onClick="{{ d.pick }}" style="height: 36px; font-size: 13px">{{ d.label }}</button>
+</sc-for>
+</div>
+</div>
+</div>
+<sc-if value="{{ ckChecking }}" hint-placeholder-val="{{ false }}">
+<div role="status" style="position: absolute; inset: 0; z-index: 2; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 32px; text-align: center">
+<span class="spin" aria-hidden="true"></span>
+<span style="font-size: 18px; font-weight: 700">Checking your post</span>
+<div style="display: flex; flex-direction: column; gap: 8px; font-size: 14px; color: var(--muted)">
+<span>Scanning for content that isn't allowed</span>
+<span>Making sure it fits {{ ckTopic }}</span>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ ckRejected }}" hint-placeholder-val="{{ false }}">
+<div role="alertdialog" aria-label="Post not shared" style="position: absolute; inset: 0; z-index: 2; background: var(--bg); display: flex; flex-direction: column; justify-content: center; gap: 14px; padding: 28px 24px">
+<span aria-hidden="true" style="width: 56px; height: 56px; border-radius: 50%; border: 2px solid var(--danger); color: var(--danger); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700">!</span>
+<sc-if value="{{ ckOff }}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 10px">
+<span style="font-size: 22px; font-weight: 700; line-height: 1.25">{{ ckOffTitle }}</span>
+<p style="margin: 0; font-size: 15px; line-height: 1.5; color: var(--muted)">Posts have to match the topic you pick. Change the topic, or post something that fits it. This doesn't count as a strike.</p>
+<button class="btn" type="button" onClick="{{ changeTopic }}" style="margin-top: 8px">Change topic</button>
+</div>
+</sc-if>
+<sc-if value="{{ ckBan }}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 10px">
+<span style="font-size: 22px; font-weight: 700; line-height: 1.25">This post breaks our guidelines</span>
+<p style="margin: 0; font-size: 15px; line-height: 1.5; color: var(--muted)">Our check found content that isn't allowed here, like nudity, sexual content, violence or illegal activity. It wasn't shared.</p>
+<p style="margin: 0; font-size: 14px; font-weight: 600; line-height: 1.45; color: var(--danger)">{{ ckStrikeLine }}</p>
+<button class="wide" type="button" onClick="{{ readGuidelines }}" style="margin-top: 8px">Read the guidelines</button>
+</div>
+</sc-if>
+<button class="wide" type="button" onClick="{{ appeal }}">Request a review</button>
+<button class="tx2" type="button" onClick="{{ discardPost }}" style="align-self: center; font-weight: 400; color: var(--muted)">Discard post</button>
+</div>
+</sc-if>
+<sc-if value="{{ ckAppealed }}" hint-placeholder-val="{{ false }}">
+<div role="status" style="position: absolute; inset: 0; z-index: 2; background: var(--bg); display: flex; flex-direction: column; justify-content: center; gap: 12px; padding: 28px 24px">
+<span style="font-size: 22px; font-weight: 700; line-height: 1.25">Review requested</span>
+<p style="margin: 0; font-size: 15px; line-height: 1.5; color: var(--muted)">A person on our team will look at it within 24 hours. If the check got it wrong, your post goes up and any strike is removed.</p>
+<button class="btn" type="button" onClick="{{ discardPost }}" style="margin-top: 8px">Done</button>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ editOpen }}" hint-placeholder-val="{{ false }}">
+<div class="pg" role="dialog" aria-label="Edit profile" style="position: absolute; inset: 0; z-index: 6; background: var(--bg); display: flex; flex-direction: column">
+<div style="height: 52px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 8px; border-bottom: 1px solid var(--line)">
+<button class="tx2" type="button" onClick="{{ closeSheet }}" style="font-weight: 400">Cancel</button>
+<span style="font-size: 16px; font-weight: 700">Edit profile</span>
+<button class="send" type="button" onClick="{{ saveEdit }}" disabled="{{ edCannotSave }}">Done</button>
+</div>
+<div class="scroll" style="flex: 1; min-height: 0; padding: 20px 16px; display: flex; flex-direction: column; gap: 18px">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 4px">
+<span style="width: 84px; height: 84px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700">{{ edInitial }}</span>
+<button class="tx2" type="button" onClick="{{ changePhoto }}">Change photo</button>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label class="flbl" for="ed-name">Name</label>
+<input class="fin" id="ed-name" type="text" maxlength="40" value="{{ edName }}" onChange="{{ setEdName }}">
+<sc-if value="{{ edBadName }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin: 0; padding: 0; font-size: 13px; line-height: 1.4; color: var(--danger)">Names can't include offensive words.</p></sc-if>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label class="flbl" for="ed-user">Username</label>
+<input class="fin" id="ed-user" type="text" maxlength="30" autocomplete="off" value="{{ edUser }}" onChange="{{ setEdUser }}">
+<sc-if value="{{ edBadUser }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin: 0; padding: 0; font-size: 13px; line-height: 1.4; color: var(--danger)">Usernames can't include offensive words.</p></sc-if>
+<span style="font-size: 12px; color: var(--muted)">Lowercase letters, numbers, periods and underscores.</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label class="flbl" for="ed-bio">Bio</label>
+<input class="fin" id="ed-bio" type="text" maxlength="150" placeholder="What are you working on?" value="{{ edBio }}" onChange="{{ setEdBio }}">
+<sc-if value="{{ edBadBio }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin: 0; padding: 0; font-size: 13px; line-height: 1.4; color: var(--danger)">Bios can't include offensive words.</p></sc-if>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ settingsOpen }}" hint-placeholder-val="{{ false }}">
+<div class="pg" role="dialog" aria-label="{{ setTitle }}" style="position: absolute; inset: 0; z-index: 6; display: flex; flex-direction: column">
+<div style="height: 52px; flex-shrink: 0; display: flex; align-items: center; gap: 4px; padding: 0 8px 0 4px; border-bottom: 1px solid rgba(var(--ln), 0.14)">
+<button class="ib" type="button" aria-label="Back" onClick="{{ setBack }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+<span class="neon-s" style="font-size: 18px; font-weight: 700">{{ setTitle }}</span>
+</div>
+<div class="scroll" style="flex: 1; min-height: 0; padding-bottom: 28px">
+<sc-if value="{{ setIsMain }}" hint-placeholder-val="{{ true }}">
+<div style="padding: 12px 16px 2px; position: relative">
+<label for="set-search" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search settings</label>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A3A3A3" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="position: absolute; left: 28px; top: 22px"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+<input class="search" id="set-search" type="search" autocomplete="off" placeholder="Search settings" value="{{ setQ }}" onChange="{{ setSetQ }}">
+</div>
+</sc-if>
+<sc-for list="{{ setSections }}" as="sec" hint-placeholder-count="3">
+<div style="display: flex; flex-direction: column">
+<sc-if value="{{ sec.hasTitle }}" hint-placeholder-val="{{ true }}">
+<div style="padding: 20px 28px 8px; font-size: 13px; font-weight: 600; color: var(--muted)">{{ sec.title }}</div>
+</sc-if>
+<sc-if value="{{ sec.hasNote }}" hint-placeholder-val="{{ false }}">
+<p style="margin: 0; padding: 16px 28px 10px; font-size: 13px; line-height: 1.45; color: var(--muted)">{{ sec.note }}</p>
+</sc-if>
+<sc-if value="{{ sec.hasItems }}" hint-placeholder-val="{{ true }}">
+<div style="margin: 0 12px; border-radius: 14px; border: 1px solid rgba(var(--ln), 0.12); background: rgba(var(--ln), 0.03); overflow: hidden; box-shadow: 0 0 18px rgba(var(--g), calc(0.04 * var(--ga)))">
+<sc-for list="{{ sec.items }}" as="it" hint-placeholder-count="3">
+<button class="row srow" type="button" role="{{ it.role }}" aria-checked="{{ it.checked }}" onClick="{{ it.act }}" style="color: {{ it.color }}; min-height: 54px; padding: 8px 14px">
+<span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 15px">{{ it.label }}</span>
+<sc-if value="{{ it.hasSub }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; line-height: 1.35; color: var(--muted)">{{ it.sub }}</span></sc-if>
+</span>
+<sc-if value="{{ it.hasValue }}" hint-placeholder-val="{{ false }}"><span style="font-size: 14px; color: var(--muted); white-space: nowrap; max-width: 140px; overflow: hidden; text-overflow: ellipsis">{{ it.value }}</span></sc-if>
+<sc-if value="{{ it.isToggle }}" hint-placeholder-val="{{ false }}"><span class="{{ it.swCls }}" aria-hidden="true" style="display: block"><span></span></span></sc-if>
+<sc-if value="{{ it.isRadio }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="width: 22px; height: 22px; border-radius: 50%; border: 2px solid {{ it.radioBorder }}; box-sizing: border-box; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: {{ it.radioGlow }}"><span style="width: 10px; height: 10px; border-radius: 50%; background: {{ it.radioDot }}"></span></span></sc-if>
+<sc-if value="{{ it.isLink }}" hint-placeholder-val="{{ true }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8A8A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></sc-if>
+</button>
+</sc-for>
+</div>
+</sc-if>
+</div>
+</sc-for>
+<sc-if value="{{ setEmpty }}" hint-placeholder-val="{{ false }}">
+<p style="margin: 32px 16px; text-align: center; font-size: 14px; color: var(--muted)">No settings match that.</p>
+</sc-if>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ storyOpen }}" hint-placeholder-val="{{ false }}">
+<div class="zm" role="dialog" aria-label="Story" style="position: absolute; inset: 0; z-index: 7; background: #111111; color: #ffffff; display: flex; flex-direction: column">
+<div style="display: flex; gap: 4px; padding: 10px 10px 0">
+<sc-for list="{{ storySegs }}" as="g" hint-placeholder-count="2">
+<div style="flex: 1; height: 3px; border-radius: 2px; background: rgba(255, 255, 255, 0.3); overflow: hidden">
+<div class="{{ g.cls }}" style="height: 100%; background: #ffffff; width: {{ g.width }}" onAnimationEnd="{{ g.end }}"></div>
+</div>
+</sc-for>
+</div>
+<div style="display: flex; align-items: center; gap: 10px; padding: 8px 4px 8px 12px">
+<span class="av" style="background: #444444; color: #ffffff">{{ storyInitial }}</span>
+<span style="font-size: 14px; font-weight: 600">{{ storyName }}</span>
+<span style="font-size: 13px; color: rgba(255, 255, 255, 0.6)">{{ storyWhen }}</span>
+<button class="ib" type="button" aria-label="Close story" onClick="{{ closeStory }}" style="margin-left: auto; color: #ffffff"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+</div>
+<div style="position: relative; flex: 1; min-height: 0; margin: 0 8px; border-radius: 12px; background: #2A2A2A; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 24px; text-align: center">
+<sc-if value="{{ storyHasImg }}" hint-placeholder-val="{{ false }}"><img src="{{ storyImg }}" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 12px"><span aria-hidden="true" style="position: absolute; inset: 0; border-radius: 12px; background: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.55))"></span></sc-if>
+<sc-if value="{{ storyNoImg }}" hint-placeholder-val="{{ true }}"><span style="font-size: 13px; color: rgba(255, 255, 255, 0.55)">{{ storyPhoto }}</span></sc-if>
+<span style="position: relative; font-size: 22px; font-weight: 700; line-height: 1.3; text-wrap: balance; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5)">{{ storyText }}</span>
+<span style="position: relative; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 999px; background: rgba(0, 0, 0, 0.35); backdrop-filter: blur(8px)">{{ storyTag }}</span>
+<button type="button" aria-label="Previous" onClick="{{ prevStory }}" style="position: absolute; left: 0; top: 0; bottom: 0; width: 35%; border: 0; background: transparent; cursor: pointer"></button>
+<button type="button" aria-label="Next" onClick="{{ nextStory }}" style="position: absolute; right: 0; top: 0; bottom: 0; width: 65%; border: 0; background: transparent; cursor: pointer"></button>
+</div>
+<sc-if value="{{ storyCanReply }}" hint-placeholder-val="{{ true }}">
+<sc-if value="{{ storyBad }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin: 0; padding: 10px 16px 0; font-size: 13px; line-height: 1.4; color: #FF8A8A">Remove the offensive word to send this.</p></sc-if>
+<div style="display: flex; align-items: center; gap: 8px; padding: 12px 8px 18px 12px">
+<label for="story-reply" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Reply to story</label>
+<input class="sinp" id="story-reply" type="text" maxlength="300" placeholder="{{ storyReplyPh }}" value="{{ storyDraft }}" onChange="{{ setStoryDraft }}" onKeyDown="{{ storyKey }}" onFocus="{{ storyFocusOn }}" onBlur="{{ storyFocusOff }}">
+<button class="ib" type="button" aria-label="{{ storyRespLabel }}" aria-pressed="{{ storyRespPressed }}" onClick="{{ storyRespect }}" style="color: #ffffff"><svg width="26" height="26" viewBox="0 0 24 24" fill="{{ storyRespFill }}" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.3s-7.8-4.6-9.2-9.7A4.9 4.9 0 0 1 12 6.6a4.9 4.9 0 0 1 9.2 4c-1.4 5.1-9.2 9.7-9.2 9.7z"></path></svg></button>
+</div>
+</sc-if>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+topics() {
+return [['Fitness', ['Gym', 'Running', 'Sports', 'Yoga']], ['Learning', ['Reading', 'Studying', 'Languages', 'Writing']], ['Work and tech', ['Coding', 'AI and Claude', 'Design', 'Building']], ['Money and health', ['Trading', 'Investing', 'Cooking', 'Healthy eating']]];
+}
+groupOf(sub) {
+const g = this.topics().filter((x) => x[1].indexOf(sub) !== -1)[0];
+return g ? g[0] : '';
+}
+isBad(text) {
+if (!text) return false;
+const raw = String(text).toLowerCase();
+const ko = raw.replace(/시발점/g, '').replace(/[\s.\-_*~!?·]/g, '');
+const KO = ['씨발', '씨팔', '시팔', '시발', 'ㅅㅂ', 'ㅆㅂ', '씨바', '병신', 'ㅂㅅ', '븅신', '개새끼', '개새기', '개색끼', '좆', '지랄', 'ㅈㄹ', '미친놈', '미친년', '니미', '엠창', '썅', '존나', '졸라', 'ㅈㄴ', '꺼져'];
+if (KO.some((w) => ko.indexOf(w) !== -1)) return true;
+const LEET = { '0': 'o', '1': 'i', '!': 'i', '|': 'i', '3': 'e', '4': 'a', '@': 'a', '5': 's', '$': 's', '7': 't', '8': 'b', '+': 't', '9': 'g' };
+const ALLOW = /shi+take|shitake|scunthorpe|matsushita|cockpit|cocktail|peacock|hancock|dickens|cumulative|cucumber|document|assassin|classic|passion|grape|therapist|therapeutic|analys/g;
+const leet = raw.replace(/[01!|34589@$7+]/g, (c) => LEET[c]);
+const runs = (w) => new RegExp(w.replace(/(.)\1*/g, (m, c) => c + (m.length > 1 ? '{' + m.length + ',}' : '+')));
+const STRONG = ['fuck', 'fck', 'fuk', 'fuq', 'phuck', 'shit', 'bitch', 'biatch', 'cunt', 'nigger', 'nigga', 'faggot', 'fagot', 'asshole', 'dumbass', 'jackass', 'asshat', 'assface', 'asswipe', 'bastard', 'whore', 'slut', 'retard', 'pussy', 'dickhead', 'cocksucker', 'wanker', 'twat', 'dildo', 'porn', 'motherf', 'bullsh', 'jerkoff', 'tranny', 'kys'];
+const WHOLE = ['ass', 'arse', 'dick', 'cock', 'tit', 'tits', 'titty', 'titties', 'piss', 'pissed', 'wank', 'fag', 'fags', 'rape', 'raped', 'damn', 'dammit', 'crap', 'crappy', 'hoe', 'hoes', 'cum', 'jizz', 'boob', 'boobs', 'prick', 'douche', 'douchebag', 'skank', 'thot', 'asses', 'dicks', 'cocks'];
+const strongRx = STRONG.map(runs);
+const wholeRx = WHOLE.map((w) => new RegExp('^' + runs(w).source + '$'));
+const words = leet.replace(ALLOW, ' ').split(/\s+/).filter(Boolean);
+const joined = [];
+let run = '';
+words.forEach((w) => { const c = w.replace(/[^a-z]/g, ''); if (c.length === 1) { run += c; } else { if (run.length >= 3) joined.push(run); run = ''; } });
+if (run.length >= 3) joined.push(run);
+const squashed = words.map((w) => w.replace(/[^a-z]/g, '')).concat(joined);
+if (squashed.some((w) => strongRx.some((rx) => rx.test(w)))) return true;
+const parts = leet.replace(ALLOW, ' ').split(/[^a-z]+/).filter(Boolean).concat(joined);
+return parts.some((w) => wholeRx.some((rx) => rx.test(w)));
+}
+componentDidMount() { this._i = setInterval(() => this.forceUpdate(), 30000); }
+componentWillUnmount() { clearTimeout(this._t); clearInterval(this._i); clearTimeout(this._ck); }
+goStory(list, p, f) {
+const s = this.state || {};
+const seen = Object.assign({}, s.seen || {});
+seen[list[p]] = true;
+const n = ((s.story && s.story.n) || 0) + 1;
+this.setState({ story: { list: list, p: p, f: f, n: n }, seen: seen, storyDraft: '', storyFocus: false });
+}
+flash(msg) {
+clearTimeout(this._t);
+this.setState({ toast: msg });
+this._t = setTimeout(() => this.setState({ toast: '' }), 1800);
+}
+renderVals() {
+const v = this.baseVals();
+const s = this.state || {};
+const saved = s.saved || {};
+const added = s.added || {};
+const sent = s.sent || {};
+const clipBase = (s.myScrolls || []).concat([
+{ id: 's1', who: 'sora.runs', caption: '5km tempo run. Negative splits.', cat: 'Running', len: '1:10', count: 12 },
+{ id: 's2', who: 'jess.cooks', caption: 'High-protein pancakes, three ingredients.', cat: 'Cooking', len: '0:44', count: 30 },
+{ id: 's3', who: 'alex.trains', caption: 'Pull-ups: month 3.', cat: 'Gym', len: '0:32', count: 18 },
+{ id: 's4', who: 'dan.reads', caption: 'Day 31. Still reading before bed.', cat: 'Reading', len: '0:21', count: 9 },
+{ id: 's5', who: 'minjun.lifts', caption: 'Deadlift PR attempt.', cat: 'Gym', len: '0:27', count: 41 }
+]);
+const starter = {
+p1: [ { id: 'c1', name: 'sora.runs', text: 'Clean depth on those squats.', when: '1h', likes: 4 }, { id: 'c2', name: 'alex.trains', text: 'What program are you running?', when: '45m', likes: 1 } ],
+p2: [ { id: 'c3', name: 'minjun.lifts', text: 'Saving this for Sunday.', when: '3h', likes: 2 } ],
+p3: [ { id: 'c4', name: 'jess.cooks', text: '30 days straight. Keep going.', when: '5h', likes: 9 }, { id: 'c5', name: 'sora.runs', text: 'Which book?', when: '4h', likes: 0 }, { id: 'c6', name: 'alex.trains', text: 'Respect.', when: '2h', likes: 3 } ]
+};
+const starterReplies = {
+c2: [ { id: 'r1', name: 'minjun.lifts', text: '@alex.trains 5/3/1. Week 2 right now.', when: '30m', likes: 2 } ],
+c5: [ { id: 'r2', name: 'dan.reads', text: '@sora.runs Atomic Habits. Fitting, right?', when: '3h', likes: 5 } ]
+};
+const repliesAdded = s.replies || {};
+const cLikes = s.cLikes || {};
+const expanded = s.expanded || {};
+const replyTo = s.replyTo || null;
+const commentsFor = (id) => (starter[id] || []).concat(added[id] || []);
+const repliesFor = (cid) => (starterReplies[cid] || []).concat(repliesAdded[cid] || []);
+v.posts = v.posts.map((p) => {
+const sv = !!saved[p.id];
+const n = commentsFor(p.id).reduce((t, c) => t + 1 + repliesFor(c.id).length, 0);
+return Object.assign({}, p, {
+commentCount: n,
+commentsLink: n === 0 ? 'Be the first to comment' : (n === 1 ? '1 comment' : n + ' comments'),
+openComments: () => this.setState({ sheet: 'comments', sheetPost: p.id, draft: '', replyTo: null }),
+openShare: () => this.setState({ sheet: 'share', sheetPost: p.id, sent: {}, copied: false }),
+saveFill: sv ? 'currentColor' : 'none',
+savePressed: sv ? 'true' : 'false',
+saveLabel: sv ? 'Remove from saved' : 'Save',
+toggleSave: () => {
+const x = Object.assign({}, saved);
+x[p.id] = !sv;
+this.setState({ saved: x });
+this.flash(sv ? 'Removed from saved' : 'Saved');
+}
+});
+});
+const sp = s.sheetPost || '';
+const owner = (v.posts.filter((p) => p.id === sp)[0] || {}).name || (clipBase.filter((c) => c.id === sp)[0] || {}).who || '';
+const draft = s.draft || '';
+const submit = () => {
+const t = draft.trim();
+if (!t || !sp || this.isBad(t)) return;
+const id = 'n' + Date.now();
+const mine = { id: id, name: 'you', text: t, when: 'now', likes: 0 };
+if (replyTo) {
+const r = Object.assign({}, repliesAdded);
+r[replyTo.parent] = (r[replyTo.parent] || []).concat([mine]);
+const ex = Object.assign({}, expanded);
+ex[replyTo.parent] = true;
+this.setState({ replies: r, expanded: ex, draft: '', replyTo: null });
+} else {
+const a = Object.assign({}, added);
+a[sp] = (a[sp] || []).concat([mine]);
+this.setState({ added: a, draft: '' });
+}
+};
+const item = (c, parent) => {
+const on = !!cLikes[c.id];
+return {
+name: c.name,
+text: c.text,
+when: c.when,
+initial: c.name.charAt(0).toUpperCase(),
+likeCount: (c.likes || 0) + (on ? 1 : 0),
+likeFill: on ? 'currentColor' : 'none',
+likePressed: on ? 'true' : 'false',
+likeLabel: on ? 'Remove like from comment' : 'Like comment',
+toggleLike: () => { const x = Object.assign({}, cLikes); x[c.id] = !on; this.setState({ cLikes: x }); },
+reply: () => this.setState({ replyTo: { parent: parent, name: c.name }, draft: '@' + c.name + ' ' })
+};
+};
+const sheetComments = sp ? commentsFor(sp).map((c) => {
+const rs = repliesFor(c.id);
+const open = !!expanded[c.id];
+return Object.assign(item(c, c.id), {
+hasReplies: rs.length > 0,
+showReplies: open && rs.length > 0,
+repliesLabel: open ? 'Hide replies' : (rs.length === 1 ? 'View 1 reply' : 'View ' + rs.length + ' replies'),
+toggleReplies: () => { const ex = Object.assign({}, expanded); ex[c.id] = !open; this.setState({ expanded: ex }); },
+replies: rs.map((r) => item(r, c.id))
+});
+}) : [];
+const friends = ['minjun.lifts', 'jess.cooks', 'dan.reads', 'sora.runs', 'alex.trains'].filter((n) => n !== owner);
+v.shareFriends = friends.map((n) => ({
+name: n,
+initial: n.charAt(0).toUpperCase(),
+label: sent[n] ? 'Sent' : 'Send',
+cls: sent[n] ? 'chip sent' : 'chip',
+send: () => { const x = Object.assign({}, sent); x[n] = true; this.setState({ sent: x }); }
+}));
+v.commentsOpen = s.sheet === 'comments';
+v.shareOpen = s.sheet === 'share';
+v.closeSheet = () => this.setState({ sheet: null, replyTo: null });
+v.replying = !!replyTo;
+v.replyingTo = replyTo ? replyTo.name : '';
+v.cancelReply = () => this.setState({ replyTo: null, draft: '' });
+v.inputPlaceholder = replyTo ? 'Reply to ' + replyTo.name : 'Write a comment';
+v.sheetComments = sheetComments;
+v.noComments = sheetComments.length === 0;
+v.draft = draft;
+v.setDraft = (e) => this.setState({ draft: e.target.value });
+v.draftKey = (e) => { if (e.key === 'Enter') { e.preventDefault(); submit(); } };
+v.submit = submit;
+v.draftBad = this.isBad(draft);
+v.cannotSend = draft.trim().length === 0 || v.draftBad;
+v.copyLabel = s.copied ? 'Link copied' : 'Copy link';
+v.copyLink = () => this.setState({ copied: true });
+v.toast = s.toast || '';
+v.hasToast = !!s.toast;
+const tab = s.tab || 'home';
+const theme = (s.choices && s.choices.theme) || 'white';
+const sa = !!s.searchActive;
+const qRaw = (s.q || '').trim();
+const ql = qRaw.toLowerCase();
+const vcat = s.vcat || 'All';
+const allVids = [
+{ title: 'Push day: bench 5x5', who: 'minjun.lifts', cat: 'Gym', len: '0:42' },
+{ title: '10-minute protein oats', who: 'jess.cooks', cat: 'Cooking', len: '0:38' },
+{ title: 'Day 30 of reading', who: 'dan.reads', cat: 'Reading', len: '0:21' },
+{ title: 'First pull-up in 3 months', who: 'alex.trains', cat: 'Gym', len: '0:18' },
+{ title: 'Meal prep: 5 lunches', who: 'jess.cooks', cat: 'Cooking', len: '1:24' },
+{ title: '5am run, day 12', who: 'sora.runs', cat: 'Running', len: '0:40' },
+{ title: '5km tempo run', who: 'sora.runs', cat: 'Running', len: '1:10' },
+{ title: 'Lighter kimchi fried rice', who: 'hana.eats', cat: 'Cooking', len: '0:47' },
+{ title: 'Study session timelapse', who: 'yuna.studies', cat: 'Studying', len: '0:29' },
+{ title: 'Leg day finisher', who: 'minjun.lifts', cat: 'Gym', len: '0:55' },
+{ title: 'Egg muffins for the week', who: 'jess.cooks', cat: 'Cooking', len: '0:33' },
+{ title: '100 days, no skips', who: 'alex.trains', cat: 'Gym', len: '0:51' },
+{ title: 'Building my app with Claude', who: 'jaden.codes', cat: 'AI and Claude', len: '0:58' },
+{ title: 'Morning chart review', who: 'min.trades', cat: 'Trading', len: '1:05' },
+{ title: 'Fixing a bug live', who: 'jaden.codes', cat: 'Coding', len: '0:44' },
+{ title: '30 days of Spanish', who: 'yuna.studies', cat: 'Languages', len: '0:36' }
+];
+const shown = allVids.filter((x) => (vcat === 'All' || this.groupOf(x.cat) === vcat) && (!ql || (x.title + ' ' + x.who + ' ' + x.cat).toLowerCase().indexOf(ql) !== -1));
+const col = 'flex: 1; min-height: 0; display: flex; flex-direction: column; animation: tabIn 0.22s ease-out';
+v.homeStyle = tab === 'home' ? col : 'display: none';
+v.searchStyle = tab === 'search' ? col : 'display: none';
+v.idleStyle = sa ? 'display: none' : 'flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 0 32px 80px; text-align: center';
+v.resultsStyle = sa ? 'flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden' : 'display: none';
+v.searchActive = sa;
+v.openSearch = () => { if (!sa) this.setState({ searchActive: true }); };
+v.cancelSearch = () => this.setState({ searchActive: false, q: '', vcat: 'All' });
+v.chips = ['All'].concat(this.topics().map((g) => g[0])).map((k) => ({ label: k, cls: k === vcat ? 'fchip on' : 'fchip', pick: () => this.setState({ vcat: k }) }));
+v.vids = shown;
+v.noResults = shown.length === 0;
+v.resultsTitle = qRaw ? 'Results for "' + qRaw + '"' : 'Recommended for you';
+v.gridStyle = v.locked ? 'filter: blur(10px); pointer-events: none; user-select: none' : '';
+v.goHome = () => this.setState({ tab: 'home' });
+v.goSearch = () => this.setState({ tab: 'search' });
+v.homeFill = tab === 'home' ? 'currentColor' : 'none';
+v.homeCurrent = tab === 'home' ? 'page' : 'false';
+v.searchCurrent = tab === 'search' ? 'page' : 'false';
+v.searchStroke = tab === 'search' ? '2.8' : '1.8';
+const storyData = {
+'minjun.lifts': { initial: 'M', when: '2h', frames: [ { photo: '[Photo: squat rack]', text: 'Leg day. 100kg for 5.', tag: 'Gym · 52 min' }, { photo: '[Photo: post-workout meal]', text: 'Refuel. Chicken and rice.', tag: 'Cooking' } ] },
+'jess.cooks': { initial: 'J', when: '4h', frames: [ { photo: '[Photo: meal prep boxes]', text: 'Five lunches done for the week.', tag: 'Cooking · 35 min' } ] },
+'dan.reads': { initial: 'D', when: '6h', frames: [ { photo: '[Photo: open book]', text: 'Day 30. 20 pages before bed.', tag: 'Reading · 30 min' } ] },
+'you': { initial: ((s.profile && s.profile.user) || 'you').charAt(0).toUpperCase(), when: 'now', frames: (s.myStory && s.myStory.length) ? s.myStory : [ { photo: '[Your proof photo]', text: "Today's proof is in.", tag: 'Posted today' } ] }
+};
+const order = ['minjun.lifts', 'jess.cooks', 'dan.reads', 'sora.runs', 'alex.trains'];
+const seen = s.seen || {};
+const withStory = order.filter((n) => storyData[n]);
+v.stories = order.map((name) => {
+const has = !!storyData[name];
+return {
+name: name,
+initial: name.charAt(0).toUpperCase(),
+ring: !has ? '2px dashed var(--faint)' : (seen[name] ? '2px solid var(--faint)' : '2.5px solid ' + (theme === 'color' ? ['#2952FF', '#FF2E88', '#9BD412'][order.indexOf(name) % 3] : 'var(--ring)')),
+labelColor: has ? 'var(--fg)' : 'var(--muted)',
+glow: has && !seen[name] ? '0 0 8px rgba(var(--g), calc(0.75 * var(--ga))), 0 0 18px rgba(var(--g), calc(0.35 * var(--ga)))' : 'none',
+has: has,
+seen: !!seen[name],
+aria: has ? 'View proof from ' + name : name + " hasn't posted today",
+open: () => {
+if (!has) { this.flash(name + " hasn't posted proof yet today"); return; }
+this.goStory(withStory, withStory.indexOf(name), 0);
+}
+};
+});
+v.myStoryAria = v.hasStory ? 'View your story' : 'Add to your story';
+v.myStoryTap = () => { if (!v.hasStory && (s.strikes || 0) >= 3) { this.setState({ sheet: 'suspended' }); return; } if (!v.hasStory) { this.setState({ sheet: null, compose: { mode: 'story', type: 'photo', text: '', group: '', cat: '', toScroll: false, demo: 'ok' } }); } else { this.goStory(['you'], 0, 0); } };
+v.closeStory = () => this.setState({ story: null, storyFocus: false });
+const youChip = { name: 'You', aria: v.myStoryAria, open: v.myStoryTap, mark: v.locked ? '·' : '✓', cls: v.locked ? 'rc wait' : 'rc' };
+v.roll = [youChip].concat(v.stories.map((x) => ({ name: x.name, aria: x.aria, open: x.open, mark: x.has ? '✓' : '·', cls: !x.has ? 'rc wait' : (x.seen ? 'rc seen' : 'rc') })));
+const doneN = v.stories.filter((x) => x.has).length + (v.locked ? 0 : 1);
+v.rollCount = doneN + ' of ' + (v.stories.length + 1) + ' done';
+const now = new Date();
+const pad2 = (x) => String(x).padStart(2, '0');
+const dn = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const mn = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+v.dateLabel = dn[now.getDay()] + ' ' + now.getDate() + ' ' + mn[now.getMonth()];
+const mid = new Date(now.getTime());
+mid.setHours(24, 0, 0, 0);
+const left = Math.max(0, mid.getTime() - now.getTime());
+v.bandLabel = v.locked ? 'Left to post today' : 'Posted today';
+v.bandValue = v.locked ? Math.floor(left / 3600000) + 'h ' + pad2(Math.floor((left % 3600000) / 60000)) + 'm' : 'Log unlocked';
+v.bandBg = v.locked ? 'var(--fg)' : '#F2F2F2';
+v.bandFg = v.locked ? 'var(--bg)' : 'var(--fg)';
+v.nowTime = pad2(now.getHours()) + ':' + pad2(now.getMinutes());
+v.youDot = v.locked ? 'var(--bg)' : 'var(--fg)';
+v.youLine = v.locked ? 'Not posted yet. Log proof to unlock today.' : "Proof posted. You're in today's log.";
+const times = { p1: '06:12', p2: '08:40', p3: '09:55' };
+v.posts = v.posts.map((p) => Object.assign({}, p, { time: times[p.id] || '' }));
+v.homeNav = tab === 'home' ? 'nb on' : 'nb';
+v.searchNav = tab === 'search' ? 'nb on' : 'nb';
+const st = s.story || null;
+if (st && storyData[st.list[st.p]]) {
+const name = st.list[st.p];
+const d = storyData[name];
+const fr = d.frames[st.f] || d.frames[0];
+const next = () => {
+if (st.f < d.frames.length - 1) this.goStory(st.list, st.p, st.f + 1);
+else if (st.p < st.list.length - 1) this.goStory(st.list, st.p + 1, 0);
+else this.setState({ story: null, storyFocus: false });
+};
+const prev = () => {
+if (st.f > 0) this.goStory(st.list, st.p, st.f - 1);
+else if (st.p > 0) this.goStory(st.list, st.p - 1, 0);
+else this.goStory(st.list, st.p, 0);
+};
+const run = (st.n % 2 === 0 ? 'runA' : 'runB') + (s.storyFocus ? ' paused' : '');
+v.storySegs = d.frames.map((x, i) => ({ cls: i === st.f ? run : '', width: i < st.f ? '100%' : '0%', end: i === st.f ? next : null }));
+v.storyOpen = true;
+v.storyName = name === 'you' ? 'Your proof' : name;
+v.storyInitial = d.initial;
+v.storyWhen = d.when;
+v.storyPhoto = fr.photo;
+v.storyImg = fr.img || '';
+v.storyHasImg = !!fr.img;
+v.storyNoImg = !fr.img;
+v.storyText = fr.text;
+v.storyTag = fr.tag;
+v.nextStory = next;
+v.prevStory = prev;
+v.storyCanReply = name !== 'you';
+v.storyMine = name === 'you';
+const sresp = s.storyResp || {};
+const rOn = !!sresp[name];
+v.storyRespFill = rOn ? '#ffffff' : 'none';
+v.storyRespPressed = rOn ? 'true' : 'false';
+v.storyRespLabel = rOn ? 'Unlike' : 'Like';
+v.storyRespect = () => {
+const x = Object.assign({}, sresp);
+x[name] = !rOn;
+this.setState({ storyResp: x });
+if (!rOn) this.flash('Liked ' + name + "'s story");
+};
+const sd = s.storyDraft || '';
+v.storyDraft = sd;
+v.storyBad = this.isBad(sd);
+v.setStoryDraft = (e) => this.setState({ storyDraft: e.target.value });
+v.storyFocusOn = () => this.setState({ storyFocus: true });
+v.storyFocusOff = () => this.setState({ storyFocus: false });
+v.storyKey = (e) => {
+if (e.key !== 'Enter') return;
+e.preventDefault();
+if (!sd.trim() || this.isBad(sd)) return;
+const dmx = Object.assign({}, s.dmMsgs || {});
+dmx[name] = (dmx[name] || []).concat([{ me: true, text: 'Replied to your story: ' + sd.trim(), when: 'now' }]);
+this.setState({ storyDraft: '', dmMsgs: dmx });
+this.flash('Message sent to ' + name);
+};
+v.storyReplyPh = 'Send message to ' + name;
+} else {
+v.storyOpen = false;
+v.storySegs = [];
+v.storyName = '';
+v.storyInitial = '';
+v.storyWhen = '';
+v.storyPhoto = '';
+v.storyImg = '';
+v.storyHasImg = false;
+v.storyNoImg = true;
+v.storyText = '';
+v.storyTag = '';
+v.nextStory = () => {};
+v.prevStory = () => {};
+v.storyCanReply = false;
+v.storyMine = false;
+v.storyRespFill = 'none';
+v.storyRespPressed = 'false';
+v.storyRespLabel = 'Like';
+v.storyRespect = () => {};
+v.storyDraft = '';
+v.storyBad = false;
+v.setStoryDraft = () => {};
+v.storyFocusOn = () => {};
+v.storyFocusOff = () => {};
+v.storyKey = () => {};
+v.storyReplyPh = '';
+}
+const prof = s.profile || { name: 'Your name', user: 'you', bio: '' };
+const myStory = s.myStory || [];
+const hasStory = myStory.length > 0;
+const follow = s.follow || {};
+const cresp = s.cresp || {};
+const paused = s.paused || {};
+const muted = !!s.muted;
+v.scrollsStyle = tab === 'scrolls' ? col : 'display: none';
+v.profileStyle = tab === 'profile' ? col : 'display: none';
+v.goScrolls = () => this.setState({ tab: 'scrolls' });
+v.goProfile = () => this.setState({ tab: 'profile' });
+v.scrollsCurrent = tab === 'scrolls' ? 'page' : 'false';
+v.scrollsStroke = tab === 'scrolls' ? '2.6' : '1.8';
+v.profileCurrent = tab === 'profile' ? 'page' : 'false';
+v.profileRing = tab === 'profile' ? '2px solid var(--fg)' : '2px solid transparent';
+v.muted = muted;
+v.unmuted = !muted;
+v.mutePressed = muted ? 'true' : 'false';
+v.muteLabel = muted ? 'Unmute' : 'Mute';
+v.toggleMute = () => this.setState({ muted: !muted });
+v.clips = clipBase.map((c) => {
+const on = !!cresp[c.id];
+const pz = !!paused[c.id];
+const isMine = !!c.mine;
+const who = isMine ? prof.user : c.who;
+const fo = !!follow[who];
+const n = commentsFor(c.id).reduce((t, x) => t + 1 + repliesFor(x.id).length, 0);
+return {
+who: who,
+initial: who.charAt(0).toUpperCase(),
+caption: c.caption,
+tag: c.len ? c.cat + ' · ' + c.len : c.cat,
+photo: isMine ? '[Your video]' : '[Video]',
+img: c.img || '',
+hasImg: !!c.img,
+noImg: !c.img,
+respCount: (c.count || 0) + (on ? 1 : 0),
+respFill: on ? '#ffffff' : 'none',
+respPressed: on ? 'true' : 'false',
+respLabel: on ? 'Unlike' : 'Like',
+toggleResp: () => { const x = Object.assign({}, cresp); x[c.id] = !on; this.setState({ cresp: x }); },
+commentCount: n,
+openComments: () => this.setState({ sheet: 'comments', sheetPost: c.id, draft: '', replyTo: null }),
+openShare: () => this.setState({ sheet: 'share', sheetPost: c.id, sent: {}, copied: false }),
+paused: pz,
+pauseLabel: pz ? 'Play video' : 'Pause video',
+togglePause: () => { const x = Object.assign({}, paused); x[c.id] = !pz; this.setState({ paused: x }); },
+canFollow: !isMine,
+folCls: fo ? 'fol on' : 'fol',
+folLabel: fo ? 'Following' : 'Follow',
+folPressed: fo ? 'true' : 'false',
+toggleFollow: () => { const x = Object.assign({}, follow); x[who] = !fo; this.setState({ follow: x }); this.flash(fo ? 'Unfollowed ' + who : 'Following ' + who); }
+};
+});
+v.scrollRow = v.clips.slice(0, 6).map((c) => ({ title: c.caption, who: c.who, img: c.img, hasImg: c.hasImg, aria: 'Open ' + c.who + "'s scroll", open: v.goScrolls }));
+const strikes = s.strikes || 0;
+const suspended = strikes >= 3;
+const startCompose = (mode) => { if (suspended) { this.setState({ sheet: 'suspended', compose: null }); return; } this.setState({ sheet: null, compose: { mode: mode, type: mode === 'scroll' ? 'video' : 'photo', text: '', group: '', cat: '', toScroll: false, demo: 'ok' } }); };
+v.suspendedOpen = s.sheet === 'suspended';
+v.openStatus = () => this.setState({ sheet: 'settings', setView: 'status', setQ: '' });
+v.createOpen = s.sheet === 'create';
+v.openCreate = () => this.setState({ sheet: suspended ? 'suspended' : 'create' });
+v.createPost = () => startCompose('post');
+v.createStory = () => startCompose('story');
+v.createScroll = () => startCompose('scroll');
+v.cancelCompose = () => { clearTimeout(this._ck); this.setState({ compose: null }); };
+const cp = s.compose || null;
+v.composeOpen = !!cp;
+if (cp) {
+const setC = (patch) => this.setState({ compose: Object.assign({}, cp, patch) });
+const isStory = cp.mode === 'story';
+v.composeTitle = cp.mode === 'post' ? 'New post' : (isStory ? 'New story' : 'New scroll');
+v.shareLabel = isStory ? 'Add' : 'Share';
+v.composeShowType = cp.mode !== 'scroll';
+v.typePhotoCls = cp.type === 'photo' ? 'tog on' : 'tog';
+v.typeVideoCls = cp.type === 'video' ? 'tog on' : 'tog';
+v.typePhotoPressed = cp.type === 'photo' ? 'true' : 'false';
+v.typeVideoPressed = cp.type === 'video' ? 'true' : 'false';
+v.pickPhoto = () => setC({ type: 'photo', toScroll: false });
+v.pickVideo = () => setC({ type: 'video' });
+v.composeMedia = cp.type === 'video' ? '[Your video]' : '[Your photo]';
+const boxBase = 'border-radius: 12px; background: var(--surface2); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: var(--muted); font-size: 13px; text-align: center; padding: 16px; box-sizing: border-box; flex-shrink: 0; ';
+v.composeMediaStyle = boxBase + (cp.mode === 'post' ? 'width: 100%; aspect-ratio: 1 / 1' : 'width: 203px; height: 360px; align-self: center');
+v.hasOverlay = isStory && !!cp.text.trim();
+v.textLabel = isStory ? 'Text on your story' : 'Caption';
+v.textPh = isStory ? 'Add a line of text' : (cp.mode === 'scroll' ? 'Describe your clip' : 'Write a caption');
+v.composeText = cp.text;
+v.composeBad = this.isBad(cp.text);
+v.setComposeText = (e) => setC({ text: e.target.value });
+v.composeShowCat = true;
+const grp = cp.group || this.groupOf(cp.cat);
+v.groupChips = this.topics().map((g) => ({ label: g[0], cls: g[0] === grp ? 'fchip on' : 'fchip', pressed: g[0] === grp ? 'true' : 'false', pick: () => setC({ group: g[0], cat: g[0] === grp ? cp.cat : '' }) }));
+const subs = (this.topics().filter((g) => g[0] === grp)[0] || [null, []])[1];
+v.hasGroup = !!grp;
+v.catChips = subs.map((k) => ({ label: k, cls: k === cp.cat ? 'fchip on' : 'fchip', pressed: k === cp.cat ? 'true' : 'false', pick: () => setC({ cat: k }) }));
+v.needTopic = !cp.cat;
+v.composeCannot = v.composeBad || !cp.cat;
+v.demoChips = [['ok', 'Approved'], ['off', 'Off-topic'], ['ban', 'Banned']].map((d) => ({ label: d[1], cls: (cp.demo || 'ok') === d[0] ? 'tog on' : 'tog', pressed: (cp.demo || 'ok') === d[0] ? 'true' : 'false', pick: () => setC({ demo: d[0] }) }));
+const stage = cp.stage || '';
+v.ckChecking = stage === 'checking';
+v.ckRejected = stage === 'rejected' && !cp.appealed;
+v.ckAppealed = stage === 'rejected' && !!cp.appealed;
+v.ckOff = cp.reason === 'off';
+v.ckBan = cp.reason === 'ban';
+v.ckTopic = cp.cat;
+v.ckOffTitle = "This doesn't look like " + cp.cat;
+v.ckStrikeLine = 'This is strike ' + Math.min(strikes, 3) + ' of 3.' + (strikes >= 3 ? ' Posting is now suspended for 7 days.' : ' At 3 strikes, posting is suspended for 7 days.');
+v.changeTopic = () => setC({ stage: '', reason: '', appealed: false });
+v.appeal = () => { this.setState({ compose: Object.assign({}, cp, { appealed: true }), appeals: (s.appeals || 0) + 1 }); };
+v.discardPost = () => this.setState({ compose: null });
+v.readGuidelines = () => this.setState({ compose: null, sheet: 'settings', setView: 'guidelines', setQ: '' });
+v.composeShowScrollToggle = cp.mode === 'post';
+v.scrollSwCls = cp.toScroll ? 'sw on' : 'sw';
+v.scrollSwPressed = cp.toScroll ? 'true' : 'false';
+v.toggleToScroll = () => setC({ toScroll: !cp.toScroll, type: !cp.toScroll ? 'video' : cp.type });
+const publish = (c) => {
+const t = c.text.trim();
+const story = c.mode === 'story';
+const id = Date.now();
+const media = c.type === 'video' ? '[Your video]' : '[Your photo]';
+const newScroll = { id: 'ms' + id, mine: true, who: 'you', caption: t || 'New scroll', cat: c.cat, len: '', count: 0 };
+if (story) {
+this.setState({ compose: null, myStory: myStory.concat([{ photo: media, text: t, tag: c.cat + ' · today' }]), posted: true });
+this.flash('Added to your story');
+} else if (c.mode === 'scroll') {
+this.setState({ compose: null, myScrolls: [newScroll].concat(s.myScrolls || []), posted: true, tab: 'scrolls' });
+this.flash('Shared to Scrolls');
+} else {
+const post = { id: 'mp' + id, mine: true, cat: c.cat, meta: c.cat + ' · now', when: 'now', streak: 1, photo: media, caption: t, count: 0 };
+const patch = { compose: null, myPosts: [post].concat(s.myPosts || []), posted: true, tab: 'home' };
+if (c.toScroll && c.type === 'video') patch.myScrolls = [newScroll].concat(s.myScrolls || []);
+this.setState(patch);
+this.flash(patch.myScrolls ? 'Posted to feed and Scrolls' : 'Posted');
+}
+};
+v.shareCompose = () => {
+if (this.isBad(cp.text.trim()) || !cp.cat || cp.stage) return;
+this.setState({ compose: Object.assign({}, cp, { stage: 'checking', reason: '', appealed: false }) });
+clearTimeout(this._ck);
+this._ck = setTimeout(() => {
+const c = (this.state || {}).compose;
+if (!c || c.stage !== 'checking') return;
+const d = c.demo || 'ok';
+if (d === 'ok') { publish(c); return; }
+if (d === 'off') { this.setState({ compose: Object.assign({}, c, { stage: 'rejected', reason: 'off' }) }); return; }
+this.setState({ compose: Object.assign({}, c, { stage: 'rejected', reason: 'ban' }), strikes: ((this.state || {}).strikes || 0) + 1 });
+}, 1800);
+};
+} else {
+v.composeTitle = '';
+v.shareLabel = '';
+v.composeShowType = false;
+v.typePhotoCls = 'tog';
+v.typeVideoCls = 'tog';
+v.typePhotoPressed = 'false';
+v.typeVideoPressed = 'false';
+v.pickPhoto = () => {};
+v.pickVideo = () => {};
+v.composeMedia = '';
+v.composeMediaStyle = '';
+v.hasOverlay = false;
+v.textLabel = '';
+v.textPh = '';
+v.composeText = '';
+v.composeBad = false;
+v.setComposeText = () => {};
+v.composeShowCat = false;
+v.catChips = [];
+v.groupChips = [];
+v.hasGroup = false;
+v.needTopic = false;
+v.composeCannot = true;
+v.demoChips = [];
+v.ckChecking = false;
+v.ckRejected = false;
+v.ckAppealed = false;
+v.ckOff = false;
+v.ckBan = false;
+v.ckTopic = '';
+v.ckOffTitle = '';
+v.ckStrikeLine = '';
+v.changeTopic = () => {};
+v.appeal = () => {};
+v.discardPost = () => {};
+v.readGuidelines = () => {};
+v.composeShowScrollToggle = false;
+v.scrollSwCls = 'sw';
+v.scrollSwPressed = 'false';
+v.toggleToScroll = () => {};
+v.shareCompose = () => {};
+}
+const myPosts = s.myPosts || [];
+const myScr = s.myScrolls || [];
+const stk = v.myStreak || 0;
+const doneToday = !!s.posted;
+const hrsLeft = Math.floor(left / 3600000) + 'h ' + pad2(Math.floor((left % 3600000) / 60000)) + 'm';
+v.bestStreak = Math.max(stk, s.bestStreak || 0);
+v.needsPostToday = !doneToday;
+v.streakNumCls = stk > 0 ? 'neon' : '';
+v.flameCls = stk > 0 ? 'flame-on' : 'flame';
+v.flameFill = stk > 0 ? 'currentColor' : 'none';
+v.flameStroke = stk > 0 ? 'currentColor' : 'var(--muted)';
+v.flameGlow = stk > 0 ? 'drop-shadow(0 0 4px rgba(var(--g), calc(0.95 * var(--ga)))) drop-shadow(0 0 14px rgba(var(--g), calc(0.6 * var(--ga))))' : 'none';
+v.flameHalo = stk > 0 ? 'rgba(var(--ln), 0.12)' : 'rgba(var(--ln), 0.04)';
+v.flameBorder = stk > 0 ? 'var(--fg)' : 'var(--line)';
+v.streakMsg = doneToday ? 'Done for today. Post tomorrow to reach day ' + (stk + 1) + '.' : (stk > 0 ? hrsLeft + ' left to keep it alive.' : 'Post today to start your streak. ' + hrsLeft + ' left.');
+const dIdx = (now.getDay() + 6) % 7;
+const letters = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+const fullDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+v.weekDays = letters.map((l, i) => {
+const dt = new Date(now.getTime());
+dt.setDate(now.getDate() - (dIdx - i));
+const isToday = i === dIdx;
+const done = isToday && doneToday;
+const past = i < dIdx;
+let style;
+let cls = '';
+let state;
+if (done) { style = 'background: var(--accent); box-shadow: 0 0 8px rgba(var(--g), calc(0.9 * var(--ga))), 0 0 20px rgba(var(--g), calc(0.4 * var(--ga)))'; cls = 'day-pop'; state = 'posted'; }
+else if (isToday) { style = 'border: 2px solid var(--fg); color: var(--fg)'; cls = 'day-wait'; state = 'today, not posted yet'; }
+else if (past) { style = 'border: 1.5px dashed var(--faint); color: var(--muted)'; state = 'missed'; }
+else { style = 'border: 1px solid var(--line); color: var(--muted)'; state = 'upcoming'; }
+return { letter: l, letterColor: isToday ? 'var(--fg)' : 'var(--muted)', date: dt.getDate(), done: done, notDone: !done, style: style, cls: cls, aria: fullDays[i] + ' ' + dt.getDate() + ', ' + state };
+});
+const goals = [3, 7, 30, 100];
+const nextGoal = goals.filter((g) => g > stk)[0] || 365;
+const prevGoal = goals.filter((g) => g <= stk).slice(-1)[0] || 0;
+v.nextGoal = nextGoal;
+v.nextLabel = 'Next badge: ' + (nextGoal === 7 ? '1 week' : nextGoal + ' days');
+v.progressText = stk + ' / ' + nextGoal + ' · ' + (nextGoal - stk) + (nextGoal - stk === 1 ? ' day to go' : ' days to go');
+v.progressPct = Math.round(((stk - prevGoal) / (nextGoal - prevGoal)) * 100) + '%';
+const goalNames = { 3: '3 days', 7: '1 week', 30: '30 days', 100: '100 days' };
+v.streakBadges = goals.map((g) => {
+const got = stk >= g;
+const isNext = g === nextGoal;
+return {
+n: g,
+label: goalNames[g],
+labelColor: got || isNext ? 'var(--fg)' : 'var(--muted)',
+aria: goalNames[g] + ' badge, ' + (got ? 'earned' : 'locked'),
+style: got ? 'background: var(--accent); color: var(--onAccent); box-shadow: 0 0 10px rgba(var(--g), calc(0.9 * var(--ga))), 0 0 24px rgba(var(--g), calc(0.4 * var(--ga)))' : (isNext ? 'border: 1.5px solid rgba(var(--ln), 0.7); color: var(--fg); box-shadow: 0 0 10px rgba(var(--g), calc(0.25 * var(--ga)))' : 'border: 1px solid var(--line); color: var(--muted); background: #0D0D0D')
+};
+});
+const prefDefaults = { autoFreeze: true, pauseAll: false, nRespect: true, nComments: true, nFollows: true, nMentions: true, nDms: true, streakRemind: true, isPrivate: false, twoFA: false, hideOffensive: true, dataSaver: false, autoplayWifi: false, hq: true, reduceMotion: false, captions: true };
+const choiceDefaults = { reminderTime: '9 PM', timeLimit: 'Off', storyWho: 'Followers only', dmWho: 'People you follow', commentWho: 'Everyone', mentionWho: 'Everyone', lang: 'en', streakWho: 'Followers', theme: 'white' };
+const prefs = Object.assign({}, prefDefaults, s.prefs || {});
+const choices = Object.assign({}, choiceDefaults, s.choices || {});
+v.rootCls = 'th-' + theme + (prefs.reduceMotion ? ' rm' : '');
+v.isPrivate = prefs.isPrivate;
+const langs = [
+['en', 'English', ''], ['ko', '한국어', 'Korean'], ['ja', '日本語', 'Japanese'], ['zh', '中文（简体）', 'Chinese, Simplified'], ['zh-TW', '中文（繁體）', 'Chinese, Traditional'], ['es', 'Español', 'Spanish'], ['fr', 'Français', 'French'], ['de', 'Deutsch', 'German'], ['pt', 'Português', 'Portuguese'], ['vi', 'Tiếng Việt', 'Vietnamese'], ['th', 'ภาษาไทย', 'Thai'], ['id', 'Bahasa Indonesia', 'Indonesian'], ['tl', 'Filipino', 'Filipino'], ['ru', 'Русский', 'Russian'], ['ar', 'العربية', 'Arabic'], ['hi', 'हिन्दी', 'Hindi']
+];
+const langName = (langs.filter((l) => l[0] === choices.lang)[0] || langs[0])[1];
+const setView = s.setView || 'main';
+const go = (view) => this.setState({ setView: view, setQ: '', setFrom: setView });
+const flipPref = (k) => { const x = Object.assign({}, s.prefs || {}); x[k] = !prefs[k]; this.setState({ prefs: x }); };
+const pickChoice = (k, val, msg) => { const x = Object.assign({}, s.choices || {}); x[k] = val; this.setState({ choices: x }); if (msg) this.flash(msg); };
+const mk = (o) => {
+const kind = o.kind;
+const on = !!o.on;
+return {
+label: o.label,
+sub: o.sub || '',
+hasSub: !!o.sub,
+value: o.value || '',
+hasValue: !!o.value,
+isToggle: kind === 'toggle',
+isRadio: kind === 'radio',
+isLink: kind === 'link',
+role: kind === 'toggle' ? 'switch' : (kind === 'radio' ? 'radio' : 'button'),
+checked: on ? 'true' : 'false',
+swCls: on ? 'sw on' : 'sw',
+radioBorder: on ? 'var(--fg)' : 'var(--faint)',
+radioGlow: on ? '0 0 8px rgba(var(--g), calc(0.6 * var(--ga)))' : 'none',
+radioDot: on ? 'var(--fg)' : 'transparent',
+color: o.danger ? 'var(--danger)' : 'var(--fg)',
+act: o.act || (() => {})
+};
+};
+const link = (label, view, value, sub) => ({ kind: 'link', label: label, value: value, sub: sub, act: () => go(view) });
+const tog = (k, label, sub) => ({ kind: 'toggle', label: label, sub: sub, on: prefs[k], act: () => flipPref(k) });
+const radio = (k, val, label, sub, msg) => ({ kind: 'radio', label: label || val, sub: sub, on: choices[k] === val, act: () => pickChoice(k, val, msg) });
+const gl = (label, sub) => ({ kind: 'info', label: label, sub: sub });
+const info = (label, value, act) => ({ kind: act ? 'link' : 'info', label: label, value: value, act: act });
+const action = (label, act, danger, sub) => ({ kind: 'action', label: label, act: act, danger: danger, sub: sub });
+const sec = (title, items, note) => ({ title: title || '', items: items || [], note: note || '' });
+const appName = '[App Name]';
+const freezes = Math.floor((v.myStreak || 0) / 7);
+const views = {
+main: { title: 'Settings', sections: [
+sec('Your streak', [
+link('Streak reminders', 'reminders', prefs.streakRemind ? choices.reminderTime : 'Off'),
+link('Streak freeze', 'freeze', freezes + (freezes === 1 ? ' available' : ' available')),
+link('Who sees your streak', 'streakwho', choices.streakWho)
+]),
+sec('Notifications', [
+tog('pauseAll', 'Pause all notifications'),
+tog('nRespect', 'Likes and comments'),
+tog('nFollows', 'New followers'),
+tog('nDms', 'Messages')
+]),
+sec('Privacy and safety', [
+tog('isPrivate', 'Private account', 'Only followers you approve see your posts, scrolls and streak'),
+link('Who can message you', 'messages', choices.dmWho),
+link('Who can comment', 'comments', choices.commentWho),
+link('Blocked accounts', 'blocked', '0')
+]),
+sec('App', [
+link('Theme', 'theme', { neon: 'Neon', white: 'All white', color: 'Colorful' }[choices.theme]),
+link('Language', 'language', langName),
+link('Daily time limit', 'timelimit', choices.timeLimit),
+tog('reduceMotion', 'Reduce motion', 'Turn off animations')
+]),
+sec('Account', [
+link('Account status', 'status', (s.strikes || 0) >= 3 ? 'Suspended' : ((s.strikes || 0) ? (s.strikes || 0) + ' of 3 strikes' : 'Good standing')),
+action('Edit profile', () => this.setState({ sheet: 'edit', editDraft: Object.assign({}, prof) })),
+action('Change password', () => this.flash('Password reset link sent to your email')),
+link('Help and legal', 'help'),
+action('Log out', () => { this.setState({ sheet: null }); this.flash('Logged out'); }),
+action('Delete account', () => go('delete'), true)
+])
+] },
+reminders: { title: 'Streak reminders', sections: [
+sec('', [ tog('streakRemind', 'Remind me before my streak ends', 'Only sent on days you haven’t posted yet') ]),
+sec('Remind me at', ['6 PM', '9 PM', '11 PM'].map((x) => radio('reminderTime', x, x)))
+] },
+freeze: { title: 'Streak freeze', sections: [
+sec('', [ info('Freezes available', String(freezes)), tog('autoFreeze', 'Use a freeze automatically', 'If you miss a day, a freeze saves your streak') ], 'You earn 1 freeze for every 7 days in a row. You can hold up to 2.')
+] },
+streakwho: { title: 'Who sees your streak', sections: [ sec('', ['Everyone', 'Followers', 'Only me'].map((x) => radio('streakWho', x, x))) ] },
+messages: { title: 'Who can message you', sections: [ sec('', ['Everyone', 'People you follow', 'No one'].map((x) => radio('dmWho', x, x))) ] },
+comments: { title: 'Who can comment', sections: [
+sec('', ['Everyone', 'People you follow', 'Off'].map((x) => radio('commentWho', x, x))),
+sec('', [ tog('hideOffensive', 'Hide offensive comments') ])
+] },
+blocked: { title: 'Blocked accounts', sections: [ sec('', [], 'You haven’t blocked anyone. You can block someone from their profile or from a post.') ] },
+theme: { title: 'Theme', sections: [ sec('', [ radio('theme', 'white', 'All white', 'Clean black on white'), radio('theme', 'neon', 'Neon', 'Black with white neon glow'), radio('theme', 'color', 'Colorful', 'Blue, pink and lime') ], 'Scrolls and stories stay dark in every theme.') ] },
+language: { title: 'Language', sections: [ sec('', langs.map((l) => radio('lang', l[0], l[1], l[2], 'Language set to ' + l[1]))) ] },
+timelimit: { title: 'Daily time limit', sections: [
+sec('', ['Off', '15 minutes', '30 minutes', '1 hour', '2 hours'].map((x) => radio('timeLimit', x, x)), 'Get a reminder once you’ve used ' + appName + ' this long in a day.')
+] },
+help: { title: 'Help and legal', sections: [
+sec('', [
+link('Community Guidelines', 'guidelines'),
+action('Report a problem', () => this.flash('Report form opens here')),
+action('Terms of Use', () => this.flash('Terms of Use open here')),
+action('Privacy Policy', () => this.flash('Privacy Policy opens here')),
+info('Version', '1.0 (prototype)')
+])
+] },
+status: { title: 'Account status', sections: [
+sec('', [ info('Strikes', Math.min(s.strikes || 0, 3) + ' of 3'), info('Posting', (s.strikes || 0) >= 3 ? 'Suspended for 7 days' : 'Allowed'), info('Reviews requested', String(s.appeals || 0)) ], 'Strikes come from posts that break the guidelines. Each one expires after 90 days. Off-topic posts are removed but never give a strike.'),
+sec('', [ link('Community Guidelines', 'guidelines'), action('Reset strikes (prototype only)', () => { this.setState({ strikes: 0, appeals: 0 }); this.flash('Strikes reset'); }) ])
+] },
+guidelines: { title: 'Community Guidelines', sections: [
+sec('What you can post', [ gl('Fitness', 'Gym, running, sports, yoga'), gl('Learning', 'Reading, studying, languages, writing'), gl('Work and tech', 'Coding, working with AI like Claude, design, building things'), gl('Money and health', 'Trading, investing, cooking, healthy eating') ], 'Every post, scroll and story needs one of these topics and has to actually show it.'),
+sec('Never allowed', [ gl('Nudity or sexual content', 'Including suggestive or sexualized poses, outfits or captions'), gl('Anything illegal', 'Drugs, weapons, theft, or showing someone doing a crime'), gl('Violence or self-harm', 'Fights, injuries, or anything that encourages hurting yourself'), gl('Hate and bullying', 'Attacking anyone for who they are, or harassing people'), gl('Scams and fake proof', 'Guaranteed-profit trading, paid promos, or faked results'), gl('Alcohol, vaping or gambling', '') ]),
+sec('What happens', [ gl('Off-topic post', 'Removed. No strike.'), gl('Breaks a rule', '1 strike. 3 strikes in 90 days pauses posting for 7 days.'), gl('Zero tolerance', 'Sexual content involving minors, or serious illegal content, removes the account right away and is reported to the authorities.') ], 'Think a post was removed by mistake? Request a review and a person will check it within 24 hours.')
+] },
+delete: { title: 'Delete account', sections: [
+sec('', [ action('Delete account permanently', () => v.doDelete(), true), action('Cancel', () => go('main')) ], 'This permanently deletes your profile, posts, scrolls, stories, messages and streak. It can’t be undone.')
+] }
+};
+const cur = views[setView] || views.main;
+const sq = (s.setQ || '').trim().toLowerCase();
+let sections = cur.sections;
+if (setView === 'main' && sq) {
+const hits = [];
+Object.keys(views).forEach((k) => {
+if (k === 'delete') return;
+views[k].sections.forEach((x) => x.items.forEach((it) => {
+if (it.label.toLowerCase().indexOf(sq) !== -1 && hits.filter((h) => h.label === it.label).length === 0) hits.push(it);
+}));
+});
+sections = hits.length ? [ sec('Results', hits) ] : [];
+}
+v.setSections = sections.map((x) => ({ title: x.title, hasTitle: !!x.title, note: x.note, hasNote: !!x.note, hasItems: x.items.length > 0, items: x.items.map(mk) }));
+v.setEmpty = sections.length === 0;
+v.setTitle = cur.title;
+v.setIsMain = false;
+v.setQ = s.setQ || '';
+v.setSetQ = (e) => this.setState({ setQ: e.target.value });
+v.setBack = () => { if (setView === 'main') this.setState({ sheet: null }); else if (setView === 'guidelines' && (s.setFrom === 'help' || s.setFrom === 'status')) go(s.setFrom); else go('main'); };
+const NGLOW ='0 0 0 2px var(--fg), 0 0 10px rgba(var(--g), calc(0.6 * var(--ga)))';
+const notifSeen = !!s.notifSeen;
+v.notifUnread = !notifSeen;
+v.notifAria = notifSeen ? 'Notifications' : 'Notifications, new activity';
+v.notifOpen = s.panel === 'notifs';
+v.openNotifs = () => this.setState({ panel: 'notifs', notifSeen: true });
+v.closeNotifs = () => this.setState({ panel: null });
+const openPostComments = (id) => () => this.setState({ panel: null, tab: 'home', sheet: 'comments', sheetPost: id, draft: '', replyTo: null });
+const nItem = (x, fresh) => {
+const fo = !!follow[x.who];
+return {
+who: x.who,
+initial: x.who.charAt(0).toUpperCase(),
+text: x.text,
+when: x.when,
+bg: fresh && !notifSeen ? 'rgba(var(--g), calc(0.06 * var(--ga)))' : 'transparent',
+ring: x.story ? NGLOW : 'none',
+hasFollow: !!x.follow,
+hasThumb: !x.follow,
+folCls: fo ? 'chip sent' : 'chip',
+folLabel: fo ? 'Following' : 'Follow back',
+folPressed: fo ? 'true' : 'false',
+toggleFollow: () => { const f = Object.assign({}, follow); f[x.who] = !fo; this.setState({ follow: f }); },
+open: x.post ? openPostComments(x.post) : (() => this.setState({ panel: null, tab: 'profile' }))
+};
+};
+const today = [
+{ who: 'sora.runs', text: 'started following you.', when: '1h', follow: true, story: false },
+{ who: 'jess.cooks', text: 'liked your proof.', when: '3h', post: 'p2', story: true },
+{ who: 'dan.reads', text: 'commented: Day 1 is the hardest. Keep going.', when: '5h', post: 'p3', story: true }
+];
+const week = [
+{ who: 'alex.trains', text: 'started following you.', when: '2d', follow: true, story: false },
+{ who: 'minjun.lifts', text: 'mentioned you in a comment: @' + prof.user + ' leg day tomorrow?', when: '3d', post: 'p1', story: true },
+{ who: 'hana.eats', text: 'liked your scroll.', when: '4d', story: false }
+];
+v.notifGroups = [
+{ title: 'Today', items: today.map((x) => nItem(x, true)) },
+{ title: 'This week', items: week.map((x) => nItem(x, false)) }
+];
+const starterDms = {
+'minjun.lifts': [ { me: false, text: 'Saw your post. Solid.', when: '1h' }, { me: false, text: 'Leg day tomorrow? 6am', when: '20m' } ],
+'jess.cooks': [ { me: false, text: 'You asked about the protein oats', when: '3h' }, { me: false, text: 'Sending you the recipe tonight', when: '2h' } ],
+'dan.reads': [ { me: true, text: 'Day 30. Big respect.', when: '1d' }, { me: false, text: 'What are you reading right now?', when: '6h' } ],
+'sora.runs': [ { me: false, text: 'Track at 7?', when: '2d' }, { me: true, text: 'See you at the track', when: '2d' } ]
+};
+const startUnread = { 'minjun.lifts': true, 'jess.cooks': true, 'dan.reads': true };
+const dmMsgs = s.dmMsgs || {};
+const dmRead = s.dmRead || {};
+const names = Object.keys(dmMsgs).filter((n) => !starterDms[n]).concat(Object.keys(starterDms));
+const msgsFor = (n) => (starterDms[n] || []).concat(dmMsgs[n] || []);
+const isUnread = (n) => !!startUnread[n] && !dmRead[n];
+const unreadN = names.filter(isUnread).length;
+v.dmUnread = unreadN;
+v.dmHasUnread = unreadN > 0;
+v.dmAria = unreadN > 0 ? 'Messages, ' + unreadN + ' unread' : 'Messages';
+const dmView = s.panel === 'inbox' ? 'inbox' : (s.panel === 'thread' ? 'thread' : null);
+v.inboxOpen = dmView === 'inbox';
+v.threadOpen = dmView === 'thread';
+v.openInbox = () => this.setState({ panel: 'inbox', dmQ: '' });
+v.closeDm = () => this.setState({ panel: null });
+v.backToInbox = () => this.setState({ panel: 'inbox' });
+const dq = (s.dmQ || '').trim().toLowerCase();
+v.dmQ = s.dmQ || '';
+v.setDmQ = (e) => this.setState({ dmQ: e.target.value });
+v.threads = names.filter((n) => !dq || n.indexOf(dq) !== -1).map((n) => {
+const ms = msgsFor(n);
+const last = ms[ms.length - 1] || { text: '', when: '' };
+const un = isUnread(n);
+return {
+name: n,
+initial: n.charAt(0).toUpperCase(),
+preview: (last.me ? 'You: ' : '') + last.text,
+when: last.when,
+unread: un,
+weight: un ? '700' : '400',
+previewColor: un ? 'var(--fg)' : 'var(--muted)',
+ring: storyData[n] ? NGLOW : 'none',
+aria: n + (un ? ', unread' : ''),
+open: () => { const r = Object.assign({}, dmRead); r[n] = true; this.setState({ panel: 'thread', dmWith: n, dmRead: r, dmDraft: '' }); }
+};
+});
+v.noThreads = v.threads.length === 0;
+const dw = s.dmWith || '';
+const streaks = { 'minjun.lifts': 14, 'jess.cooks': 6, 'dan.reads': 30, 'sora.runs': 0 };
+v.threadName = dw;
+v.threadAria = 'Chat with ' + dw;
+v.threadInitial = dw.charAt(0).toUpperCase();
+v.threadStreak = streaks[dw] ? streaks[dw] + '-day streak' : 'No streak yet';
+v.threadMsgs = msgsFor(dw).map((m) => ({
+text: m.text,
+when: m.when,
+align: m.me ? 'flex-end' : 'flex-start',
+bubble: m.me ? 'background: var(--accent); color: var(--onAccent); box-shadow: 0 0 8px rgba(var(--g), calc(0.45 * var(--ga)))' : 'background: var(--surface2); color: var(--fg); border: 1px solid rgba(var(--ln), 0.12)'
+}));
+const dd = s.dmDraft || '';
+v.dmDraft = dd;
+v.setDmDraft = (e) => this.setState({ dmDraft: e.target.value });
+const sendDm = () => {
+const t = dd.trim();
+if (!t || !dw || this.isBad(t)) return;
+const x = Object.assign({}, dmMsgs);
+x[dw] = (x[dw] || []).concat([{ me: true, text: t, when: 'now' }]);
+this.setState({ dmMsgs: x, dmDraft: '' });
+};
+v.sendDm = sendDm;
+v.dmKey = (e) => { if (e.key === 'Enter') { e.preventDefault(); sendDm(); } };
+v.dmBad = this.isBad(dd);
+v.cannotSendDm = dd.trim().length === 0 || v.dmBad;
+v.myGlow = hasStory ? '0 0 8px rgba(var(--g), calc(0.75 * var(--ga))), 0 0 18px rgba(var(--g), calc(0.35 * var(--ga)))' : 'none';
+v.pUser = prof.user;
+v.pName = prof.name;
+v.pBio = prof.bio;
+v.hasBio = !!prof.bio.trim();
+v.pInitial = prof.user.charAt(0).toUpperCase();
+v.pRing = hasStory ? '2.5px solid var(--ring)' : '2px solid var(--line)';
+v.statPosts = myPosts.length;
+v.statFollowers = 0;
+v.statFollowing = Object.keys(follow).filter((k) => follow[k]).length;
+const ptab = s.ptab || 'posts';
+v.ptabs = [['posts', 'Posts'], ['scrolls', 'Scrolls'], ['saved', 'Saved']].map((x) => ({ label: x[1], cls: x[0] === ptab ? 'seg on' : 'seg', pressed: x[0] === ptab ? 'true' : 'false', pick: () => this.setState({ ptab: x[0] }) }));
+const gridItems = ptab === 'posts' ? myPosts.map((p) => ({ label: p.photo })) : (ptab === 'scrolls' ? myScr.map(() => ({ label: '[Your video]' })) : v.posts.filter((p) => saved[p.id]).map((p) => ({ label: p.photo })));
+v.gridItems = gridItems;
+v.gridEmpty = gridItems.length === 0;
+v.gridEmptyText = ptab === 'posts' ? 'No posts yet.' : (ptab === 'scrolls' ? 'No scrolls yet.' : 'Nothing saved yet. Tap the bookmark on a post to save it.');
+v.gridEmptyCta = ptab !== 'saved';
+v.gridCtaLabel = ptab === 'scrolls' ? 'Share your first scroll' : 'Share your first post';
+v.gridCta = () => startCompose(ptab === 'scrolls' ? 'scroll' : 'post');
+v.shareProfile = () => this.flash('Profile link copied');
+v.openEdit = () => this.setState({ sheet: 'edit', editDraft: Object.assign({}, prof) });
+const ed = s.editDraft || prof;
+v.editOpen = s.sheet === 'edit';
+v.edName = ed.name;
+v.edUser = ed.user;
+v.edBio = ed.bio;
+v.edInitial = (ed.user || '?').charAt(0).toUpperCase();
+v.setEdName = (e) => this.setState({ editDraft: Object.assign({}, ed, { name: e.target.value }) });
+v.setEdUser = (e) => this.setState({ editDraft: Object.assign({}, ed, { user: e.target.value.toLowerCase().replace(/[^a-z0-9._]/g, '') }) });
+v.setEdBio = (e) => this.setState({ editDraft: Object.assign({}, ed, { bio: e.target.value }) });
+v.edBadName = this.isBad(ed.name);
+v.edBadUser = this.isBad(ed.user);
+v.edBadBio = this.isBad(ed.bio);
+v.edCannotSave = !ed.user || v.edBadName || v.edBadUser || v.edBadBio;
+v.changePhoto = () => this.flash('Photo picker opens here');
+v.saveEdit = () => {
+if (!ed.user || this.isBad(ed.name) || this.isBad(ed.user) || this.isBad(ed.bio)) return;
+this.setState({ profile: { name: ed.name.trim() || 'Your name', user: ed.user, bio: ed.bio.trim() }, sheet: null });
+this.flash('Profile updated');
+};
+v.settingsOpen = s.sheet === 'settings';
+v.openSettings = () => this.setState({ sheet: 'settings', confirmDelete: false, setView: 'main', setQ: '' });
+v.confirmDelete = !!s.confirmDelete;
+v.notConfirmDelete = !s.confirmDelete;
+v.openBlocked = () => this.flash('No blocked accounts');
+v.openReport = () => this.flash('Report form opens here');
+v.logOut = () => { this.setState({ sheet: null }); this.flash('Logged out'); };
+v.askDelete = () => this.setState({ confirmDelete: true });
+v.cancelDelete = () => this.setState({ confirmDelete: false });
+v.doDelete = () => { this.setState({ sheet: null, confirmDelete: false, myPosts: [], myScrolls: [], myStory: [], posted: false, profile: null, follow: {}, tab: 'home' }); this.flash('Account deleted'); };
+return v;
+}
+baseVals() {
+const s = this.state || {};
+const posted = !!s.posted;
+const resp = s.resp || {};
+const base = [
+{ id: 'p1', name: 'minjun.lifts', initial: 'M', cat: 'Gym', mins: 52, when: '2h', streak: 14, photo: '[Photo: squat rack]', caption: 'Leg day. Squats 5x5 at 100kg, then walking lunges.', count: 23 },
+{ id: 'p2', name: 'jess.cooks', initial: 'J', cat: 'Cooking', mins: 35, when: '4h', streak: 6, photo: '[Photo: meal prep boxes]', caption: 'Meal prep for the week. Chicken, rice, broccoli. Five boxes done.', count: 41 },
+{ id: 'p3', name: 'dan.reads', initial: 'D', cat: 'Reading', mins: 30, when: '6h', streak: 30, photo: '[Photo: open book]', caption: 'Day 30 of reading 20 pages before bed.', count: 58 }
+];
+const prof = s.profile || { name: 'Your name', user: 'you', bio: '' };
+const mine = (s.myPosts || []).map((m) => Object.assign({}, m, { name: prof.user, initial: prof.user.charAt(0).toUpperCase() }));
+const all = mine.concat(base.map((b) => Object.assign({}, b, { meta: b.cat + ' · ' + b.mins + ' min · ' + b.when })));
+const posts = all.map((p) => {
+const on = !!resp[p.id];
+return Object.assign({}, p, {
+count: p.count + (on ? 1 : 0),
+respClass: on ? 'resp on' : 'resp',
+likeAria: (on ? 'Unlike' : 'Like') + ', ' + (p.count + (on ? 1 : 0)) + ' likes',
+img: p.img || '',
+alt: p.alt || '',
+hasImg: !!p.img,
+noImg: !p.img,
+pressed: on ? 'true' : 'false',
+toggle: () => { const r = Object.assign({}, resp); r[p.id] = !on; this.setState({ resp: r }); }
+});
+});
+const people = [
+{ name: 'minjun.lifts', initial: 'M', done: true },
+{ name: 'jess.cooks', initial: 'J', done: true },
+{ name: 'dan.reads', initial: 'D', done: true },
+{ name: 'sora.runs', initial: 'S', done: false },
+{ name: 'alex.trains', initial: 'A', done: false }
+];
+const stories = people.map((p) => ({
+name: p.name,
+initial: p.initial,
+ring: p.done ? '2.5px solid var(--ring)' : '2px dashed var(--faint)',
+labelColor: p.done ? 'var(--fg)' : 'var(--muted)'
+}));
+const doneCount = people.filter((p) => p.done).length;
+return {
+q: s.q || '',
+setQ: (e) => this.setState({ q: e.target.value }),
+stories: stories,
+myRing: (s.myStory || []).length > 0 ? '2.5px solid var(--ring)' : '2px dashed var(--faint)',
+hasStory: (s.myStory || []).length > 0,
+statusTitle: posted ? 'Posted today.' : "You haven't posted today",
+statusSub: posted ? 'Come back tomorrow to keep your streak.' : doneCount + ' friends already posted their proof.',
+myStreak: posted ? 1 : 0,
+posted: posted,
+locked: false,
+feedStyle: '',
+posts: posts,
+scrollRow: [
+{ title: '5km tempo run', who: 'sora.runs' },
+{ title: 'High-protein pancakes', who: 'jess.cooks' },
+{ title: 'Pull-ups: month 3', who: 'alex.trains' }
+],
+post: () => this.setState({ posted: true })
+};
+}
+}
+</script>
+</body>
+</html>

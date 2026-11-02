@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Phone or email</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#000}a:hover{color:#333}
+.btn{display:flex;align-items:center;justify-content:center;height:46px;border-radius:999px;background:#000;color:#fff;font-size:15px;font-weight:600;text-decoration:none;box-sizing:border-box;width:100%;border:0;font-family:inherit}
+.btn:hover{color:#fff;background:#262626}
+.off{background:#C7C7C7;cursor:default}.off:hover{background:#C7C7C7}
+.btn2{display:flex;align-items:center;justify-content:center;height:46px;border-radius:999px;background:#fff;color:#000;border:1px solid #DBDBDB;font-size:15px;font-weight:600;box-sizing:border-box;width:100%;font-family:inherit;cursor:pointer}
+.inp{height:52px;border:1px solid #DBDBDB;border-radius:12px;background:#FAFAFA;padding:0 14px;font-size:16px;color:#000;font-family:inherit;box-sizing:border-box;width:100%}
+.inp:focus{outline:none;border-color:#000}
+a:focus-visible,button:focus-visible{outline:2px solid #000;outline-offset:2px}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #ffffff; color: #000000; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; display: flex; flex-direction: column; padding: 0 20px 32px">
+<div style="height: 56px; display: flex; align-items: center">
+<a href="Main.dc.html" aria-label="Back" style="width: 44px; height: 44px; display: flex; align-items: center; margin-left: -10px; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></a>
+</div>
+<sc-if value="{{ isPhone }}" hint-placeholder-val="{{ true }}">
+<h1 style="font-size: 24px; line-height: 1.25; font-weight: 700; margin: 8px 0">Add your phone number</h1>
+<p style="font-size: 15px; line-height: 1.4; color: #737373; margin: 0 0 20px">We use it to keep your account secure. It stays private and never shows on your profile.</p>
+<label for="phone" style="font-size: 12px; color: #737373; margin-bottom: 6px">Phone number</label>
+<input class="inp" id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+1 (949) 555-0123" value="{{ val }}" onChange="{{ setVal }}">
+</sc-if>
+<sc-if value="{{ isEmail }}" hint-placeholder-val="{{ false }}">
+<h1 style="font-size: 24px; line-height: 1.25; font-weight: 700; margin: 8px 0">Add your email</h1>
+<p style="font-size: 15px; line-height: 1.4; color: #737373; margin: 0 0 20px">We use it to keep your account secure. It stays private and never shows on your profile.</p>
+<label for="email" style="font-size: 12px; color: #737373; margin-bottom: 6px">Email</label>
+<input class="inp" id="email" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" value="{{ val }}" onChange="{{ setVal }}">
+</sc-if>
+<p style="font-size: 13px; line-height: 1.4; color: #737373; margin: 10px 0 20px">{{ note }}</p>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<sc-if value="{{ valid }}" hint-placeholder-val="{{ false }}">
+<a class="btn" href="Verify.dc.html">Next</a>
+</sc-if>
+<sc-if value="{{ invalid }}" hint-placeholder-val="{{ true }}">
+<button class="btn off" type="button" disabled>Next</button>
+</sc-if>
+<button class="btn2" type="button" onClick="{{ toggle }}">{{ toggleLabel }}</button>
+</div>
+<div style="flex: 1"></div>
+<p style="margin: 0; text-align: center; font-size: 14px"><a href="Login.dc.html" style="font-weight: 600; text-decoration: none">Have an account? Log in</a></p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+const mode = (this.state && this.state.mode) || 'phone';
+const val = (this.state && this.state.val) || '';
+const isPhone = mode === 'phone';
+const valid = isPhone ? val.replace(/\D/g, '').length >= 7 : /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.trim());
+return {
+isPhone: isPhone,
+isEmail: !isPhone,
+val: val,
+valid: valid,
+invalid: !valid,
+note: isPhone ? "We'll text you a 6-digit code to confirm it's you." : "We'll email you a 6-digit code to confirm it's you.",
+toggleLabel: isPhone ? 'Use email instead' : 'Use phone instead',
+setVal: (e) => this.setState({ val: e.target.value }),
+toggle: () => this.setState({ mode: isPhone ? 'email' : 'phone', val: '' })
+};
+}
+}
+</script>
+</body>
+</html>

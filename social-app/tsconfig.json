@@ -1,0 +1,17 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "resolveJsonModule": true
+  },
+  "include": [
+    "app",
+    "components",
+    "lib",
+    "supabase/functions/_shared/moderation.ts",
+    "supabase/functions/_shared/push.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

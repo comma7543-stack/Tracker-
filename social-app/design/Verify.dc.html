@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Verification code</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#000}a:hover{color:#333}
+.btn{display:flex;align-items:center;justify-content:center;height:46px;border-radius:999px;background:#000;color:#fff;font-size:15px;font-weight:600;text-decoration:none;box-sizing:border-box;width:100%;border:0;font-family:inherit}
+.btn:hover{color:#fff;background:#262626}
+.off{background:#C7C7C7;cursor:default}.off:hover{background:#C7C7C7}
+.btn2{display:flex;align-items:center;justify-content:center;height:46px;border-radius:999px;background:#fff;color:#000;border:1px solid #DBDBDB;font-size:15px;font-weight:600;box-sizing:border-box;width:100%;font-family:inherit;cursor:pointer}
+.code{position:absolute;inset:0;width:100%;height:100%;opacity:0;font-size:16px;border:0;cursor:text}
+.wrap:focus-within .box.cur{border-color:#000;border-width:2px}
+a:focus-visible,button:focus-visible{outline:2px solid #000;outline-offset:2px}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #ffffff; color: #000000; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; display: flex; flex-direction: column; padding: 0 20px 32px">
+<div style="height: 56px; display: flex; align-items: center">
+<a href="SignUp.dc.html" aria-label="Back" style="width: 44px; height: 44px; display: flex; align-items: center; margin-left: -10px; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></a>
+</div>
+<h1 style="font-size: 24px; line-height: 1.25; font-weight: 700; margin: 8px 0">Check your code</h1>
+<p style="font-size: 15px; line-height: 1.4; color: #737373; margin: 0 0 24px">Type the 6-digit code we just sent you.</p>
+<label for="code" style="font-size: 12px; color: #737373; margin-bottom: 8px">6-digit code</label>
+<div class="wrap" style="position: relative; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; margin-bottom: 12px">
+<sc-for list="{{ boxes }}" as="b" hint-placeholder-count="6">
+<div class="{{ b.cls }}" style="height: 56px; border: 1px solid #DBDBDB; border-radius: 12px; background: #FAFAFA; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; box-sizing: border-box">{{ b.d }}</div>
+</sc-for>
+<input class="code" id="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" value="{{ code }}" onChange="{{ setCode }}">
+</div>
+<p style="font-size: 13px; color: #737373; margin: 0 0 24px">{{ resendNote }}</p>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<sc-if value="{{ valid }}" hint-placeholder-val="{{ false }}">
+<a class="btn" href="NamePassword.dc.html">Next</a>
+</sc-if>
+<sc-if value="{{ invalid }}" hint-placeholder-val="{{ true }}">
+<button class="btn off" type="button" disabled>Next</button>
+</sc-if>
+<button class="btn2" type="button" onClick="{{ resend }}">Resend code</button>
+</div>
+<div style="flex: 1"></div>
+<p style="margin: 0; text-align: center; font-size: 12px; color: #737373">Demo: any 6 digits work. No real code is sent.</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+const code = (this.state && this.state.code) || '';
+const sent = this.state && this.state.sent;
+const boxes = [0, 1, 2, 3, 4, 5].map((i) => ({ d: code[i] || '', cls: i === Math.min(code.length, 5) ? 'box cur' : 'box' }));
+return {
+code: code,
+boxes: boxes,
+valid: code.length === 6,
+invalid: code.length !== 6,
+resendNote: sent ? 'New code sent.' : 'No code yet? It can take a minute.',
+setCode: (e) => this.setState({ code: e.target.value.replace(/\D/g, '').slice(0, 6) }),
+resend: () => this.setState({ sent: true })
+};
+}
+}
+</script>
+</body>
+</html>

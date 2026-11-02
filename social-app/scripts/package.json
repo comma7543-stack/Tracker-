@@ -1,0 +1,8 @@
+{
+  "name": "app-scripts",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1"
+  }
+}

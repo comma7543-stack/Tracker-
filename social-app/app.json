@@ -1,0 +1,39 @@
+{
+  "expo": {
+    "name": "[App Name]",
+    "slug": "app-name",
+    "scheme": "appname",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.example.appname"
+    },
+    "android": {
+      "package": "com.example.appname"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-image",
+      "expo-video",
+      "expo-web-browser",
+      "expo-localization",
+      "expo-status-bar",
+      "@react-native-community/datetimepicker",
+      "expo-notifications",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Choose a photo or video to post as proof of your work.",
+          "cameraPermission": false,
+          "microphonePermission": false
+        }
+      ],
+      "expo-sharing"
+    ],
+    "experiments": {
+      "typedRoutes": false
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "video-worker",
+  "private": true,
+  "type": "module",
+  "main": "index.mjs",
+  "scripts": { "start": "node index.mjs" },
+  "dependencies": { "@supabase/supabase-js": "^2.118.0" },
+  "engines": { "node": ">=20" }
+}

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Welcome</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#000}a:hover{color:#333}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;height:46px;border-radius:999px;background:#000;color:#fff;font-size:15px;font-weight:600;text-decoration:none;box-sizing:border-box;width:100%}
+.btn:hover{color:#fff;background:#262626}
+.btn2{display:flex;align-items:center;justify-content:center;gap:10px;height:46px;border-radius:999px;background:#fff;color:#000;border:1px solid #DBDBDB;font-size:15px;font-weight:600;text-decoration:none;box-sizing:border-box;width:100%}
+.btn2:hover{color:#000;background:#FAFAFA}
+a:focus-visible{outline:2px solid #000;outline-offset:2px}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #ffffff; color: #000000; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; display: flex; flex-direction: column; justify-content: space-between; padding: 56px 20px 32px">
+<div style="height: 40px"></div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 16px">
+<div aria-hidden="true" style="width: 88px; height: 88px; border-radius: 24px; border: 2px solid #000000; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; letter-spacing: 0.08em">LOGO</div>
+<div style="font-size: 30px; font-weight: 700; letter-spacing: -0.01em">[App Name]</div>
+<p style="margin: 0; font-size: 16px; color: #737373; text-align: center">Post the work.</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<a class="btn" href="SignUp.dc.html">Get started</a>
+<a class="btn2" href="Birthday.dc.html"><span aria-hidden="true" style="width: 18px; height: 18px; border-radius: 50%; border: 1.5px dashed #737373; box-sizing: border-box"></span>Continue with Apple</a>
+<a class="btn2" href="Birthday.dc.html"><span aria-hidden="true" style="width: 18px; height: 18px; border-radius: 50%; border: 1.5px dashed #737373; box-sizing: border-box"></span>Continue with Google</a>
+<p style="margin: 14px 0 0; text-align: center; font-size: 14px; color: #737373">Already have an account? <a href="Login.dc.html" style="font-weight: 600; text-decoration: none">Log in</a></p>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>
