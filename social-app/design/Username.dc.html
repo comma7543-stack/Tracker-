@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Username</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#000}a:hover{color:#333}
+.btn{display:flex;align-items:center;justify-content:center;height:46px;border-radius:999px;background:#000;color:#fff;font-size:15px;font-weight:600;text-decoration:none;box-sizing:border-box;width:100%;border:0;font-family:inherit}
+.btn:hover{color:#fff;background:#262626}
+.off{background:#C7C7C7;cursor:default}.off:hover{background:#C7C7C7}
+.inp{height:52px;border:1px solid #DBDBDB;border-radius:12px;background:#FAFAFA;padding:0 14px;font-size:16px;color:#000;font-family:inherit;box-sizing:border-box;width:100%}
+.inp:focus{outline:none;border-color:#000}
+.chip{display:inline-flex;align-items:center;height:36px;padding:0 14px;border-radius:999px;border:1px solid #DBDBDB;background:#fff;font-family:inherit;font-size:14px;font-weight:600;color:#000;cursor:pointer}
+a:focus-visible,button:focus-visible{outline:2px solid #000;outline-offset:2px}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #ffffff; color: #000000; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; display: flex; flex-direction: column; padding: 0 20px 32px">
+<div style="height: 56px; display: flex; align-items: center">
+<a href="Birthday.dc.html" aria-label="Back" style="width: 44px; height: 44px; display: flex; align-items: center; margin-left: -10px; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></a>
+</div>
+<h1 style="font-size: 24px; line-height: 1.25; font-weight: 700; margin: 8px 0">Choose your username</h1>
+<p style="font-size: 15px; line-height: 1.4; color: #737373; margin: 0 0 20px">This is how friends find you and see your proof. You can change it later in Settings.</p>
+<label for="uname" style="font-size: 12px; color: #737373; margin-bottom: 6px">Username</label>
+<input class="inp" id="uname" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Username" value="{{ u }}" onChange="{{ setU }}">
+<p style="font-size: 13px; margin: 8px 0 16px; color: {{ noteColor }}">{{ note }}</p>
+<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 28px">
+<span style="font-size: 13px; color: #737373">Suggestion</span>
+<button class="chip" type="button" onClick="{{ useSuggestion }}">alex.lifts.27</button>
+</div>
+<sc-if value="{{ valid }}" hint-placeholder-val="{{ false }}">
+<a class="btn" href="Terms.dc.html">Next</a>
+</sc-if>
+<sc-if value="{{ invalid }}" hint-placeholder-val="{{ true }}">
+<button class="btn off" type="button" disabled>Next</button>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+isBad(text) {
+if (!text) return false;
+const raw = String(text).toLowerCase();
+const ko = raw.replace(/시발점/g, '').replace(/[\s.\-_*~!?·]/g, '');
+const KO = ['씨발', '씨팔', '시팔', '시발', 'ㅅㅂ', 'ㅆㅂ', '씨바', '병신', 'ㅂㅅ', '븅신', '개새끼', '개새기', '개색끼', '좆', '지랄', 'ㅈㄹ', '미친놈', '미친년', '니미', '엠창', '썅', '존나', '졸라', 'ㅈㄴ', '꺼져'];
+if (KO.some((w) => ko.indexOf(w) !== -1)) return true;
+const LEET = { '0': 'o', '1': 'i', '!': 'i', '|': 'i', '3': 'e', '4': 'a', '@': 'a', '5': 's', '$': 's', '7': 't', '8': 'b', '+': 't', '9': 'g' };
+const ALLOW = /shi+take|shitake|scunthorpe|matsushita|cockpit|cocktail|peacock|hancock|dickens|cumulative|cucumber|document|assassin|classic|passion|grape|therapist|therapeutic|analys/g;
+const leet = raw.replace(/[01!|34589@$7+]/g, (c) => LEET[c]);
+const runs = (w) => new RegExp(w.replace(/(.)\1*/g, (m, c) => c + (m.length > 1 ? '{' + m.length + ',}' : '+')));
+const STRONG = ['fuck', 'fck', 'fuk', 'fuq', 'phuck', 'shit', 'bitch', 'biatch', 'cunt', 'nigger', 'nigga', 'faggot', 'fagot', 'asshole', 'dumbass', 'jackass', 'asshat', 'assface', 'asswipe', 'bastard', 'whore', 'slut', 'retard', 'pussy', 'dickhead', 'cocksucker', 'wanker', 'twat', 'dildo', 'porn', 'motherf', 'bullsh', 'jerkoff', 'tranny', 'kys'];
+const WHOLE = ['ass', 'arse', 'dick', 'cock', 'tit', 'tits', 'titty', 'titties', 'piss', 'pissed', 'wank', 'fag', 'fags', 'rape', 'raped', 'damn', 'dammit', 'crap', 'crappy', 'hoe', 'hoes', 'cum', 'jizz', 'boob', 'boobs', 'prick', 'douche', 'douchebag', 'skank', 'thot', 'asses', 'dicks', 'cocks'];
+const strongRx = STRONG.map(runs);
+const wholeRx = WHOLE.map((w) => new RegExp('^' + runs(w).source + '$'));
+const words = leet.replace(ALLOW, ' ').split(/\s+/).filter(Boolean);
+const joined = [];
+let run = '';
+words.forEach((w) => { const c = w.replace(/[^a-z]/g, ''); if (c.length === 1) { run += c; } else { if (run.length >= 3) joined.push(run); run = ''; } });
+if (run.length >= 3) joined.push(run);
+const squashed = words.map((w) => w.replace(/[^a-z]/g, '')).concat(joined);
+if (squashed.some((w) => strongRx.some((rx) => rx.test(w)))) return true;
+const parts = leet.replace(ALLOW, ' ').split(/[^a-z]+/).filter(Boolean).concat(joined);
+return parts.some((w) => wholeRx.some((rx) => rx.test(w)));
+}
+renderVals() {
+const u = (this.state && this.state.u) || '';
+const okChars = /^[a-z0-9._]+$/.test(u);
+const bad = this.isBad(u);
+const valid = u.length >= 3 && u.length <= 30 && okChars && !bad && !/^\./.test(u) && !/\.$/.test(u);
+let note = 'Letters, numbers, periods and underscores. 3 to 30 characters.';
+let noteColor = '#737373';
+if (bad) { note = "Usernames can't include offensive words."; noteColor = '#B3261E'; }
+else if (u.length > 0 && !okChars) { note = 'Usernames can only use letters, numbers, periods and underscores.'; noteColor = '#000000'; }
+else if (u.length > 0 && u.length < 3) { note = 'Too short. Use at least 3 characters.'; noteColor = '#000000'; }
+else if (valid) { note = u + ' is available.'; noteColor = '#000000'; }
+return {
+u: u,
+note: note,
+noteColor: noteColor,
+valid: valid,
+invalid: !valid,
+setU: (e) => this.setState({ u: e.target.value.toLowerCase().replace(/\s/g, '') }),
+useSuggestion: () => this.setState({ u: 'alex.lifts.27' })
+};
+}
+}
+</script>
+</body>
+</html>

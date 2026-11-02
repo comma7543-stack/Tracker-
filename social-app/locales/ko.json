@@ -1,0 +1,244 @@
+{
+  "common": {
+    "back": "뒤로", "close": "닫기", "cancel": "취소", "delete": "삭제", "next": "다음", "or": "또는", "more": "더 보기",
+    "save": "저장", "done": "완료", "you": "나", "tryAgain": "문제가 생겼어요. 다시 시도해 주세요."
+  },
+  "time": { "now": "방금", "minutes": "{{n}}분", "hours": "{{n}}시간", "days": "{{n}}일", "weeks": "{{n}}주" },
+  "tabs": { "home": "홈", "search": "검색", "create": "만들기", "scrolls": "스크롤", "profile": "프로필" },
+  "topic": { "Fitness": "운동", "Learning": "학습", "Work and tech": "일과 기술", "Money and health": "돈과 건강", "Motivation": "동기부여" },
+  "subtag": {
+    "Gym": "헬스", "Running": "러닝", "Sports": "스포츠", "Yoga": "요가",
+    "Reading": "독서", "Studying": "공부", "Languages": "외국어", "Writing": "글쓰기",
+    "Coding": "코딩", "AI and Claude": "AI와 Claude", "Design": "디자인", "Building": "만들기",
+    "Trading": "트레이딩", "Investing": "투자", "Cooking": "요리", "Healthy eating": "건강한 식사",
+    "Quotes": "명언", "Consistency": "꾸준함"
+  },
+  "choice": {
+    "Off": "끔", "Everyone": "모두", "Followers": "서포터", "Only me": "나만", "People you follow": "내가 서포트하는 사람", "No one": "아무도",
+    "6 PM": "오후 6시", "9 PM": "오후 9시", "11 PM": "오후 11시", "15 min": "15분", "30 min": "30분", "1 hour": "1시간", "2 hours": "2시간"
+  },
+  "auth": {
+    "tagline": "해낸 일을 올리세요.", "getStarted": "시작하기", "apple": "Apple로 계속하기", "google": "Google로 계속하기",
+    "haveAccount": "이미 계정이 있나요?", "logIn": "로그인", "haveAccountLogIn": "계정이 있나요? 로그인", "newHere": "처음이신가요? 계정 만들기",
+    "socialFailed": "로그인하지 못했어요. 다시 시도해 주세요.",
+    "addPhone": "전화번호를 입력하세요", "addEmail": "이메일을 입력하세요",
+    "contactWhy": "계정 보안을 위해 사용해요. 공개되지 않으며 프로필에 표시되지 않아요.",
+    "phone": "국가 번호를 포함한 전화번호", "email": "이메일",
+    "phoneNote": "본인 확인을 위해 6자리 코드를 문자로 보내드려요.", "emailNote": "본인 확인을 위해 6자리 코드를 이메일로 보내드려요.",
+    "useEmail": "이메일로 하기", "usePhone": "전화번호로 하기", "codeFailed": "코드를 보내지 못했어요. 확인 후 다시 시도해 주세요.",
+    "checkCode": "코드를 확인하세요", "typeCode": "방금 보내드린 6자리 코드를 입력하세요.", "sixDigit": "6자리 코드",
+    "newCodeSent": "새 코드를 보냈어요.", "noCodeYet": "코드가 안 왔나요? 1분 정도 걸릴 수 있어요.", "resend": "코드 다시 보내기", "codeWrong": "코드가 맞지 않아요. 확인 후 다시 시도해 주세요.",
+    "whatsName": "이름이 뭐예요?", "nameWhy": "친구들이 찾을 수 있도록 이름을 입력하세요.", "fullName": "이름", "nameOffensive": "이름에 불쾌한 단어를 쓸 수 없어요.",
+    "pickPassword": "비밀번호를 정하세요", "passwordRule": "8자 이상으로, 문자와 숫자를 섞어 주세요.", "password": "비밀번호", "show": "보기", "hide": "숨기기",
+    "moreChars_other": "{{count}}자 더 필요해요.", "passwordGood": "좋은 비밀번호예요.", "passwordFailed": "비밀번호를 저장하지 못했어요. 다른 비밀번호를 써 보세요.",
+    "whenBorn": "생일이 언제예요?", "birthdayPrivate": "생일은 프로필에 표시되지 않아요.", "birthday": "생일", "birthdayAge": "생일 (만 {{age}}세)", "chooseDate": "날짜 선택",
+    "tooYoung": "만 13세 이상만 가입할 수 있어요.", "ageWhy": "연령에 맞는 앱 환경을 위해 물어봐요. 만 13세 이상만 가입할 수 있어요.",
+    "usernameTaken": "방금 다른 사람이 그 사용자 이름을 가져갔어요. 돌아가서 다른 이름을 골라 주세요.",
+    "loginId": "사용자 이름, 이메일 또는 전화번호", "forgot": "비밀번호를 잊으셨나요?", "loginFailed": "로그인하지 못했어요. 정보를 확인하고 다시 시도해 주세요."
+  },
+  "username": {
+    "title": "사용자 이름을 정하세요", "why": "친구들이 이 이름으로 나를 찾고 인증을 봐요. 나중에 설정에서 바꿀 수 있어요.", "label": "사용자 이름",
+    "rule": "영문 소문자, 숫자, 마침표, 밑줄을 쓸 수 있어요. 3~30자.", "offensive": "사용자 이름에 불쾌한 단어를 쓸 수 없어요.",
+    "chars": "사용자 이름에는 영문 소문자, 숫자, 마침표, 밑줄만 쓸 수 있어요.", "short": "너무 짧아요. 3자 이상 입력하세요.", "long": "너무 길어요. 30자 이하로 입력하세요.",
+    "dots": "사용자 이름은 마침표로 시작하거나 끝날 수 없어요.", "checking": "확인 중...", "taken": "{{name}}은(는) 이미 사용 중이에요.", "available": "{{name}}은(는) 사용할 수 있어요.", "suggestion": "추천"
+  },
+  "terms": {
+    "title": "시작하기 전에", "intro": "동의함을 누르면 {{app}}의 커뮤니티 가이드라인, 이용약관, 개인정보 처리방침에 동의하게 돼요.", "canPost": "올릴 수 있는 것",
+    "canPostBody": "운동, 학습, 일과 기술, 돈과 건강, 동기부여, 다섯 가지 주제에서 실제로 해낸 일의 인증과 진심 어린 동기부여. 러닝, 독서, 코딩, AI 활용, 트레이딩, 요리, 힘이 되는 명언 같은 것들이에요.",
+    "never": "절대 안 되는 것", "neverBody": "노출이나 성적인 콘텐츠, 불법적인 모든 것, 폭력이나 자해, 혐오나 괴롭힘, 사기나 가짜 인증, 술, 전자담배, 도박.",
+    "strikes": "모든 게시물과 스크롤은 올라가기 전에 검사를 거쳐요. 스토리는 미리 검사하지 않지만 같은 규칙이 적용되고 누구나 신고할 수 있어요. 규칙을 어기면 경고를 받고, 경고 3회면 7일 동안 게시가 중단돼요. 미성년자와 관련된 성적인 콘텐츠는 계정이 삭제되고 신고돼요.",
+    "age": "만 13세 이상입니다.", "read": "[Community Guidelines link], {{terms}}, {{privacy}}를 읽어 보세요.", "agree": "동의함"
+  },
+  "done": { "title": "{{app}}에 오신 걸 환영해요", "body": "계정이 준비됐어요. 오늘 첫 인증을 올려 스트릭을 시작하세요.", "continue": "계속" },
+  "forgot": {
+    "title": "비밀번호 재설정", "body": "사용자 이름, 이메일 또는 전화번호를 알려 주시면 재설정 링크를 보내드려요.", "send": "재설정 링크 보내기",
+    "sentTitle": "받은 편지함을 확인하세요", "sentBody": "입력한 정보와 일치하는 계정이 있으면 재설정 링크를 보냈어요.", "back": "로그인으로 돌아가기"
+  },
+  "home": {
+    "postedToday": "오늘 올렸어요", "leftToPost": "오늘 올리기까지 남은 시간", "countdown": "{{hours}}시간 {{minutes}}분", "doneCount": "{{total}}명 중 {{done}}명 완료",
+    "notPosted": "{{name}}님은 오늘 아직 인증을 올리지 않았어요", "viewProof": "{{name}}님의 인증 보기", "viewYourStory": "내 스토리 보기", "addStory": "내 스토리에 추가", "yourProof": "내 인증",
+    "scrollsSub": "실제로 해낸 일을 담은 짧은 영상", "openScroll": "{{name}}님의 스크롤 열기", "emptyFeed": "피드가 조용하네요. 검색에서 사람들을 서포트하거나 직접 인증을 올려 보세요.",
+    "notificationsNew": "알림, 새 활동 있음", "messagesUnread": "메시지, 읽지 않음 {{count}}개"
+  },
+  "post": {
+    "title": "게시물", "streak_other": "{{count}}일 스트릭", "like": "좋아요", "unlike": "좋아요 취소", "save": "저장", "saved": "저장했어요", "unsaved": "저장을 취소했어요", "removeSaved": "저장 취소",
+    "open": "게시물 열기", "deleteTitle": "이 게시물을 삭제할까요?", "unavailable": "볼 수 없는 게시물이에요."
+  },
+  "certificate": { "title": "달성 인증서", "certifies": "이 인증서는", "reached": "목표를 달성했음을 인증합니다", "achieved": "목표 달성", "streak_other": "{{count}}일 스트릭", "checked": "AI가 영상을 보고 확인했어요. AI는 실수할 수 있어요.", "watch": "증명 영상 보기", "share": "공유", "nextGoal": "다음 목표 정하기", "congrats": "해냈어요. 목표를 끝냈어요.", "unavailable": "이 인증서를 볼 수 없어요." },
+  "comments": {
+    "title": "댓글", "empty": "아직 댓글이 없어요. 대화를 시작해 보세요.", "yours": "내 댓글", "edit": "수정", "edited": "수정됨", "editing": "댓글 수정 중", "cancelEdit": "수정 취소", "reply": "답글", "like": "댓글 좋아요", "unlike": "댓글 좋아요 취소",
+    "viewReplies_other": "답글 {{count}}개 보기", "hideReplies": "답글 숨기기", "replyingTo": "답글 대상:", "cancelReply": "답글 취소",
+    "offensive": "불쾌한 단어를 지워야 댓글을 올릴 수 있어요.", "write": "댓글 쓰기", "replyPlaceholder": "{{name}}님에게 답글", "post": "게시",
+    "deleteTitle": "이 댓글을 삭제할까요?", "notAllowed": "이 게시물에는 댓글을 달 수 없어요."
+  },
+  "share": { "title": "공유", "friend": "친구에게 보내기", "send": "보내기", "sent": "보냄", "copy": "링크 복사", "copied": "링크를 복사했어요", "noFriends": "누군가를 서포트하면 게시물을 보낼 수 있어요." },
+  "create": {
+    "title": "만들기", "post": "게시물", "postSub": "피드에 사진이나 동영상 올리기", "story": "스토리", "storySub": "글을 넣은 사진이나 동영상, 24시간 동안 표시", "scroll": "스크롤", "scrollSub": "스크롤 피드에 올리는 짧은 세로 영상"
+  },
+  "suspended": {
+    "title": "7일 동안 게시가 중단됐어요",
+    "body": "가이드라인을 어긴 게시물로 경고 3회를 받았어요. 보기, 좋아요, 메시지는 계속할 수 있어요. 경고가 잘못됐다고 생각하면 계정 상태에서 검토를 요청하세요."
+  },
+  "commit": {
+    "goalTitle": "뭘 쫓고 있어요?",
+    "goalSub": "크게 말해 봐요. 크든 작든 다 괜찮아요. 프로필에 표시돼요. 24시간 안에는 고칠 수 있고, 그 뒤에는 해냈다는 영상으로 증명해야 바꿀 수 있어요.",
+    "goalLabel": "내 목표",
+    "goalPh": "마라톤 완주하기",
+    "excuseTitle": "솔직히 말해 봐요. 제일 자주 쓰는 핑계는?",
+    "excuseSub": "누구나 하나쯤 있어요.",
+    "excuse_monday": "월요일부터 할게요",
+    "excuse_mondayReply": "월요일은 몇 년째 참 바쁘네요.",
+    "excuse_tired": "너무 피곤해요",
+    "excuse_tiredReply": "다들 피곤해요. 그래도 올리는 사람은 올려요.",
+    "excuse_time": "시간이 없어요",
+    "excuse_timeReply": "이 앱 받을 시간은 있었잖아요.",
+    "excuse_none": "저는 핑계 안 대요",
+    "excuse_noneReply": "자신 있네요. 스트릭으로 확인할게요.",
+    "badDayTitle": "다 제대로 했어요. 그런데 결과가 나빠요. 이제 어떡할래요?",
+    "badDaySub": "꼭 한 번은 와요. 하나만 골라요.",
+    "badDay_again": "내일 또 나와요",
+    "badDay_againReply": "그게 이 앱의 전부예요.",
+    "badDay_learn": "뭐가 잘못됐는지 찾아서 고쳐요",
+    "badDay_learnReply": "좋아요. 나쁜 결과도 그냥 정보일 뿐이에요.",
+    "badDay_rest": "오늘은 쉬고 내일 더 세게 해요",
+    "badDay_restReply": "쉬는 것도 노력의 일부예요. 포기는 아니고요.",
+    "badDay_quit": "솔직히 그만두고 싶을 거예요",
+    "badDay_quitReply": "다들 그래요. 그래도 나오는 게 핵심이에요.",
+    "goalVague": "영상으로 증명할 수 있는 목표를 골라 주세요. 예: \"마라톤 완주\", \"책 50권 읽기\"", "goalHarm": "다른 사람을 해치는 목표 말고, 나를 키우는 목표를 골라 주세요.",
+    "careTitle": "정말 힘든 일인 것 같아요",
+    "careBody": "혼자 짊어지지 않아도 돼요. 스트릭으로 버텨서 해결할 일도 아니에요. 오늘 부모님이나 선생님, 믿을 수 있는 어른과 꼭 이야기해 주세요.",
+    "careHelp": "지금 위험할 수 있다면 바로 지역 응급 전화번호로 연락하세요. {{line}}에도 연락할 수 있어요.",
+    "careBack": "다른 목표 고르기",
+    "hardestTitle": "제일 힘든 부분이 뭐예요?",
+    "hardestSub": "누구나 어딘가에서 막혀요.",
+    "hardest_starting": "시작하는 것",
+    "hardest_startingReply": "시작은 게시물 하나면 돼요. 하나는 올릴 수 있어요.",
+    "hardest_staying": "꾸준히 하는 것",
+    "hardest_stayingReply": "스트릭이 바로 그걸 위한 거예요.",
+    "hardest_believing": "될 거라고 믿는 것",
+    "hardest_believingReply": "오늘 믿지 않아도 돼요. 그냥 나오면 돼요.",
+    "compareTitle": "나보다 늦게 시작한 사람이 벌써 앞서가요. 어떡할래요?",
+    "compareSub": "여기서도 그런 일이 생길 거예요.",
+    "compare_own": "내 페이스대로 계속 가요",
+    "compare_ownReply": "그 사람의 결과는 내 과정이 아니에요.",
+    "compare_ask": "어떻게 했는지 물어봐요",
+    "compare_askReply": "똑똑하네요. 그리고 다시 할 일을 해요.",
+    "compare_bothered": "신경 쓰이겠지만 계속해요",
+    "compare_botheredReply": "다들 신경 쓰여요. 그래도 계속해요.",
+    "nobodyTitle": "좋아요도, 댓글도, 봐주는 사람도 없어요. 그래도 할 건가요?",
+    "nobodySub": "정말 그렇게 느껴지는 날이 있을 거예요.",
+    "nobody_yes": "네, 나를 위한 거니까요",
+    "nobody_yesReply": "그럼 이미 대부분의 사람보다 앞서 있어요.",
+    "nobody_some": "솔직히 어떤 날은요",
+    "nobody_someReply": "솔직하네요. 이 앱은 그런 날을 위한 거예요.",
+    "nobody_seen": "누가 봐줘야 해요",
+    "nobody_seenReply": "그럴 수 있어요. 그래서 여기에 올리는 거예요.",
+    "dareTitle": "하루에 하나씩. 매일. 약속?",
+    "dareSub": "결과 말고, \"{{goal}}\"을(를) 위해 움직였다는 증거만요.",
+    "dare_deal": "약속",
+    "dare_dealReply": "좋아요. 미래의 내가 고개를 끄덕였어요.",
+    "dare_miss": "하루 놓치면요?",
+    "dare_missReply": "다음 날 다시 오면 돼요. 그래도 약속은 약속이에요.",
+    "keepGoing": "계속하기",
+    "dialTitle": "얼마나 진심이에요? 정말로요.",
+    "dialHint": "게이지를 위로 끌어 올려요",
+    "dialLabel": "진심 지수, 1부터 10까지",
+    "level1": "화면 만지긴 했어요?",
+    "level2": "소파가 안부 전해요.",
+    "level3": "불씨네요. 간신히.",
+    "level4": "이제 몸 푸는 중이에요?",
+    "level5": "딱 중간. 역시나.",
+    "level6": "좋아요, 이제 말이 통하네요.",
+    "level7": "진짜 뜨거워요.",
+    "level8": "사람들이 알아보기 시작할 거예요.",
+    "level9": "거의 위험한 수준이에요.",
+    "level10": "좋아요. 증명해 봐요. 매일.",
+    "lockIn": "이걸로 확정",
+    "dareLow": "{{n}}이요? 더 올릴 생각 없어요?",
+    "goHigher": "더 올리기",
+    "stayAt": "{{n}}(으)로 할게요",
+    "dedication": "진심 지수",
+    "dedicationValue": "내가 고른 숫자: {{n}}/10",
+    "processTitle": "중요한 건 과정이에요",
+    "processResults": "완벽하게 노력해도 결과는 실망스러울 수 있어요. 그래도 계속하세요.",
+    "processMatters": "이 앱을 만든 이유예요. 여기서는 아무도 결과로 평가받지 않아요. 중요한 건 열심히 했고, 포기하지 않았고, 100%를 다했다는 것뿐이에요.",
+    "processDone": "시작할게요"
+  },
+  "compose": {
+    "newPost": "새 게시물", "newStory": "새 스토리", "newScroll": "새 스크롤", "share": "공유", "add": "추가", "photo": "사진", "video": "동영상", "pickPhoto": "사진 선택", "pickVideo": "동영상 선택",
+    "caption": "설명", "storyText": "스토리에 넣을 글", "captionPh": "설명 쓰기", "storyPh": "글 한 줄 추가", "scrollPh": "영상 설명하기", "offensive": "불쾌한 단어를 지워야 공유할 수 있어요.",
+    "topic": "주제", "needTopic": "공유하려면 주제를 고르세요. 모든 게시물은 주제에 맞는지 검사를 거쳐요.", "demoTitle": "데모에는 AI가 없어요", "demoBody": "실제 앱에서는 AI가 영상을 보고 그 내용으로 판단해요. 캡션은 소용없어요. 데모는 그럴 수 없으니 AI의 판단을 골라 주세요.", "demoProven": "AI가 증명됐다고 함", "demoNotProven": "AI가 증명되지 않았다고 함", "provesGoal": "내 목표를 증명하는 영상이에요", "provesGoalSub": "AI가 이 영상을 확인해요: {{goal}}", "proofLimit": "목표 증명은 하루 3번까지 할 수 있어요. 내일 다시 해 주세요.", "notProvenTitle": "올렸지만 아직 목표를 끝내지 못했어요", "notProvenBody": "목표를 해낸 모습이 영상에 분명히 보여야 해요. 다른 영상으로 다시 해 볼 수 있어요.", "alsoScrolls": "스크롤에도 공유", "alsoScrollsSub": "이 동영상 게시물이 스크롤에서도 재생돼요.",
+    "checking": "게시물을 검사하는 중", "scanning": "허용되지 않는 콘텐츠를 확인하고 있어요", "fits": "{{topic}}에 맞는지 확인하고 있어요",
+    "posted": "게시했어요", "postedBoth": "피드와 스크롤에 게시했어요", "sharedScrolls": "스크롤에 공유했어요", "addedStory": "스토리에 추가했어요",
+    "offTitle": "{{topic}}처럼 보이지 않아요", "offBody": "게시물은 실제 노력이나 진심 어린 동기부여를 보여줘야 해요. 밈이나 뜬금없는 농담은 올릴 수 없어요. 주제를 바꾸거나 주제에 맞는 것을 올려 주세요. 다시 시도하면 오늘 올릴 수 있는 횟수를 하나 더 써요. 경고로 치지 않아요.", "changeTopic": "주제 바꾸기",
+    "leftToday": "오늘 {{n}}개 남음", "limitTitle": "오늘은 여기까지예요", "limitPosts": "게시물과 스크롤은 하루에 {{n}}개까지 올릴 수 있고, 차단된 게시물도 포함돼요. 내일 다시 와 주세요.", "needTopicStory": "스토리의 주제를 고르세요.",
+    "banTitle": "가이드라인을 어긴 게시물이에요", "banBody": "노출, 성적인 콘텐츠, 폭력, 불법 행위처럼 허용되지 않는 콘텐츠가 발견됐어요. 공유되지 않았어요.",
+    "strikeLine": "경고 3회 중 {{n}}회째예요. 경고 3회면 7일 동안 게시가 중단돼요.", "strikeSuspended": "경고 3회 중 {{n}}회째예요. 이제 7일 동안 게시가 중단돼요.",
+    "readGuidelines": "가이드라인 읽기", "requestReview": "검토 요청", "discard": "게시물 버리기",
+    "reviewTitle": "검토를 요청했어요", "reviewBody": "24시간 안에 담당자가 직접 확인해요. 검사가 잘못됐다면 게시물이 올라가고 경고도 사라져요.",
+    "stillTitle": "아직 검사 중이에요", "stillBody": "평소보다 오래 걸리고 있어요. 검사가 끝날 때까지 게시물은 숨겨지고, 통과하면 올라가요.",
+    "failed": "공유하지 못했어요. 연결을 확인하고 다시 시도해 주세요."
+  },
+  "streak": {
+    "title": "내 스트릭", "dayStreak": "일 스트릭", "best": "최고", "done": "오늘은 완료! 내일 올리면 {{next}}일째가 돼요.", "keepAlive": "스트릭을 지키려면 {{hours}}시간 {{minutes}}분 남았어요.", "start": "오늘 올려서 스트릭을 시작하세요.",
+    "weekLetters": "월,화,수,목,금,토,일", "dayPosted": "올림", "dayToday": "오늘, 아직 안 올림", "dayMissed": "놓침", "dayUpcoming": "예정",
+    "nextBadge": "다음 배지: {{label}}", "toGo_other": "{{count}}일 남음", "days_other": "{{count}}일",
+    "badge3": "3일", "badge7": "1주", "badge30": "30일", "badge100": "100일", "earned": "획득", "locked": "잠김",
+    "freezes_other": "프리즈 {{count}}개 남음", "postToday": "오늘의 인증 올리기",
+    "frozenHold": "프리즈가 스트릭을 지키고 있어요. 오늘 올려서 이어 가세요.", "frozenToday": "오늘은 얼려 뒀어요. 스트릭은 안전해요.", "dayFrozen": "얼림",
+    "reasonOpen": "못 올렸나요? 이유를 고르고 얼리기", "reasonTitle": "무슨 일이 있었나요?", "reasonToday": "오늘", "reasonYesterday": "어제",
+    "reasonsLeft": "이번 달 이유 사용 3번 중 {{n}}번 남음", "reasonNone": "이번 달 이유 사용 3번을 모두 썼어요.", "reasonConfirm": "스트릭 얼리기", "reasonDone": "스트릭을 얼렸어요",
+    "reason": { "sick": "아프거나 다쳤어요", "family": "가족 일", "travel": "여행", "noPhone": "휴대폰이나 인터넷이 없었어요", "other": "기타" }
+  },
+  "story": {
+    "previous": "이전", "next": "다음", "replyLabel": "스토리에 답장", "replyPlaceholder": "{{name}}님에게 메시지 보내기", "replyPrefix": "스토리에 답장: {{text}}", "replySent": "{{name}}님에게 메시지를 보냈어요"
+  },
+  "scrolls": { "mute": "음소거", "unmute": "음소거 해제", "empty": "아직 스크롤이 없어요." },
+  "profile": {
+    "proofs": "인증", "followers": "서포터", "following": "서포팅", "goal": "목표", "proveGoal": "증명하기", "setGoal": "다음 목표 정하기", "goalLocked": "잠겨 있어요. 바꾸려면 해냈다는 영상을 올려 주세요.", "goalFixing_other": "{{count}}시간 더 고칠 수 있어요. 그 뒤에는 해냈다는 영상을 올려야 바꿀 수 있어요.", "listsHidden": "이 사람은 목록을 숨겼어요.", "noSupporters": "아직 서포터가 없어요.", "noSupporting": "아직 서포트하는 사람이 없어요.", "remove": "삭제", "removeTitle": "{{name}}님을 삭제할까요?", "removeBody": "상대방에게 알리지 않아요. 차단하지 않으면 다시 서포트할 수 있어요.", "edit": "프로필 편집", "share": "공유", "follow": "서포트", "followingBtn": "서포팅", "requested": "요청됨", "message": "메시지",
+    "posts": "게시물", "scrolls": "스크롤", "saved": "저장됨", "noPosts": "아직 게시물이 없어요.", "noScrolls": "아직 스크롤이 없어요.", "noSaved": "저장한 게 없어요. 게시물의 북마크를 눌러 저장하세요.",
+    "firstPost": "첫 게시물 공유하기", "firstScroll": "첫 스크롤 공유하기", "private": "비공개 계정", "privateBody": "비공개 계정이에요. 서포트를 요청하면 게시물, 스크롤, 목표, 스트릭을 볼 수 있어요.",
+    "unavailable": "볼 수 없는 프로필이에요.", "block": "차단", "blockTitle": "{{name}}님을 차단할까요?", "blockBody": "상대는 내 프로필을 보거나 메시지를 보낼 수 없고, 나도 상대의 프로필을 볼 수 없어요.", "blocked": "차단했어요",
+    "unfollowed": "{{name}}님 서포트를 그만뒀어요", "nowFollowing": "{{name}}님을 서포트해요", "updated": "프로필을 업데이트했어요", "changePhoto": "사진 바꾸기", "name": "이름", "bio": "소개", "bioPh": "어떤 일을 하고 있나요?", "bioOffensive": "소개에 불쾌한 단어를 쓸 수 없어요."
+  },
+  "search": {
+    "label": "검색", "placeholder": "사람, 운동, 레시피 검색", "idleTitle": "사람과 인증 찾기", "idleBody": "검색창을 누르면 추천 영상을 볼 수 있어요.", "all": "전체",
+    "recommended": "추천", "resultsFor": "\"{{q}}\" 검색 결과", "empty": "일치하는 결과가 없어요. 다른 단어를 써 보세요."
+  },
+  "notifications": {
+    "title": "알림", "empty": "아직 알림이 없어요.", "today": "오늘", "week": "이번 주", "earlier": "이전", "liked": "님이 내 인증을 좋아해요.", "commented": "님의 댓글: {{text}}", "mentioned": "님이 댓글에서 나를 언급했어요: {{text}}",
+    "followed": "님이 나를 서포트하기 시작했어요.", "requested": "님이 서포트를 요청했어요.", "followBack": "맞서포트", "accept": "수락", "decline": "거절"
+  },
+  "messages": {
+    "title": "메시지", "search": "검색", "noMatch": "일치하는 이름이 없어요.", "empty": "아직 메시지가 없어요. 프로필에서 대화를 시작하세요.", "threadUnread": "{{name}}, 읽지 않음", "you": "나: {{text}}",
+    "photo": "사진", "addPhoto": "사진 보내기", "photoFailed": "사진을 보내지 못했어요. 다시 시도해 주세요.", "photoRemoved": "신고되어 삭제된 사진이에요.",
+    "reportPhoto": "신고", "reportPhotoTitle": "이 사진을 신고하고 삭제할까요?", "reportPhotoBody": "두 사람 모두에게서 바로 사라지고, 담당자가 신고 내용을 확인해요.", "reportPhotoConfirm": "삭제", "photoReported": "사진을 삭제했어요",
+    "placeholder": "메시지...", "send": "보내기", "offensive": "불쾌한 단어를 지워야 보낼 수 있어요.", "notAllowed": "이 사람에게 메시지를 보낼 수 없어요.", "noStreak": "아직 스트릭이 없어요"
+  },
+  "report": {
+    "title": "신고", "problem": "문제 신고", "why": "왜 신고하나요?", "details": "자세한 내용 (선택)", "send": "신고 보내기", "thanks": "고마워요. 확인해 볼게요.",
+    "reason": {
+      "sexual": "노출 또는 성적 콘텐츠", "illegal": "불법", "violence": "폭력 또는 자해", "hate": "혐오 또는 괴롭힘", "scam": "사기 또는 가짜 인증", "alcohol": "술, 전자담배, 도박", "spam": "스팸", "other": "기타"
+    }
+  },
+  "reminder": { "title": "내 스트릭", "keep": "오늘 올려서 {{count}}일 스트릭을 지키세요.", "start": "오늘 인증을 올려 스트릭을 시작하세요." },
+  "settings": {
+    "title": "설정", "search": "설정 검색", "results": "결과", "noMatch": "일치하는 설정이 없어요.", "yourStreak": "내 스트릭", "reminders": "스트릭 알림", "freeze": "스트릭 프리즈",
+    "available_other": "{{count}}개 보유", "whoStreak": "내 스트릭을 볼 수 있는 사람", "notifications": "알림", "pauseAll": "모든 알림 일시 중지", "likesComments": "좋아요와 댓글", "newFollowers": "새 서포터", "messages": "메시지",
+    "privacy": "개인정보와 안전", "private": "비공개 계정", "showLists": "내 서포터와 서포팅 목록 보여주기", "showListsSub": "숫자는 항상 보여요. 목록을 숨겨도 다른 사람의 목록에는 나올 수 있어요.", "privateSub": "내가 승인한 서포터만 게시물, 스크롤, 목표, 스트릭을 볼 수 있어요", "whoMessage": "메시지를 보낼 수 있는 사람", "whoComment": "댓글을 달 수 있는 사람", "blocked": "차단한 계정",
+    "noBlocked": "차단한 사람이 없어요. 프로필에서 차단할 수 있어요.", "unblock": "차단 해제", "hideOffensive": "불쾌한 댓글 숨기기",
+    "app": "앱", "theme": "테마", "theme_white": "올 화이트", "theme_neon": "네온", "theme_color": "컬러풀", "themeWhiteSub": "깔끔한 흑백", "themeNeonSub": "검은 배경에 흰 네온 빛", "themeColorSub": "파랑, 분홍, 라임", "themeNote": "스크롤과 스토리는 모든 테마에서 어둡게 표시돼요.",
+    "language": "언어", "languageSet": "언어를 {{name}}(으)로 바꿨어요", "restartForLanguage": "언어 변경을 마치려면 앱을 다시 시작하세요.", "timeLimit": "하루 사용 시간 제한", "timeLimitNote": "하루에 {{app}}을(를) 이만큼 쓰면 알려드려요.", "limitReached": "하루 사용 시간 제한에 도달했어요.",
+    "reduceMotion": "동작 줄이기", "reduceMotionSub": "애니메이션 끄기", "autoplayWifi": "Wi-Fi에서만 자동 재생", "dataSaver": "데이터 절약", "dataSaverSub": "동영상을 눌러야 재생돼요",
+    "account": "계정", "status": "계정 상태", "suspended": "중단됨", "goodStanding": "양호", "strikes": "경고", "strikesOf": "경고 3회 중 {{n}}회", "posting": "게시", "postingAllowed": "가능", "postingSuspended": "7일 동안 중단", "reviews": "요청한 검토",
+    "statusNote": "경고는 가이드라인을 어긴 게시물로 받아요. 각 경고는 90일 후 만료돼요. 주제에 맞지 않는 게시물은 삭제되지만 경고는 없어요.",
+    "changePassword": "비밀번호 변경", "passwordChanged": "비밀번호를 변경했어요", "help": "도움말과 법적 고지", "guidelines": "커뮤니티 가이드라인", "support": "고객 지원 문의", "terms": "이용약관", "privacyPolicy": "개인정보 처리방침", "version": "버전", "logOut": "로그아웃",
+    "delete": "계정 삭제", "deleteForever": "계정 영구 삭제", "deleteBody": "프로필, 게시물, 스크롤, 스토리, 메시지, 스트릭이 영구적으로 삭제돼요. 되돌릴 수 없어요.",
+    "remindMe": "스트릭이 끝나기 전에 알려 주기", "remindSub": "아직 올리지 않은 날에만 보내요", "remindAt": "알림 시간", "freezesAvailable": "보유한 프리즈", "freezeNote": "7일 연속마다 프리즈 1개를 받아요. 최대 2개까지 가질 수 있어요.", "autoFreeze": "프리즈 자동 사용", "autoFreezeSub": "하루를 놓치면 프리즈가 스트릭을 지켜줘요"
+  },
+  "guidelines": {
+    "canPost": "올릴 수 있는 것", "canPostNote": "모든 게시물과 스크롤에는 이 주제 중 하나가 필요하고, 실제로 그 내용을 보여줘야 해요. 스토리는 미리 검사하지 않지만 아래 규칙은 똑같이 적용되고 누구나 신고할 수 있어요.", "fitness": "헬스, 러닝, 스포츠, 요가", "learning": "독서, 공부, 외국어, 글쓰기", "work": "코딩, Claude 같은 AI 활용, 디자인, 무언가 만들기", "money": "트레이딩, 투자, 요리, 건강한 식사",
+    "never": "절대 안 되는 것", "sexual": "노출이나 성적인 콘텐츠", "sexualSub": "선정적이거나 성적인 포즈, 옷차림, 설명 포함", "illegal": "불법적인 모든 것", "illegalSub": "마약, 무기, 절도, 범죄 장면", "violence": "폭력이나 자해", "violenceSub": "싸움, 부상, 자해를 부추기는 모든 것", "hate": "혐오와 괴롭힘", "hateSub": "누군가의 정체성을 공격하거나 사람을 괴롭히는 행위", "scams": "사기와 가짜 인증", "scamsSub": "수익 보장 트레이딩, 유료 홍보, 조작된 결과", "alcohol": "술, 전자담배, 도박",
+    "happens": "어떻게 되나요", "motivation": "동기부여 명언, 꾸준히 하기", "offTopic": "주제에 맞지 않는 게시물", "offTopicSub": "밈과 뜬금없는 농담도 포함돼요. 삭제돼요. 경고는 없어요.", "breaks": "규칙 위반", "breaksSub": "경고 1회. 90일 안에 경고 3회면 7일 동안 게시가 중단돼요.", "zero": "무관용", "zeroSub": "미성년자와 관련된 성적인 콘텐츠나 심각한 불법 콘텐츠는 계정이 바로 삭제되고 당국에 신고돼요.", "reviewNote": "실수로 삭제됐다고 생각하나요? 검토를 요청하면 24시간 안에 담당자가 확인해요."
+  }
+}

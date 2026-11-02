@@ -1,0 +1,244 @@
+{
+  "common": {
+    "back": "Back", "close": "Close", "cancel": "Cancel", "delete": "Delete", "next": "Next", "or": "or", "more": "More",
+    "save": "Save", "done": "Done", "you": "You", "tryAgain": "Something went wrong. Try again."
+  },
+  "time": { "now": "now", "minutes": "{{n}}m", "hours": "{{n}}h", "days": "{{n}}d", "weeks": "{{n}}w" },
+  "tabs": { "home": "Home", "search": "Search", "create": "Create", "scrolls": "Scrolls", "profile": "Profile" },
+  "topic": { "Fitness": "Fitness", "Learning": "Learning", "Work and tech": "Work and tech", "Money and health": "Money and health", "Motivation": "Motivation" },
+  "subtag": {
+    "Gym": "Gym", "Running": "Running", "Sports": "Sports", "Yoga": "Yoga",
+    "Reading": "Reading", "Studying": "Studying", "Languages": "Languages", "Writing": "Writing",
+    "Coding": "Coding", "AI and Claude": "AI and Claude", "Design": "Design", "Building": "Building",
+    "Trading": "Trading", "Investing": "Investing", "Cooking": "Cooking", "Healthy eating": "Healthy eating",
+    "Quotes": "Quotes", "Consistency": "Consistency"
+  },
+  "choice": {
+    "Off": "Off", "Everyone": "Everyone", "Followers": "Supporters", "Only me": "Only me", "People you follow": "People you support", "No one": "No one",
+    "6 PM": "6 PM", "9 PM": "9 PM", "11 PM": "11 PM", "15 min": "15 min", "30 min": "30 min", "1 hour": "1 hour", "2 hours": "2 hours"
+  },
+  "auth": {
+    "tagline": "Post the work.", "getStarted": "Get started", "apple": "Continue with Apple", "google": "Continue with Google",
+    "haveAccount": "Already have an account?", "logIn": "Log in", "haveAccountLogIn": "Have an account? Log in", "newHere": "New here? Create an account",
+    "socialFailed": "That sign-in didn't work. Try again.",
+    "addPhone": "Add your phone number", "addEmail": "Add your email",
+    "contactWhy": "We use it to keep your account secure. It stays private and never shows on your profile.",
+    "phone": "Phone number, with country code", "email": "Email",
+    "phoneNote": "We'll text you a 6-digit code to confirm it's you.", "emailNote": "We'll email you a 6-digit code to confirm it's you.",
+    "useEmail": "Use email instead", "usePhone": "Use phone instead", "codeFailed": "We couldn't send a code. Check it and try again.",
+    "checkCode": "Check your code", "typeCode": "Type the 6-digit code we just sent you.", "sixDigit": "6-digit code",
+    "newCodeSent": "New code sent.", "noCodeYet": "No code yet? It can take a minute.", "resend": "Resend code", "codeWrong": "That code didn't work. Check it and try again.",
+    "whatsName": "What's your name?", "nameWhy": "Add your name so friends can find you.", "fullName": "Full name", "nameOffensive": "Names can't include offensive words.",
+    "pickPassword": "Pick a password", "passwordRule": "Use 8 or more characters. Mix letters and numbers.", "password": "Password", "show": "Show", "hide": "Hide",
+    "moreChars_one": "{{count}} more character needed.", "moreChars_other": "{{count}} more characters needed.", "passwordGood": "Password looks good.", "passwordFailed": "We couldn't save that password. Try another.",
+    "whenBorn": "When were you born?", "birthdayPrivate": "Your birthday is never shown on your profile.", "birthday": "Birthday", "birthdayAge": "Birthday ({{age}} years old)", "chooseDate": "Choose a date",
+    "tooYoung": "You need to be at least 13 to sign up.", "ageWhy": "We ask so the app stays age-appropriate. You must be 13 or older to join.",
+    "usernameTaken": "That username was just taken. Go back and pick another.",
+    "loginId": "Username, email or phone", "forgot": "Forgot password?", "loginFailed": "That login didn't work. Check your details and try again."
+  },
+  "username": {
+    "title": "Choose your username", "why": "This is how friends find you and see your proof. You can change it later in Settings.", "label": "Username",
+    "rule": "Letters, numbers, periods and underscores. 3 to 30 characters.", "offensive": "Usernames can't include offensive words.",
+    "chars": "Usernames can only use letters, numbers, periods and underscores.", "short": "Too short. Use at least 3 characters.", "long": "Too long. Use 30 characters or fewer.",
+    "dots": "Usernames can't start or end with a period.", "checking": "Checking...", "taken": "{{name}} is taken.", "available": "{{name}} is available.", "suggestion": "Suggestion"
+  },
+  "terms": {
+    "title": "Before you start", "intro": "Tap I agree to accept {{app}}'s Community Guidelines, Terms of Use and Privacy Policy.", "canPost": "What you can post",
+    "canPostBody": "Proof of real work and sincere motivation in five topics: fitness, learning, work and tech, money and health, and motivation. Think running, reading, coding, working with AI, trading, cooking or a quote that keeps you going.",
+    "never": "Never allowed", "neverBody": "Nudity or sexual content, anything illegal, violence or self-harm, hate or bullying, scams or fake proof, and alcohol, vaping or gambling.",
+    "strikes": "Every post and scroll is checked before it goes up. Stories aren't checked first, but the same rules apply and anyone can report them. Breaking the rules gives a strike, and 3 strikes pauses posting for 7 days. Sexual content involving minors removes the account and is reported.",
+    "age": "You're at least 13 years old.", "read": "Read the [Community Guidelines link], {{terms}} and {{privacy}}.", "agree": "I agree"
+  },
+  "done": { "title": "Welcome to {{app}}", "body": "Your account is ready. Post your first proof today to start your streak.", "continue": "Continue" },
+  "forgot": {
+    "title": "Reset your password", "body": "Tell us your username, email or phone and we'll send you a reset link.", "send": "Send reset link",
+    "sentTitle": "Check your inbox", "sentBody": "If an account matches what you entered, we sent a reset link to it.", "back": "Back to log in"
+  },
+  "home": {
+    "postedToday": "Posted today", "leftToPost": "Left to post today", "countdown": "{{hours}}h {{minutes}}m", "doneCount": "{{done}} of {{total}} done",
+    "notPosted": "{{name}} hasn't posted proof yet today", "viewProof": "View proof from {{name}}", "viewYourStory": "View your story", "addStory": "Add to your story", "yourProof": "Your proof",
+    "scrollsSub": "Short clips of real work", "openScroll": "Open {{name}}'s scroll", "emptyFeed": "Your feed is quiet. Support people from Search, or post your own proof.",
+    "notificationsNew": "Notifications, new activity", "messagesUnread": "Messages, {{count}} unread"
+  },
+  "post": {
+    "title": "Post", "streak_one": "{{count}}-day streak", "streak_other": "{{count}}-day streak", "like": "Like", "unlike": "Unlike", "save": "Save", "saved": "Saved", "unsaved": "Removed from saved", "removeSaved": "Remove from saved",
+    "open": "Open post", "deleteTitle": "Delete this post?", "unavailable": "This post isn't available."
+  },
+  "certificate": { "title": "Certificate of Achievement", "certifies": "This certifies that", "reached": "achieved the goal", "achieved": "Goal achieved", "streak_one": "{{count}}-day streak", "streak_other": "{{count}}-day streak", "checked": "Checked by AI from their video. AI can make mistakes.", "watch": "Watch the proof", "share": "Share", "nextGoal": "Set your next goal", "congrats": "You did it. Your goal is finished.", "unavailable": "This certificate isn't available." },
+  "comments": {
+    "title": "Comments", "empty": "No comments yet. Start the conversation.", "reply": "Reply", "yours": "Your comment", "edit": "Edit", "edited": "edited", "editing": "Editing your comment", "cancelEdit": "Cancel editing", "like": "Like comment", "unlike": "Remove like from comment",
+    "viewReplies_one": "View {{count}} reply", "viewReplies_other": "View {{count}} replies", "hideReplies": "Hide replies", "replyingTo": "Replying to", "cancelReply": "Cancel reply",
+    "offensive": "Remove the offensive word to post this comment.", "write": "Write a comment", "replyPlaceholder": "Reply to {{name}}", "post": "Post",
+    "deleteTitle": "Delete this comment?", "notAllowed": "You can't comment on this post."
+  },
+  "share": { "title": "Share", "friend": "Send to a friend", "send": "Send", "sent": "Sent", "copy": "Copy link", "copied": "Link copied", "noFriends": "Support someone to send them posts." },
+  "create": {
+    "title": "Create", "post": "Post", "postSub": "Photo or video to your feed", "story": "Story", "storySub": "Photo or video with text, shows for 24 hours", "scroll": "Scroll", "scrollSub": "Short vertical video for the Scrolls feed"
+  },
+  "suspended": {
+    "title": "Posting is suspended for 7 days",
+    "body": "Your account has 3 strikes for posts that broke the guidelines. You can still watch, like and message. If you think a strike was a mistake, request a review from Account status."
+  },
+  "commit": {
+    "goalTitle": "What are you chasing?",
+    "goalSub": "Say it out loud. Big or small, it counts. It goes on your profile. You get 24 hours to fix it, then it locks until a video proves you did it.",
+    "goalLabel": "Your goal",
+    "goalPh": "Run a marathon",
+    "excuseTitle": "Be honest. What's your go-to excuse?",
+    "excuseSub": "Everybody has one.",
+    "excuse_monday": "I'll start Monday",
+    "excuse_mondayReply": "Monday has been very busy for years now.",
+    "excuse_tired": "I'm too tired",
+    "excuse_tiredReply": "Everyone's tired. Some of them post anyway.",
+    "excuse_time": "I don't have time",
+    "excuse_timeReply": "You had time to download this app.",
+    "excuse_none": "I don't make excuses",
+    "excuse_noneReply": "Bold. We'll check your streak.",
+    "badDayTitle": "You did everything right. It still went badly. Now what?",
+    "badDaySub": "It will happen. Pick one.",
+    "badDay_again": "Show up again tomorrow",
+    "badDay_againReply": "That's the whole app, right there.",
+    "badDay_learn": "Find out what went wrong and fix it",
+    "badDay_learnReply": "Good. Bad results are just information.",
+    "badDay_rest": "Rest tonight, go harder tomorrow",
+    "badDay_restReply": "Rest is part of the work. Quitting isn't.",
+    "badDay_quit": "Honestly, I'd want to quit",
+    "badDay_quitReply": "Everyone does. Showing up anyway is the whole point.",
+    "goalVague": "Pick something a video could prove, like \"Run a marathon\" or \"Read 50 books\".", "goalHarm": "Pick a goal that builds you up, not one that hurts someone else.",
+    "careTitle": "That sounds really hard",
+    "careBody": "You don't have to carry this alone, and it isn't something to push through with a streak. Please talk to a parent, a teacher or another adult you trust today.",
+    "careHelp": "If you might be in danger right now, call your local emergency number. You can also reach {{line}}.",
+    "careBack": "Pick a different goal",
+    "hardestTitle": "What's the hardest part for you?",
+    "hardestSub": "Everyone gets stuck somewhere.",
+    "hardest_starting": "Starting",
+    "hardest_startingReply": "Starting takes one post. You can do one post.",
+    "hardest_staying": "Staying consistent",
+    "hardest_stayingReply": "That's exactly what a streak is for.",
+    "hardest_believing": "Believing it will work",
+    "hardest_believingReply": "You don't have to believe it today. Just show up.",
+    "compareTitle": "Someone started after you and is already ahead. What do you do?",
+    "compareSub": "It will happen here too.",
+    "compare_own": "Keep running my own race",
+    "compare_ownReply": "Their results aren't your process.",
+    "compare_ask": "Ask how they did it",
+    "compare_askReply": "Smart. Then get back to work.",
+    "compare_bothered": "It would bother me, but I'd keep going",
+    "compare_botheredReply": "It bothers everyone. Keep going anyway.",
+    "nobodyTitle": "No likes. No comments. Nobody watching. Do you still do the work?",
+    "nobodySub": "Some days that's exactly how it will feel.",
+    "nobody_yes": "Yes, it's for me",
+    "nobody_yesReply": "Then you're already ahead of most people.",
+    "nobody_some": "Some days, honestly",
+    "nobody_someReply": "Honest. This app is for those days.",
+    "nobody_seen": "I need people to see it",
+    "nobody_seenReply": "Fair. That's why you post it here.",
+    "dareTitle": "One post. Every single day. Deal?",
+    "dareSub": "Not results. Just proof you showed up for \"{{goal}}\".",
+    "dare_deal": "Deal",
+    "dare_dealReply": "Good. Your future self just nodded.",
+    "dare_miss": "What if I miss a day?",
+    "dare_missReply": "Then you come back the next day. That's still the deal.",
+    "keepGoing": "Keep going",
+    "dialTitle": "How dedicated are you? Really.",
+    "dialHint": "Drag the meter up",
+    "dialLabel": "Dedication, 1 to 10",
+    "level1": "Did you even touch the screen?",
+    "level2": "Your couch says hi.",
+    "level3": "A spark. Barely.",
+    "level4": "Warming up, are we?",
+    "level5": "Right in the middle. Classic.",
+    "level6": "Okay, now we're talking.",
+    "level7": "That's real heat.",
+    "level8": "People are going to notice.",
+    "level9": "Almost dangerous.",
+    "level10": "Okay. Prove it. Every day.",
+    "lockIn": "Lock it in",
+    "dareLow": "A {{n}}? Sure you don't want to go higher?",
+    "goHigher": "Go higher",
+    "stayAt": "Stay at {{n}}",
+    "dedication": "Dedication",
+    "dedicationValue": "You said {{n}}/10",
+    "processTitle": "The process is what matters",
+    "processResults": "Results can let you down, even when your work was perfect. Keep working anyway.",
+    "processMatters": "That's why this app exists. Nobody here is judged by results. All that matters is that you worked hard, you never gave up, and you gave your 100%.",
+    "processDone": "I'm in"
+  },
+  "compose": {
+    "newPost": "New post", "newStory": "New story", "newScroll": "New scroll", "share": "Share", "add": "Add", "photo": "Photo", "video": "Video", "pickPhoto": "Choose a photo", "pickVideo": "Choose a video",
+    "caption": "Caption", "storyText": "Text on your story", "captionPh": "Write a caption", "storyPh": "Add a line of text", "scrollPh": "Describe your clip", "offensive": "Remove the offensive word to share this.",
+    "topic": "Topic", "needTopic": "Pick a topic to share. Every post is checked to make sure it fits.", "demoTitle": "The demo has no AI", "demoBody": "In the real app, AI looks at your video and decides from what it shows. Captions don't count. The demo can't do that, so pick what the AI would say.", "demoProven": "AI says it's proven", "demoNotProven": "AI says it's not proven", "provesGoal": "This proves my goal", "provesGoalSub": "AI checks this video for: {{goal}}", "proofLimit": "You can try to prove your goal 3 times a day. Try again tomorrow.", "notProvenTitle": "Posted, but your goal isn't finished yet", "notProvenBody": "The video has to clearly show the goal done. You can try again with another video.", "alsoScrolls": "Also share to Scrolls", "alsoScrollsSub": "Makes this a video post that also plays in Scrolls.",
+    "checking": "Checking your post", "scanning": "Scanning for content that isn't allowed", "fits": "Making sure it fits {{topic}}",
+    "posted": "Posted", "postedBoth": "Posted to feed and Scrolls", "sharedScrolls": "Shared to Scrolls", "addedStory": "Added to your story",
+    "offTitle": "This doesn't look like {{topic}}", "offBody": "Posts have to show real work or sincere motivation. Memes and random jokes aren't shared here. Change the topic, or post something that fits it. Trying again uses another of today's posts. This doesn't count as a strike.", "changeTopic": "Change topic",
+    "leftToday": "{{n}} left today", "limitTitle": "That's all for today", "limitPosts": "You can share {{n}} posts and scrolls a day, and posts that get blocked count too. Come back tomorrow.", "needTopicStory": "Pick a topic for your story.",
+    "banTitle": "This post breaks our guidelines", "banBody": "Our check found content that isn't allowed here, like nudity, sexual content, violence or illegal activity. It wasn't shared.",
+    "strikeLine": "This is strike {{n}} of 3. At 3 strikes, posting is suspended for 7 days.", "strikeSuspended": "This is strike {{n}} of 3. Posting is now suspended for 7 days.",
+    "readGuidelines": "Read the guidelines", "requestReview": "Request a review", "discard": "Discard post",
+    "reviewTitle": "Review requested", "reviewBody": "A person on our team will look at it within 24 hours. If the check got it wrong, your post goes up and any strike is removed.",
+    "stillTitle": "Still checking", "stillBody": "This is taking longer than usual. Your post stays hidden until the check finishes, then goes up if it passes.",
+    "failed": "We couldn't share that. Check your connection and try again."
+  },
+  "streak": {
+    "title": "Your streak", "dayStreak": "day streak", "best": "Best", "done": "Done for today. Post tomorrow to reach day {{next}}.", "keepAlive": "{{hours}}h {{minutes}}m left to keep it alive.", "start": "Post today to start your streak.",
+    "weekLetters": "M,T,W,T,F,S,S", "dayPosted": "posted", "dayToday": "today, not posted yet", "dayMissed": "missed", "dayUpcoming": "upcoming",
+    "nextBadge": "Next badge: {{label}}", "toGo_one": "{{count}} day to go", "toGo_other": "{{count}} days to go", "days_one": "{{count}} day", "days_other": "{{count}} days",
+    "badge3": "3 days", "badge7": "1 week", "badge30": "30 days", "badge100": "100 days", "earned": "earned", "locked": "locked",
+    "freezes_one": "{{count}} freeze left", "freezes_other": "{{count}} freezes left", "postToday": "Post today's proof",
+    "frozenHold": "A freeze is holding your streak. Post today to keep it.", "frozenToday": "Today is frozen. Your streak is safe.", "dayFrozen": "frozen",
+    "reasonOpen": "Couldn't post? Freeze with a reason", "reasonTitle": "What got in the way?", "reasonToday": "Today", "reasonYesterday": "Yesterday",
+    "reasonsLeft": "{{n}} of 3 reason days left this month", "reasonNone": "You've used all 3 reason days this month.", "reasonConfirm": "Freeze my streak", "reasonDone": "Streak frozen",
+    "reason": { "sick": "Sick or hurt", "family": "Family", "travel": "Travel", "noPhone": "No phone or internet", "other": "Other" }
+  },
+  "story": {
+    "previous": "Previous", "next": "Next", "replyLabel": "Reply to story", "replyPlaceholder": "Send message to {{name}}", "replyPrefix": "Replied to your story: {{text}}", "replySent": "Message sent to {{name}}"
+  },
+  "scrolls": { "mute": "Mute", "unmute": "Unmute", "empty": "No scrolls yet." },
+  "profile": {
+    "proofs": "Proofs", "followers": "Supporters", "following": "Supporting", "goal": "Goal", "proveGoal": "Prove it", "setGoal": "Set your next goal", "goalLocked": "Locked. To change it, post a video that proves you did it.", "goalFixing_one": "You can fix this for {{count}} more hour. Then it locks until a video proves you did it.", "goalFixing_other": "You can fix this for {{count}} more hours. Then it locks until a video proves you did it.", "listsHidden": "This person keeps their lists hidden.", "noSupporters": "No supporters yet.", "noSupporting": "Not supporting anyone yet.", "remove": "Remove", "removeTitle": "Remove {{name}}?", "removeBody": "They won't be told. They can support you again unless you block them.", "edit": "Edit profile", "share": "Share", "follow": "Support", "followingBtn": "Supporting", "requested": "Requested", "message": "Message",
+    "posts": "Posts", "scrolls": "Scrolls", "saved": "Saved", "noPosts": "No posts yet.", "noScrolls": "No scrolls yet.", "noSaved": "Nothing saved yet. Tap the bookmark on a post to save it.",
+    "firstPost": "Share your first post", "firstScroll": "Share your first scroll", "private": "Private account", "privateBody": "This account is private. Ask to support them to see their posts, scrolls, goal and streak.",
+    "unavailable": "This profile isn't available.", "block": "Block", "blockTitle": "Block {{name}}?", "blockBody": "They won't be able to see your profile or message you, and you won't see theirs.", "blocked": "Blocked",
+    "unfollowed": "Stopped supporting {{name}}", "nowFollowing": "Supporting {{name}}", "updated": "Profile updated", "changePhoto": "Change photo", "name": "Name", "bio": "Bio", "bioPh": "What are you working on?", "bioOffensive": "Bios can't include offensive words."
+  },
+  "search": {
+    "label": "Search", "placeholder": "Search people, workouts, recipes", "idleTitle": "Find people and proof", "idleBody": "Tap the search bar to see clips picked for you.", "all": "All",
+    "recommended": "Recommended for you", "resultsFor": "Results for \"{{q}}\"", "empty": "Nothing matches that. Try a different word."
+  },
+  "notifications": {
+    "title": "Notifications", "empty": "Nothing yet.", "today": "Today", "week": "This week", "earlier": "Earlier", "liked": "liked your proof.", "commented": "commented: {{text}}", "mentioned": "mentioned you in a comment: {{text}}",
+    "followed": "started supporting you.", "requested": "asked to support you.", "followBack": "Support back", "accept": "Accept", "decline": "Decline"
+  },
+  "messages": {
+    "title": "Messages", "search": "Search", "noMatch": "No one matches that name.", "empty": "No messages yet. Start one from someone's profile.", "threadUnread": "{{name}}, unread", "you": "You: {{text}}",
+    "placeholder": "Message...", "send": "Send", "offensive": "Remove the offensive word to send this.", "notAllowed": "You can't message this person.", "noStreak": "No streak yet",
+    "photo": "Photo", "addPhoto": "Send a photo", "photoFailed": "We couldn't send that photo. Try again.", "photoRemoved": "This photo was removed after a report.",
+    "reportPhoto": "Report", "reportPhotoTitle": "Report and remove this photo?", "reportPhotoBody": "It disappears for both of you right away, and a person will review the report.", "reportPhotoConfirm": "Remove", "photoReported": "Photo removed"
+  },
+  "report": {
+    "title": "Report", "problem": "Report a problem", "why": "Why are you reporting this?", "details": "Add details (optional)", "send": "Send report", "thanks": "Thanks. We'll take a look.",
+    "reason": {
+      "sexual": "Nudity or sexual", "illegal": "Illegal", "violence": "Violence or self-harm", "hate": "Hate or bullying", "scam": "Scam or fake proof", "alcohol": "Alcohol, vaping, gambling", "spam": "Spam", "other": "Something else"
+    }
+  },
+  "reminder": { "title": "Your streak", "keep": "Post today to keep your {{count}}-day streak alive.", "start": "Post your proof today to start a streak." },
+  "settings": {
+    "title": "Settings", "search": "Search settings", "results": "Results", "noMatch": "No settings match that.", "yourStreak": "Your streak", "reminders": "Streak reminders", "freeze": "Streak freeze",
+    "available_one": "{{count}} available", "available_other": "{{count}} available", "whoStreak": "Who sees your streak", "notifications": "Notifications", "pauseAll": "Pause all notifications", "likesComments": "Likes and comments", "newFollowers": "New supporters", "messages": "Messages",
+    "privacy": "Privacy and safety", "private": "Private account", "showLists": "Show my supporters and supporting lists", "showListsSub": "Your numbers always show. If you hide your lists, you can still appear on other people's lists.", "privateSub": "Only supporters you approve see your posts, scrolls, goal and streak", "whoMessage": "Who can message you", "whoComment": "Who can comment", "blocked": "Blocked accounts",
+    "noBlocked": "You haven't blocked anyone. You can block someone from their profile.", "unblock": "Unblock", "hideOffensive": "Hide offensive comments",
+    "app": "App", "theme": "Theme", "theme_white": "All white", "theme_neon": "Neon", "theme_color": "Colorful", "themeWhiteSub": "Clean black on white", "themeNeonSub": "Black with white neon glow", "themeColorSub": "Blue, pink and lime", "themeNote": "Scrolls and stories stay dark in every theme.",
+    "language": "Language", "languageSet": "Language set to {{name}}", "restartForLanguage": "Restart the app to finish switching language.", "timeLimit": "Daily time limit", "timeLimitNote": "Get a reminder once you've used {{app}} this long in a day.", "limitReached": "You've reached your daily time limit.",
+    "reduceMotion": "Reduce motion", "reduceMotionSub": "Turn off animations", "autoplayWifi": "Autoplay on Wi-Fi only", "dataSaver": "Data saver", "dataSaverSub": "Videos wait for a tap before playing",
+    "account": "Account", "status": "Account status", "suspended": "Suspended", "goodStanding": "Good standing", "strikes": "Strikes", "strikesOf": "{{n}} of 3 strikes", "posting": "Posting", "postingAllowed": "Allowed", "postingSuspended": "Suspended for 7 days", "reviews": "Reviews requested",
+    "statusNote": "Strikes come from posts that break the guidelines. Each one expires after 90 days. Off-topic posts are removed but never give a strike.",
+    "changePassword": "Change password", "passwordChanged": "Password changed", "help": "Help and legal", "guidelines": "Community Guidelines", "support": "Contact support", "terms": "Terms of Use", "privacyPolicy": "Privacy Policy", "version": "Version", "logOut": "Log out",
+    "delete": "Delete account", "deleteForever": "Delete account permanently", "deleteBody": "This permanently deletes your profile, posts, scrolls, stories, messages and streak. It can't be undone.",
+    "remindMe": "Remind me before my streak ends", "remindSub": "Only sent on days you haven't posted yet", "remindAt": "Remind me at", "freezesAvailable": "Freezes available", "freezeNote": "You earn 1 freeze for every 7 days in a row. You can hold up to 2.", "autoFreeze": "Use a freeze automatically", "autoFreezeSub": "If you miss a day, a freeze saves your streak"
+  },
+  "guidelines": {
+    "canPost": "What you can post", "canPostNote": "Every post and scroll needs one of these topics and has to actually show it. Stories aren't checked first, but the rules below still apply and anyone can report them.", "fitness": "Gym, running, sports, yoga", "learning": "Reading, studying, languages, writing", "work": "Coding, working with AI like Claude, design, building things", "money": "Trading, investing, cooking, healthy eating",
+    "never": "Never allowed", "sexual": "Nudity or sexual content", "sexualSub": "Including suggestive or sexualized poses, outfits or captions", "illegal": "Anything illegal", "illegalSub": "Drugs, weapons, theft, or showing someone doing a crime", "violence": "Violence or self-harm", "violenceSub": "Fights, injuries, or anything that encourages hurting yourself", "hate": "Hate and bullying", "hateSub": "Attacking anyone for who they are, or harassing people", "scams": "Scams and fake proof", "scamsSub": "Guaranteed-profit trading, paid promos, or faked results", "alcohol": "Alcohol, vaping or gambling",
+    "happens": "What happens", "motivation": "Motivational quotes, staying consistent", "offTopic": "Off-topic post", "offTopicSub": "Includes memes and random jokes. Removed. No strike.", "breaks": "Breaks a rule", "breaksSub": "1 strike. 3 strikes in 90 days pauses posting for 7 days.", "zero": "Zero tolerance", "zeroSub": "Sexual content involving minors, or serious illegal content, removes the account right away and is reported to the authorities.", "reviewNote": "Think a post was removed by mistake? Request a review and a person will check it within 24 hours."
+  }
+}
