@@ -69,7 +69,10 @@ blender -b -P vista_bay_city.py -- --save vista_bay.blend
 
 Tested on a 4-core cloud CPU with no GPU:
 - 960x540 at 16 samples: about 20-30 s per camera
-- 4K at 64 samples: several minutes per camera (see the preview images)
+- 4K aerial at 64 samples: 27 min
+- 4K map (DAY) at 32 samples: 14 min
+- 1080p street/beach at 64 samples: 6-9 min
+- 1080p night aerial at 48 samples: 11 min
 
 On an NVIDIA/AMD/Apple GPU the script picks the GPU automatically (OptiX > CUDA > HIP > Metal > oneAPI) and is many times faster. For the final 4K image use 256 samples, which is the default. Denoising is on.
 
@@ -79,4 +82,10 @@ On an NVIDIA/AMD/Apple GPU the script picks the GPU automatically (OptiX > CUDA 
 - Every material is procedural (node-based). Building windows come from a brick-pattern trick in world space, and the lit windows are randomized per building.
 
 ## Preview renders
-See `previews/`.
+These are low-sample previews; the default is 256 samples.
+
+![Aerial, sunset, 4K](previews/vista_bay_Cam_Aerial_sunset_3840x2160.jpg)
+![Map, day, 4K](previews/vista_bay_Cam_Map_day_3840x2160.jpg)
+![Street, sunset](previews/vista_bay_Cam_Street_sunset_1920x1080.jpg)
+![Beach, sunset](previews/vista_bay_Cam_Beach_sunset_1920x1080.jpg)
+![Aerial, night](previews/vista_bay_Cam_Aerial_night_1920x1080.jpg)
